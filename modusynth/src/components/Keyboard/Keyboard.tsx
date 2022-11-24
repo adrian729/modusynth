@@ -5,7 +5,6 @@ import { ActionKind, CTX } from '../../context/Store';
 
 const Keyboard = () => {
     const { dispatch } = useContext(CTX);
-    console.log('UPS', dispatch);
 
     useEffect(() => {
         console.log('Setup KB');
@@ -17,7 +16,7 @@ const Keyboard = () => {
             startNote: 'C4',
             whiteKeyColour: 'black',
             blackKeyColour: 'white',
-            activeColour: 'rgb(166, 49, 172)',
+            activeColour: 'mediumturquoise',
             borderColour: 'white',
         });
         keyboard.keyDown = (note: string, freq: number) => {
@@ -27,12 +26,12 @@ const Keyboard = () => {
             });
         };
 
-        // keyboard.keyUp = (note: string, freq: number) => {
-        //     dispatch({
-        //         type: ActionKind.KILL_OSC,
-        //         payload: { note, freq },
-        //     });
-        // };
+        keyboard.keyUp = (note: string, freq: number) => {
+            dispatch({
+                type: ActionKind.STOP_OSC,
+                payload: { note, freq },
+            });
+        };
     }, [dispatch]);
 
     return (

@@ -1,24 +1,26 @@
 import React, { createContext, useReducer, ReactNode } from 'react';
 
-let actx = new AudioContext();
-let out = actx.destination;
+let audioContext = new AudioContext();
+let out = audioContext.destination;
 
-let gain1 = actx.createGain();
-gain1.gain.value = 0.2;
-let filter = actx.createBiquadFilter();
+let mainGain = audioContext.createGain();
+mainGain.gain.value = 0.2;
+let filter = audioContext.createBiquadFilter();
 
-gain1.connect(filter);
+mainGain.connect(filter);
 filter.connect(out);
 
 interface CTXState {
-    id?: string;
     note?: string;
     freq?: number;
+    audioContext: AudioContext;
+    mainGain: GainNode;
+    activeNotes: Record<string, number>;
 }
 
 export enum ActionKind {
     MAKE_OSC = 'MAKE_OSC',
-    KILL_OSC = 'KILL_OSC',
+    STOP_OSC = 'STOP_OSC',
 }
 
 interface Action {
@@ -27,34 +29,42 @@ interface Action {
 }
 
 const reducer = (state: CTXState, action: Action) => {
-    let { id, note, freq } = action.payload;
+    let { note, freq } = action.payload;
     switch (action.type) {
         case ActionKind.MAKE_OSC:
-            console.log('MAKE', note, freq);
-            return { ...state };
-        case ActionKind.KILL_OSC:
-            console.log('KILL', note, freq);
-            return { ...state };
+            return {
+                ...state,
+                activeNotes:
+                    note && freq
+                        ? { ...state.activeNotes, [note]: freq }
+                        : state.activeNotes,
+            };
+        case ActionKind.STOP_OSC:
+            if (!note) return { ...state };
+            let { [note]: _, ...newActiveNotes } = state.activeNotes;
+            return {
+                ...state,
+                activeNotes: newActiveNotes,
+            };
         default:
             console.log('reducer error, action: ', action);
             return { ...state };
     }
 };
 
+const defaultState: CTXState = { audioContext, mainGain, activeNotes: {} };
+
 const CTX = createContext<{
     state: CTXState;
-    dispatch: React.Dispatch<Action>;
+    dispatch: React.Dispatch<any>;
 }>({
-    state: { id: 'test' },
+    state: defaultState,
     dispatch: () => null,
 });
 export { CTX };
 
 const Store = ({ children }: { children?: ReactNode }) => {
-    console.log('hey');
-    const [state, dispatch] = useReducer(reducer, {
-        id: 'test',
-    } as CTXState);
+    const [state, dispatch] = useReducer(reducer, defaultState);
     return <CTX.Provider value={{ state, dispatch }}>{children}</CTX.Provider>;
 };
 
