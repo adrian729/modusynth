@@ -1,4 +1,5 @@
 import {
+    FC,
     useContext,
     useEffect,
     useState,
@@ -6,85 +7,136 @@ import {
     ChangeEvent,
 } from 'react';
 import { CTX } from 'src/context/Store';
-import OscNode, { OscNodeType, OscNodeSettings } from './OscNode';
+import OscNode, { OscNodeType, OscNodeSettings, OscNodeProps } from './OscNode';
+
+const eqSet = (xs: Set<string>, ys: Set<string>): boolean =>
+    xs.size === ys.size && [...xs].every(x => ys.has(x));
+
+const removeInactive = (
+    records: Record<string, OscNodeType>,
+    activeKeys: Set<string>
+): void => {
+    Object.keys(records)
+        .filter(key => !activeKeys.has(key))
+        .forEach(key => {
+            records[key].stop();
+            delete records[key];
+        });
+};
+
+const addActive = (
+    records: Record<string, OscNodeType>,
+    activeRecords: Record<string, number>,
+    activeKeys: string[],
+    oscNodeProps: OscNodeProps
+): void => {
+    activeKeys
+        .filter(key => !records[key])
+        .forEach(key => {
+            let oscNodePropsWithFreq: OscNodeProps = {
+                ...oscNodeProps,
+                frequency: activeRecords[key],
+            };
+            records[key] = OscNode(oscNodePropsWithFreq);
+            records[key].start();
+        });
+};
 
 interface OscProps {
     defaultType?: OscillatorType;
-    defaultActive?: boolean;
+    defaultMute?: boolean;
 }
-
-const Osc = ({ defaultType = 'sine', defaultActive = true }: OscProps) => {
+const Osc: FC<OscProps> = ({ defaultType = 'sine', defaultMute = false }) => {
+    const { state } = useContext(CTX);
+    const [nodes, setNodes] = useState<Record<string, OscNodeType>>({});
+    const [drones, setDrones] = useState<Record<string, OscNodeType>>({});
     const [oscSettings, setOscSettings] = useState<OscNodeSettings>({
         type: defaultType,
         detune: 0,
+        gain: 0.5,
+        mute: defaultMute,
     });
-    const [active, setActive] = useState<boolean>(defaultActive);
-    const [nodes, setNodes] = useState<Record<string, OscNodeType>>({});
-    const { state } = useContext(CTX);
-    let { audioContext, mainGain, activeNotes } = state;
-    let { type, detune } = oscSettings;
+    let { audioContext, mainGain, activeNotes, droneNotes } = state;
+    let { type, detune, gain, mute } = oscSettings;
 
-    useEffect(() => {
-        const createNode = (frequency: number): OscNodeType => {
-            let node = OscNode({
-                audioContext,
-                type,
-                detune,
-                frequency,
-                connection: mainGain,
+    useEffect((): void => {
+        let activeNoteKeys = Object.keys(activeNotes);
+
+        let nodesKeysSet = new Set(Object.keys(nodes));
+        let activeNotesKeysSet = new Set(activeNoteKeys);
+
+        if (!eqSet(nodesKeysSet, activeNotesKeysSet)) {
+            setNodes(prevNodes => {
+                let tmpNodes = { ...prevNodes };
+                removeInactive(tmpNodes, activeNotesKeysSet);
+
+                let oscNodeProps: OscNodeProps = {
+                    audioContext,
+                    type,
+                    frequency: 0,
+                    detune,
+                    connection: mainGain,
+                    gain,
+                    mute,
+                };
+                addActive(tmpNodes, activeNotes, activeNoteKeys, oscNodeProps);
+
+                return tmpNodes;
             });
-            return node;
-        };
+        }
+    }, [activeNotes, nodes, audioContext, detune, gain, mainGain, mute, type]);
 
-        const removeNodes = (
-            tmpNodes: Record<string, OscNodeType>,
-            activeNotesKeys: string[]
-        ) => {
-            Object.keys(tmpNodes)
-                .filter(key => !activeNotesKeys.includes(key))
-                .forEach(key => {
-                    tmpNodes[key]?.stop();
-                    delete tmpNodes[key];
-                });
-        };
+    useEffect((): void => {
+        let droneNoteKeys = Object.keys(droneNotes);
 
-        const addNodes = (
-            tmpNodes: Record<string, OscNodeType>,
-            activeNotesKeys: string[]
-        ) => {
-            activeNotesKeys
-                .filter(key => !tmpNodes[key])
-                .forEach(key => {
-                    tmpNodes[key] = createNode(activeNotes[key]);
-                    tmpNodes[key]?.start();
-                });
-        };
+        let dronesKeysSet = new Set(Object.keys(drones));
+        let droneNoteKeysSet = new Set(droneNoteKeys);
 
-        setNodes(prevNodes => {
-            let activeNotesKeys = active ? Object.keys(activeNotes) : [];
-            let tmpNodes = { ...prevNodes };
-            removeNodes(tmpNodes, activeNotesKeys);
-            if (active) addNodes(tmpNodes, activeNotesKeys);
-            return tmpNodes;
-        });
-    }, [activeNotes, active]);
+        if (!eqSet(dronesKeysSet, droneNoteKeysSet)) {
+            setDrones(prevDrones => {
+                let tmpDrones = { ...prevDrones };
+                removeInactive(tmpDrones, droneNoteKeysSet);
 
-    useEffect(() => {
+                let oscNodeProps: OscNodeProps = {
+                    audioContext,
+                    type,
+                    frequency: 0,
+                    detune,
+                    connection: mainGain,
+                    gain,
+                    mute,
+                };
+                addActive(tmpDrones, droneNotes, droneNoteKeys, oscNodeProps);
+                return tmpDrones;
+            });
+        }
+    }, [droneNotes, drones, audioContext, detune, gain, mainGain, mute, type]);
+
+    useEffect((): void => {
         setNodes(prevNodes => {
             let tmpNodes = { ...prevNodes };
-            Object.values(tmpNodes).map(val =>
-                val?.changeSettings(oscSettings)
-            );
+            Object.values(tmpNodes).map(val => val.changeSettings(oscSettings));
             return tmpNodes;
         });
     }, [oscSettings]);
 
-    const change = (e: ChangeEvent) => {
+    const changeMuted = (e: ChangeEvent): void => {
         let { checked } = e.target as HTMLInputElement;
-        setActive(checked);
+        setOscSettings({
+            ...oscSettings,
+            mute: !checked,
+        } as OscNodeSettings);
     };
 
-    const changeType = (e: MouseEvent) => {
+    const change = (e: ChangeEvent): void => {
+        let { id, value } = e.target as HTMLInputElement;
+        setOscSettings({
+            ...oscSettings,
+            [id]: value as unknown as number,
+        } as OscNodeSettings);
+    };
+
+    const changeType = (e: MouseEvent): void => {
         let { id } = e.target as HTMLInputElement;
         setOscSettings({
             ...oscSettings,
@@ -92,54 +144,82 @@ const Osc = ({ defaultType = 'sine', defaultActive = true }: OscProps) => {
         } as OscNodeSettings);
     };
 
-    const changeDetune = (e: ChangeEvent) => {
-        let { value } = e.target as HTMLInputElement;
-        setOscSettings({
-            ...oscSettings,
-            detune: value as unknown as number,
-        } as OscNodeSettings);
+    const handleClick = (e: MouseEvent, id: string, val: number): void => {
+        let { detail } = e;
+        if (detail === 2) {
+            setOscSettings({
+                ...oscSettings,
+                [id]: val,
+            } as OscNodeSettings);
+        }
     };
 
-    const renderWaveTypeButtons = () => {
+    const WaveTypeSelector: FC = () => {
         const waveTypes = ['sine', 'triangle', 'square', 'sawtooth'];
 
-        return waveTypes.map(waveType => {
-            let setActive = type === waveType && 'active';
-            return (
-                <button
-                    id={waveType}
-                    key={waveType}
-                    onClick={changeType}
-                    className={`${setActive}`}>
-                    {waveType}
-                </button>
-            );
-        });
+        return (
+            <>
+                {waveTypes.map(waveType => (
+                    <button
+                        id={waveType}
+                        key={waveType}
+                        onClick={changeType}
+                        className={(waveType === type && 'active') || ''}>
+                        {waveType}
+                    </button>
+                ))}
+            </>
+        );
     };
 
     return (
-        <div>
+        <div
+            style={{
+                display: 'inline-block',
+                border: 'solid 1px black',
+                borderRadius: '1rem',
+                boxShadow:
+                    '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
+                width: 'fit-content',
+                margin: '1rem 1rem',
+                padding: '.2rem',
+            }}>
             <h5>
                 Osc: {type}
                 <input
                     type='checkbox'
                     id='osc'
                     name='osc'
-                    onChange={change}
-                    defaultChecked={active}
+                    onChange={changeMuted}
+                    defaultChecked={!mute}
                 />
             </h5>
             <div>
                 <h6>Type</h6>
-                {renderWaveTypeButtons()}
+                <WaveTypeSelector />
             </div>
-            <div>
-                <h6>Detune</h6>
+            <div style={{ display: 'inline-block' }}>
+                <h6>Detune: {detune}</h6>
                 <input
                     id='detune'
                     value={detune}
-                    onChange={changeDetune}
+                    onChange={change}
+                    onClick={e => handleClick(e, 'detune', 0)}
                     type='range'
+                    min={-100}
+                />
+            </div>
+            <div style={{ display: 'inline-block' }}>
+                <h6>Gain: {gain}</h6>
+                <input
+                    id='gain'
+                    value={gain}
+                    onChange={change}
+                    onClick={e => handleClick(e, 'gain', 1)}
+                    type='range'
+                    step={0.1}
+                    min={0.1}
+                    max={2}
                 />
             </div>
         </div>

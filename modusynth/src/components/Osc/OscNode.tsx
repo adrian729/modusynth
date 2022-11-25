@@ -1,3 +1,8 @@
+export interface AudioSettings {
+    audioContext: AudioContext;
+    connection: AudioNode;
+}
+
 export interface Envelope {
     attack: number;
     decay: number;
@@ -9,21 +14,17 @@ export interface OscNodeSettings {
     type?: OscillatorType;
     frequency?: number;
     detune?: number;
+    envelope?: Envelope;
+    gain?: number;
+    mute?: boolean;
 }
+
+export type OscNodeProps = AudioSettings & OscNodeSettings;
 
 export interface OscNodeType {
-    start: () => void;
-    stop: () => void;
-    changeSettings: (settings: OscNodeSettings) => void;
-}
-
-export interface OscNodeProps {
-    audioContext: AudioContext;
-    type?: OscillatorType;
-    frequency: number;
-    detune?: number;
-    envelope?: Envelope;
-    connection: AudioNode;
+    start(): void;
+    stop(): void;
+    changeSettings(settings: OscNodeSettings): void;
 }
 
 const defaultEnvelope: Envelope = {
@@ -35,13 +36,15 @@ const defaultEnvelope: Envelope = {
 
 const OscNode = ({
     audioContext,
+    connection,
     type = 'sine',
-    frequency,
+    frequency = 0,
     detune = 0,
     envelope = defaultEnvelope,
-    connection,
+    gain = 0.5,
+    mute = false,
 }: OscNodeProps): OscNodeType => {
-    let osc: OscillatorNode, gateGain: GainNode;
+    let osc: OscillatorNode, gateGain: GainNode, oscGainControl: GainNode;
     let easing = 0.005;
 
     const init = () => {
@@ -51,7 +54,10 @@ const OscNode = ({
         osc.type = type;
         gateGain = audioContext.createGain();
         osc.connect(gateGain);
-        gateGain.connect(connection);
+        oscGainControl = audioContext.createGain();
+        oscGainControl.gain.value = mute ? 0 : gain;
+        gateGain.connect(oscGainControl);
+        oscGainControl.connect(connection);
     };
     init();
 
@@ -80,6 +86,7 @@ const OscNode = ({
 
     const changeSettings = (settings: OscNodeSettings) => {
         let { type, frequency, detune } = settings;
+        let { currentTime } = audioContext;
         if (type) {
             osc.type = type;
         }
@@ -88,6 +95,16 @@ const OscNode = ({
         }
         if (detune) {
             osc.detune.value = detune;
+        }
+        if (settings.mute !== undefined) {
+            mute = settings.mute;
+        }
+        if (settings.gain) {
+            gain = settings.gain;
+        }
+        if (mute !== undefined || gain) {
+            oscGainControl.gain.cancelScheduledValues(currentTime);
+            oscGainControl.gain.setValueAtTime(mute ? 0 : gain, currentTime);
         }
     };
 
