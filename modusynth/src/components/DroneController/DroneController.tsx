@@ -1,15 +1,17 @@
-import { FC, useContext, useState } from 'react';
-import { ActionKind, CTX } from 'src/context/Store';
+import { FC, useState } from 'react';
+import { CTX } from 'src/context/Store';
+import useSafeContext from 'src/hooks/useSafeContext';
+import { FREEZE_DRONES, RELEASE_DRONES } from '../../actions/synthActions';
 
 const DroneController: FC = () => {
-    const { state, dispatch } = useContext(CTX);
+    const { state, dispatch } = useSafeContext(CTX);
     const [hasDrones, setHasDrones] = useState<boolean>(false);
     let { activeNotes } = state;
 
     const addDrones = (): void => {
         setHasDrones(true);
         dispatch({
-            type: ActionKind.FREEZE_DRONES,
+            type: FREEZE_DRONES,
             payload: activeNotes,
         });
     };
@@ -17,7 +19,7 @@ const DroneController: FC = () => {
     const killDrones = (): void => {
         setHasDrones(false);
         dispatch({
-            type: ActionKind.RELEASE_DRONES,
+            type: RELEASE_DRONES,
             payload: {},
         });
     };

@@ -87,22 +87,22 @@ const OscNode = ({
     const changeSettings = (settings: OscNodeSettings) => {
         let { type, frequency, detune } = settings;
         let { currentTime } = audioContext;
-        if (type) {
+        if (type !== undefined) {
             osc.type = type;
         }
-        if (frequency) {
+        if (frequency !== undefined) {
             osc.frequency.value = frequency;
         }
-        if (detune) {
+        if (detune !== undefined) {
             osc.detune.value = detune;
         }
         if (settings.mute !== undefined) {
             mute = settings.mute;
         }
-        if (settings.gain) {
+        if (settings.gain !== undefined) {
             gain = settings.gain;
         }
-        if (mute !== undefined || gain) {
+        if (mute !== undefined || gain !== undefined) {
             oscGainControl.gain.cancelScheduledValues(currentTime);
             oscGainControl.gain.setValueAtTime(mute ? 0 : gain, currentTime);
         }

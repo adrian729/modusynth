@@ -1,0 +1,15 @@
+export enum ActionKind {
+    CHANGE_STARTING_NOTE = 'CHANGE_STARTING_NOTE',
+    MAKE_OSC = 'MAKE_OSC',
+    STOP_OSC = 'STOP_OSC',
+    FREEZE_DRONES = 'FREEZE_DRONES',
+    RELEASE_DRONES = 'RELEASE_DRONES',
+}
+
+export const {
+    CHANGE_STARTING_NOTE,
+    MAKE_OSC,
+    STOP_OSC,
+    FREEZE_DRONES,
+    RELEASE_DRONES,
+} = ActionKind;

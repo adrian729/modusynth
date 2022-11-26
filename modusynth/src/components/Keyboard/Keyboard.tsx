@@ -1,10 +1,16 @@
 import './Keyboard.scss';
 import { QwertyHancock } from 'qwerty-hancock';
-import { MouseEvent, FC, useContext, useEffect } from 'react';
-import { ActionKind, CTX } from '../../context/Store';
+import { MouseEvent, FC, useEffect } from 'react';
+import { CTX } from '../../context/Store';
+import {
+    CHANGE_STARTING_NOTE,
+    MAKE_OSC,
+    STOP_OSC,
+} from '../../actions/synthActions';
+import useSafeContext from 'src/hooks/useSafeContext';
 
 const Keyboard: FC = () => {
-    const { state, dispatch } = useContext(CTX);
+    const { state, dispatch } = useSafeContext(CTX);
     let { keyboardStartingNote } = state;
 
     useEffect((): void => {
@@ -21,14 +27,14 @@ const Keyboard: FC = () => {
         });
         keyboard.keyDown = (note: string, freq: number): void => {
             dispatch({
-                type: ActionKind.MAKE_OSC,
+                type: MAKE_OSC,
                 payload: { note, freq },
             });
         };
 
         keyboard.keyUp = (note: string, freq: number): void => {
             dispatch({
-                type: ActionKind.STOP_OSC,
+                type: STOP_OSC,
                 payload: { note, freq },
             });
         };
@@ -37,7 +43,7 @@ const Keyboard: FC = () => {
     const changeOctave = (e: MouseEvent): void => {
         let { id } = e.target as HTMLInputElement;
         dispatch({
-            type: ActionKind.CHANGE_STARTING_NOTE,
+            type: CHANGE_STARTING_NOTE,
             payload: { keyboardStartingNote: id },
         });
     };

@@ -1,4 +1,12 @@
 import { createContext, useReducer, ReactNode, Dispatch } from 'react';
+import {
+    ActionKind,
+    CHANGE_STARTING_NOTE,
+    MAKE_OSC,
+    STOP_OSC,
+    FREEZE_DRONES,
+    RELEASE_DRONES,
+} from '../actions/synthActions';
 
 let audioContext = new AudioContext();
 let out = audioContext.destination;
@@ -20,14 +28,6 @@ export interface CTXState {
     droneNotes: Record<string, number>;
 }
 
-export enum ActionKind {
-    CHANGE_STARTING_NOTE = 'CHANGE_STARTING_NOTE',
-    MAKE_OSC = 'MAKE_OSC',
-    STOP_OSC = 'STOP_OSC',
-    FREEZE_DRONES = 'FREEZE_DRONES',
-    RELEASE_DRONES = 'RELEASE_DRONES',
-}
-
 interface Action {
     type: ActionKind;
     payload: CTXState;
@@ -36,14 +36,14 @@ interface Action {
 const reducer = (state: CTXState, action: Action) => {
     let { note, freq, keyboardStartingNote } = action.payload;
     switch (action.type) {
-        case ActionKind.CHANGE_STARTING_NOTE:
+        case CHANGE_STARTING_NOTE:
             return {
                 ...state,
                 keyboardStartingNote:
                     keyboardStartingNote ?? state.keyboardStartingNote,
                 activeNotes: {},
             };
-        case ActionKind.MAKE_OSC:
+        case MAKE_OSC:
             return {
                 ...state,
                 activeNotes:
@@ -51,25 +51,31 @@ const reducer = (state: CTXState, action: Action) => {
                         ? { ...state.activeNotes, [note]: freq }
                         : state.activeNotes,
             };
-        case ActionKind.STOP_OSC:
+        case STOP_OSC:
             if (!note) return { ...state };
             let { [note]: _, ...newActiveNotes } = state.activeNotes;
             return {
                 ...state,
                 activeNotes: newActiveNotes,
             };
-        case ActionKind.FREEZE_DRONES:
+        case FREEZE_DRONES:
             return {
                 ...state,
                 droneNotes: { ...state.droneNotes, ...state.activeNotes },
             };
-        case ActionKind.RELEASE_DRONES:
+        case RELEASE_DRONES:
             return { ...state, droneNotes: {} };
         default:
             console.log('reducer error, action: ', action);
             return { ...state };
     }
 };
+
+interface ContextProps {
+    state: CTXState;
+    dispatch: Dispatch<any>;
+}
+export const CTX = createContext<ContextProps | null>(null);
 
 const defaultState: CTXState = {
     keyboardStartingNote: 'C4',
@@ -78,19 +84,8 @@ const defaultState: CTXState = {
     activeNotes: {},
     droneNotes: {},
 };
-
-const CTX = createContext<{
-    state: CTXState;
-    dispatch: Dispatch<any>;
-}>({
-    state: defaultState,
-    dispatch: () => null,
-});
-export { CTX };
-
 const Store = ({ children }: { children?: ReactNode }) => {
     const [state, dispatch] = useReducer(reducer, defaultState);
     return <CTX.Provider value={{ state, dispatch }}>{children}</CTX.Provider>;
 };
-
 export default Store;

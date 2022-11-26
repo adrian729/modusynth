@@ -1,12 +1,6 @@
-import {
-    FC,
-    useContext,
-    useEffect,
-    useState,
-    MouseEvent,
-    ChangeEvent,
-} from 'react';
+import { FC, useEffect, useState, MouseEvent, ChangeEvent } from 'react';
 import { CTX } from 'src/context/Store';
+import useSafeContext from 'src/hooks/useSafeContext';
 import OscNode, { OscNodeType, OscNodeSettings, OscNodeProps } from './OscNode';
 
 const eqSet = (xs: Set<string>, ys: Set<string>): boolean =>
@@ -47,7 +41,7 @@ interface OscProps {
     defaultMute?: boolean;
 }
 const Osc: FC<OscProps> = ({ defaultType = 'sine', defaultMute = false }) => {
-    const { state } = useContext(CTX);
+    const { state } = useSafeContext(CTX);
     const [nodes, setNodes] = useState<Record<string, OscNodeType>>({});
     const [drones, setDrones] = useState<Record<string, OscNodeType>>({});
     const [oscSettings, setOscSettings] = useState<OscNodeSettings>({
