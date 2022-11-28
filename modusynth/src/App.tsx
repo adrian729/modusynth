@@ -1,16 +1,19 @@
 import './App.scss';
-import Keyboard from './components/Keyboard/Keyboard';
-import Osc from './components/Osc/Osc';
-import DroneController from './components/DroneController/DroneController';
+import Keyboard from './components/Keyboard';
+import Osc from './components/Osc';
+import DroneController from './components/DroneController';
 
 const App = () => {
     return (
         <div className='App'>
             <h1>ModuSynth</h1>
             <Keyboard />
+            <DroneController />
             <div
                 style={{
                     margin: '2rem auto',
+                    border: '1px solid black',
+                    borderRadius: '1rem',
                     width: '80%',
                     maxWidth: '800px',
                     display: 'grid',
@@ -20,16 +23,15 @@ const App = () => {
                     <Osc />
                 </div>
                 <div style={{ margin: 'auto' }}>
-                    <Osc defaultType='triangle' />
+                    <Osc type='triangle' />
                 </div>
                 <div style={{ margin: 'auto' }}>
-                    <Osc defaultType='square' />
+                    <Osc type='square' />
                 </div>
                 <div style={{ margin: 'auto' }}>
-                    <Osc defaultType='square' defaultMute={true} />
+                    <Osc type='square' mute={true} />
                 </div>
             </div>
-            <DroneController />
         </div>
     );
 };

@@ -1,7 +1,7 @@
 import './Keyboard.scss';
 import { QwertyHancock } from 'qwerty-hancock';
 import { MouseEvent, FC, useEffect } from 'react';
-import { CTX } from '../../context/Store';
+import { CTX } from '../../context/MainStore';
 import {
     CHANGE_STARTING_NOTE,
     MAKE_OSC,

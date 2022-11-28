@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { CTX } from 'src/context/Store';
+import { CTX } from 'src/context/MainStore';
 import useSafeContext from 'src/hooks/useSafeContext';
 import { FREEZE_DRONES, RELEASE_DRONES } from '../../actions/synthActions';
 

@@ -84,8 +84,8 @@ const defaultState: CTXState = {
     activeNotes: {},
     droneNotes: {},
 };
-const Store = ({ children }: { children?: ReactNode }) => {
+const MainStore = ({ children }: { children?: ReactNode }) => {
     const [state, dispatch] = useReducer(reducer, defaultState);
     return <CTX.Provider value={{ state, dispatch }}>{children}</CTX.Provider>;
 };
-export default Store;
+export default MainStore;
