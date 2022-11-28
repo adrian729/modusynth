@@ -1,5 +1,6 @@
 export enum OscActionKind {
-    INIT_OSC_GAIN = 'INIT_OSC_GAIN',
+    UPDATE_SETTINGS = 'UPDATE_SETTINGS',
+    UPDATE_DRONES = 'UPDATE_DRONES',
 }
 
-export const { INIT_OSC_GAIN } = OscActionKind;
+export const { UPDATE_SETTINGS, UPDATE_DRONES } = OscActionKind;

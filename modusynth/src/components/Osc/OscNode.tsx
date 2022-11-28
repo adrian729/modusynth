@@ -7,10 +7,10 @@ export interface OscNodeSettings {
 }
 
 export interface OscNodeProps {
-    type: OscillatorType;
-    frequency: number;
-    detune: number;
-    envelope: Envelope;
+    type?: OscillatorType;
+    frequency?: number;
+    detune?: number;
+    envelope?: Envelope;
 }
 
 export interface OscNodeType {
@@ -27,14 +27,14 @@ const OscNode = (
     let easing = 0.005;
 
     let osc: OscillatorNode = audioContext.createOscillator();
-    osc.frequency.value = frequency;
-    osc.detune.value = detune;
-    osc.type = type;
+    osc.frequency.value = frequency!;
+    osc.detune.value = detune!;
+    osc.type = type!;
     let gateGain: GainNode = audioContext.createGain();
     osc.connect(gateGain);
     gateGain.connect(connection);
     let { currentTime } = audioContext;
-    let { attack, decay, sustain } = envelope;
+    let { attack, decay, sustain } = envelope!;
     gateGain.gain.cancelScheduledValues(currentTime);
     gateGain.gain.setValueAtTime(0, currentTime + easing);
     gateGain.gain.linearRampToValueAtTime(1, currentTime + attack);
@@ -46,7 +46,7 @@ const OscNode = (
 
     const stop = () => {
         let { currentTime } = audioContext;
-        let { release } = envelope;
+        let { release } = envelope!;
         gateGain.gain.cancelScheduledValues(currentTime);
         gateGain.gain.setTargetAtTime(0, currentTime, release);
         setTimeout(() => {

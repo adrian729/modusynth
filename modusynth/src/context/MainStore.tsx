@@ -25,7 +25,7 @@ export interface CTXState {
     audioContext: AudioContext;
     mainGain: GainNode;
     activeNotes: Record<string, number>;
-    droneNotes: Record<string, number>;
+    freezeCount: number;
 }
 
 interface Action {
@@ -61,10 +61,10 @@ const reducer = (state: CTXState, action: Action) => {
         case FREEZE_DRONES:
             return {
                 ...state,
-                droneNotes: { ...state.droneNotes, ...state.activeNotes },
+                freezeCount: state.freezeCount + 1,
             };
         case RELEASE_DRONES:
-            return { ...state, droneNotes: {} };
+            return { ...state, freezeCount: 0 };
         default:
             console.log('reducer error, action: ', action);
             return { ...state };
@@ -82,7 +82,7 @@ const defaultState: CTXState = {
     audioContext,
     mainGain,
     activeNotes: {},
-    droneNotes: {},
+    freezeCount: 0,
 };
 const MainStore = ({ children }: { children?: ReactNode }) => {
     const [state, dispatch] = useReducer(reducer, defaultState);
