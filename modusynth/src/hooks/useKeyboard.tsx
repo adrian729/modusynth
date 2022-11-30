@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { QwertyHancock } from 'qwerty-hancock';
 import {
-    CHANGE_STARTING_NOTE,
+    CHANGE_STARTING_OCTAVE,
     MAKE_OSC,
     STOP_OSC,
 } from 'src/actions/synthActions';
@@ -11,13 +11,12 @@ import { CTX } from 'src/context/MainStore';
 import useSafeContext from './useSafeContext';
 
 interface UseKeyboardResult {
-    keyboardStartingNote: string;
-    changeOctave(id: string): void;
+    startingOctave: number;
+    changeOctave(id: number): void;
 }
 export const useKeyboard = (): UseKeyboardResult => {
     const { state, dispatch } = useSafeContext(CTX);
-    let { keyboardStartingNote } = state;
-    const [keyboard, setKeyboard] = useState<any>();
+    let { startingOctave } = state;
 
     useEffect((): void => {
         const keyboard = new QwertyHancock({
@@ -25,7 +24,7 @@ export const useKeyboard = (): UseKeyboardResult => {
             width: '449',
             height: '90',
             octaves: 2,
-            startNote: keyboardStartingNote || 'C4',
+            startNote: `C${startingOctave}` || 'C4',
             whiteKeyColour: 'black',
             blackKeyColour: 'white',
             activeColour: 'mediumturquoise',
@@ -43,21 +42,14 @@ export const useKeyboard = (): UseKeyboardResult => {
                 payload: { note, freq },
             });
         };
-        setKeyboard(keyboard);
-    }, [keyboardStartingNote]);
+    }, [startingOctave]);
 
-    useEffect((): void => {
-        keyboard?.setKeyOctave(
-            keyboardStartingNote[keyboardStartingNote.length - 1],
-        );
-    }, [keyboardStartingNote]);
-
-    const changeOctave = (id: string): void => {
+    const changeOctave = (octave: number): void => {
         dispatch({
-            type: CHANGE_STARTING_NOTE,
-            payload: { keyboardStartingNote: id },
+            type: CHANGE_STARTING_OCTAVE,
+            payload: { startingOctave: octave },
         });
     };
 
-    return { keyboardStartingNote, changeOctave };
+    return { startingOctave, changeOctave };
 };

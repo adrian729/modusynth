@@ -1,5 +1,5 @@
 export enum ActionKind {
-    CHANGE_STARTING_NOTE = 'CHANGE_STARTING_NOTE',
+    CHANGE_STARTING_OCTAVE = 'CHANGE_STARTING_OCTAVE',
     MAKE_OSC = 'MAKE_OSC',
     STOP_OSC = 'STOP_OSC',
     FREEZE_DRONES = 'FREEZE_DRONES',
@@ -7,7 +7,7 @@ export enum ActionKind {
 }
 
 export const {
-    CHANGE_STARTING_NOTE,
+    CHANGE_STARTING_OCTAVE,
     MAKE_OSC,
     STOP_OSC,
     FREEZE_DRONES,

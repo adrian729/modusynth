@@ -2,7 +2,7 @@ import { Dispatch, ReactNode, createContext, useReducer } from 'react';
 
 import {
     ActionKind,
-    CHANGE_STARTING_NOTE,
+    CHANGE_STARTING_OCTAVE,
     FREEZE_DRONES,
     MAKE_OSC,
     RELEASE_DRONES,
@@ -20,7 +20,7 @@ mainGain.connect(filter);
 filter.connect(out);
 
 export interface CTXState {
-    keyboardStartingNote: string;
+    startingOctave: number;
     note?: string;
     freq?: number;
     audioContext: AudioContext;
@@ -35,13 +35,12 @@ interface Action {
 }
 
 const reducer = (state: CTXState, action: Action) => {
-    let { note, freq, keyboardStartingNote } = action.payload;
+    let { note, freq, startingOctave } = action.payload;
     switch (action.type) {
-        case CHANGE_STARTING_NOTE:
+        case CHANGE_STARTING_OCTAVE:
             return {
                 ...state,
-                keyboardStartingNote:
-                    keyboardStartingNote ?? state.keyboardStartingNote,
+                startingOctave: startingOctave ?? state.startingOctave,
                 activeNotes: {},
             };
         case MAKE_OSC:
@@ -79,7 +78,7 @@ interface ContextProps {
 export const CTX = createContext<ContextProps | null>(null);
 
 const defaultState: CTXState = {
-    keyboardStartingNote: 'C4',
+    startingOctave: 4,
     audioContext,
     mainGain,
     activeNotes: {},

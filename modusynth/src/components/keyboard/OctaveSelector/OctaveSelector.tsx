@@ -4,19 +4,19 @@ import { useKeyboard } from 'src/hooks/useKeyboard';
 
 import OctaveSelectorButton from './OctaveSelectorButton';
 
-const octaveNames = [...Array(9).keys()].map((val) => `C${val}`);
+const octaves = [...Array(9).keys()];
 
 const OctaveSelector: FC = () => {
-    let { keyboardStartingNote, changeOctave } = useKeyboard();
+    let { startingOctave, changeOctave } = useKeyboard();
 
     return (
         <div style={{ margin: '1rem' }}>
             <span>Octave: </span>
-            {octaveNames.map((octaveName) => (
+            {octaves.map((octave) => (
                 <OctaveSelectorButton
-                    key={octaveName}
-                    octaveName={octaveName}
-                    keyboardStartingNote={keyboardStartingNote}
+                    key={octave}
+                    octave={octave}
+                    startingOctave={startingOctave}
                     changeOctave={changeOctave}
                 />
             ))}

@@ -1,28 +1,28 @@
 import { FC, MouseEvent } from 'react';
 
 interface OctaveSelectorButtonProps {
-    octaveName: string;
-    keyboardStartingNote: string;
-    changeOctave: (id: string) => void;
+    octave: number;
+    startingOctave: number;
+    changeOctave: (id: number) => void;
 }
 const OctaveSelectorButton: FC<OctaveSelectorButtonProps> = ({
-    octaveName,
-    keyboardStartingNote,
+    octave,
+    startingOctave,
     changeOctave,
 }) => {
     const onClick = (e: MouseEvent): void => {
         let { id } = e.target as HTMLInputElement;
-        changeOctave(id);
+        changeOctave(parseInt(id.replace('octave', '')));
     };
 
     return (
         <button
-            id={octaveName}
-            key={octaveName}
+            id={`${octave}octave`}
+            key={octave}
             onClick={onClick}
-            className={(octaveName === keyboardStartingNote && 'active') || ''}
+            className={octave === startingOctave ? 'active' : ''}
         >
-            {octaveName}
+            {`C${octave}`}
         </button>
     );
 };
