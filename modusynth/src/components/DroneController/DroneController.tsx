@@ -1,7 +1,10 @@
 import { FC, useState } from 'react';
+
 import { CTX } from 'src/context/MainStore';
 import useSafeContext from 'src/hooks/useSafeContext';
+
 import { FREEZE_DRONES, RELEASE_DRONES } from '../../actions/synthActions';
+import './DroneController.scss';
 
 const DroneController: FC = () => {
     const { dispatch } = useSafeContext(CTX);
@@ -24,15 +27,17 @@ const DroneController: FC = () => {
     };
 
     return (
-        <div style={{ margin: '0 auto' }}>
+        <div className="dronecontroller">
             <button
-                style={hasDrones ? { backgroundColor: 'aqua' } : {}}
-                onClick={addDrones}>
+                className={hasDrones ? 'freeze--active' : ''}
+                onClick={addDrones}
+            >
                 FREEZE
             </button>
             <button
-                style={hasDrones ? { background: 'tomato' } : {}}
-                onClick={killDrones}>
+                className={hasDrones ? 'release--active' : ''}
+                onClick={killDrones}
+            >
                 RELEASE
             </button>
         </div>

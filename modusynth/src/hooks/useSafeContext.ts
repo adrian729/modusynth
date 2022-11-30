@@ -5,7 +5,7 @@ const useSafeContext = <T>(context: Context<T>) => {
     if (value === undefined) {
         const contextName = context.displayName || 'Context';
         throw new Error(
-            `${contextName} must be used inside of ${contextName}.Provider`
+            `${contextName} must be used inside of ${contextName}.Provider`,
         );
     }
 

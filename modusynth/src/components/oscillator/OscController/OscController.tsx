@@ -1,10 +1,14 @@
-import { FC, useEffect, MouseEvent, ChangeEvent } from 'react';
-import { UPDATE_DRONES, UPDATE_SETTINGS } from 'src/actions/oscActions';
-import { CTX } from 'src/context/MainStore';
+import { ChangeEvent, FC, MouseEvent, useEffect } from 'react';
+
+import { UPDATE_SETTINGS } from 'src/actions/oscActions';
+import Slider from 'src/components/core/Slider';
 import { OscCTX } from 'src/context/OscContext';
+import useOscillator from 'src/hooks/useOscillator';
 import useSafeContext from 'src/hooks/useSafeContext';
 import { OscSettings } from 'src/types/oscillator';
-import ADSR from './ADSR';
+
+import ADSR from '../ADSR';
+import './OscController.scss';
 
 interface OscProps {
     defaultType?: OscillatorType;
@@ -18,7 +22,9 @@ const OscController: FC<OscProps> = ({
     let { settings } = oscCtxState;
     let { type, detune, gain, mute } = settings;
 
-    useEffect(() => {
+    useOscillator();
+
+    useEffect((): void => {
         dispatchOscState({
             type: UPDATE_SETTINGS,
             payload: {
@@ -60,8 +66,9 @@ const OscController: FC<OscProps> = ({
         });
     };
 
-    const handleClick = (e: MouseEvent, id: string, val: number): void => {
-        let { detail } = e;
+    const handleClick = (e: MouseEvent, val: number): void => {
+        let { detail, target } = e;
+        let { id } = target as HTMLInputElement;
         if (detail === 2) {
             let newSettings: OscSettings = {
                 ...settings,
@@ -78,12 +85,13 @@ const OscController: FC<OscProps> = ({
         const waveTypes = ['sine', 'triangle', 'square', 'sawtooth'];
         return (
             <>
-                {waveTypes.map(waveType => (
+                {waveTypes.map((waveType) => (
                     <button
                         id={waveType}
                         key={waveType}
                         onClick={changeType}
-                        className={(waveType === type && 'active') || ''}>
+                        className={(waveType === type && 'active') || ''}
+                    >
                         {waveType}
                     </button>
                 ))}
@@ -92,23 +100,13 @@ const OscController: FC<OscProps> = ({
     };
 
     return (
-        <div
-            style={{
-                display: 'inline-block',
-                border: '1px solid black',
-                borderRadius: '1rem',
-                boxShadow:
-                    '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
-                width: 'fit-content',
-                margin: '1rem 1rem',
-                padding: '.2rem',
-            }}>
+        <div className="osccontroller">
             <h5>
                 Osc: {type}
                 <input
-                    type='checkbox'
-                    id='osc'
-                    name='osc'
+                    type="checkbox"
+                    id="osc"
+                    name="osc"
                     onChange={changeMuted}
                     defaultChecked={!mute}
                 />
@@ -117,30 +115,22 @@ const OscController: FC<OscProps> = ({
                 <h6>Type</h6>
                 <WaveTypeSelector />
             </div>
-            <div style={{ display: 'inline-block' }}>
-                <h6>Detune: {detune}</h6>
-                <input
-                    id='detune'
-                    value={detune}
-                    onChange={change}
-                    onClick={e => handleClick(e, 'detune', 0)}
-                    type='range'
-                    min={-100}
-                />
-            </div>
-            <div style={{ display: 'inline-block' }}>
-                <h6>Gain: {gain}</h6>
-                <input
-                    id='gain'
-                    value={gain}
-                    onChange={change}
-                    onClick={e => handleClick(e, 'gain', 1)}
-                    type='range'
-                    step={0.1}
-                    min={0.1}
-                    max={2}
-                />
-            </div>
+            <Slider
+                id="detune"
+                value={detune}
+                min={-100}
+                change={change}
+                onClick={(e) => handleClick(e, 0)}
+            />
+            <Slider
+                id="gain"
+                value={gain}
+                min={0.1}
+                max={2}
+                step={0.1}
+                change={change}
+                onClick={(e) => handleClick(e, 1)}
+            />
             <ADSR />
         </div>
     );

@@ -1,6 +1,8 @@
 import { FC } from 'react';
+
 import OscStore from 'src/context/OscContext';
-import OscController from './OscController';
+
+import OscController from '../OscController';
 
 interface OscProps {
     type?: OscillatorType;

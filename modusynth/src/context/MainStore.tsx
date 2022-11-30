@@ -1,11 +1,12 @@
-import { createContext, useReducer, ReactNode, Dispatch } from 'react';
+import { Dispatch, ReactNode, createContext, useReducer } from 'react';
+
 import {
     ActionKind,
     CHANGE_STARTING_NOTE,
-    MAKE_OSC,
-    STOP_OSC,
     FREEZE_DRONES,
+    MAKE_OSC,
     RELEASE_DRONES,
+    STOP_OSC,
 } from '../actions/synthActions';
 
 let audioContext = new AudioContext();
