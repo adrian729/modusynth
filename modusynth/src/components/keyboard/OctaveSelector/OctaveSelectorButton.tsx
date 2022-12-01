@@ -1,28 +1,30 @@
 import { FC, MouseEvent } from 'react';
 
+import { useAppDispatch } from 'src/app/hooks';
+import { changeOctave, getOctave } from 'src/reducers/notesSlice';
+
 interface OctaveSelectorButtonProps {
-    octave: number;
-    startingOctave: number;
-    changeOctave: (id: number) => void;
+    octaveNumber: number;
 }
 const OctaveSelectorButton: FC<OctaveSelectorButtonProps> = ({
-    octave,
-    startingOctave,
-    changeOctave,
+    octaveNumber,
 }) => {
+    const dispatch = useAppDispatch();
+    const octave = getOctave();
+
     const onClick = (e: MouseEvent): void => {
         let { id } = e.target as HTMLInputElement;
-        changeOctave(parseInt(id.replace('octave', '')));
+        let newOctave = parseInt(id.replace('octave', ''));
+        dispatch(changeOctave(newOctave));
     };
 
     return (
         <button
-            id={`${octave}octave`}
-            key={octave}
+            id={`${octaveNumber}octave`}
             onClick={onClick}
-            className={octave === startingOctave ? 'active' : ''}
+            className={octaveNumber === octave ? 'active' : ''}
         >
-            {`C${octave}`}
+            {`C${octaveNumber}`}
         </button>
     );
 };

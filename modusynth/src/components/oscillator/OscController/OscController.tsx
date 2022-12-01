@@ -2,7 +2,7 @@ import { ChangeEvent, FC, MouseEvent, useEffect } from 'react';
 
 import { UPDATE_SETTINGS } from 'src/actions/oscActions';
 import Slider from 'src/components/core/Slider';
-import { OscCTX } from 'src/context/OscContext';
+import { OscCTX } from 'src/context/oscContext';
 import useOscillator from 'src/hooks/useOscillator';
 import useSafeContext from 'src/hooks/useSafeContext';
 import { OscSettings } from 'src/types/oscillator';
@@ -11,6 +11,7 @@ import ADSR from '../ADSR';
 import './OscController.scss';
 
 interface OscProps {
+    // eslint-disable-next-line no-undef
     defaultType?: OscillatorType;
     defaultMute?: boolean;
 }
@@ -21,7 +22,6 @@ const OscController: FC<OscProps> = ({
     const { oscCtxState, dispatchOscState } = useSafeContext(OscCTX);
     let { settings } = oscCtxState;
     let { type, detune, gain, mute } = settings;
-
     useOscillator();
 
     useEffect((): void => {
@@ -58,6 +58,7 @@ const OscController: FC<OscProps> = ({
         let { id } = e.target as HTMLInputElement;
         let newSettings: OscSettings = {
             ...settings,
+            // eslint-disable-next-line no-undef
             type: id as OscillatorType,
         };
         dispatchOscState({

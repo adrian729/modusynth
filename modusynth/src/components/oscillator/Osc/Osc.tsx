@@ -1,10 +1,11 @@
 import { FC } from 'react';
 
-import OscStore from 'src/context/OscContext';
+import OscStore from 'src/context/oscContext';
 
 import OscController from '../OscController';
 
 interface OscProps {
+    // eslint-disable-next-line no-undef
     type?: OscillatorType;
     mute?: boolean;
 }

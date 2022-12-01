@@ -27,6 +27,7 @@ const reducer = (state: OscCTXState, action: Action) => {
                 settings,
             };
         default:
+            // eslint-disable-next-line no-console
             console.log('reducer error, action: ', action);
             return { ...state };
     }

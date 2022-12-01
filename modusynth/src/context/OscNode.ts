@@ -1,12 +1,14 @@
 import { Envelope } from 'src/types/oscillator';
 
 interface OscNodeSettings {
+    // eslint-disable-next-line no-undef
     type?: OscillatorType;
     frequency?: number;
     detune?: number;
 }
 
 export interface OscNodeProps {
+    // eslint-disable-next-line no-undef
     type?: OscillatorType;
     frequency?: number;
     detune?: number;
