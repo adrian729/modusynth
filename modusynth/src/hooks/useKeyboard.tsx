@@ -2,17 +2,9 @@ import { useEffect } from 'react';
 
 import { QwertyHancock } from 'qwerty-hancock';
 import { useAppDispatch } from 'src/app/hooks';
-import {
-    addNote,
-    changeOctave,
-    getOctave,
-    removeNote,
-} from 'src/reducers/notesSlice';
+import { addNote, getOctave, removeNote } from 'src/reducers/notesSlice';
 
-interface UseKeyboardResult {
-    setOctave(id: number): void;
-}
-export const useKeyboard = (): UseKeyboardResult => {
+export const useKeyboard = (): void => {
     const dispatch = useAppDispatch();
     const octave = getOctave();
 
@@ -36,10 +28,4 @@ export const useKeyboard = (): UseKeyboardResult => {
             dispatch(removeNote(note));
         };
     }, [octave]);
-
-    const setOctave = (octave: number): void => {
-        dispatch(changeOctave(octave));
-    };
-
-    return { setOctave };
 };

@@ -2,7 +2,7 @@ import { ChangeEvent, FC, MouseEvent } from 'react';
 
 import { UPDATE_SETTINGS } from 'src/actions/oscActions';
 import Slider from 'src/components/core/Slider';
-import { OscCTX } from 'src/context/oscContext';
+import { OscCTX } from 'src/context/OscStore';
 import useSafeContext from 'src/hooks/useSafeContext';
 import { OscSettings } from 'src/types/oscillator';
 

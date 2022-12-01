@@ -1,4 +1,6 @@
-import { ReactNode, createContext } from 'react';
+import { createContext } from 'react';
+
+import { ChildrenProps } from 'src/types/core';
 
 export interface CTXState {
     audioContext: AudioContext;
@@ -17,7 +19,7 @@ let filter = audioContext.createBiquadFilter();
 mainGain.connect(filter);
 filter.connect(out);
 
-const MainAudioContext = ({ children }: { children?: ReactNode }) => {
+const MainAudioContext = ({ children }: ChildrenProps) => {
     const defaultContext: CTXState = {
         audioContext,
         mainGain,

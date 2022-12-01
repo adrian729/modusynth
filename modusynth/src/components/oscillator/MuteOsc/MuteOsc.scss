@@ -1,0 +1,10 @@
+.muteosc {
+    &__button {
+        display: inline-block;
+        color: white;
+        background-color: slategray;
+        &--active {
+            background-color: red;
+        }
+    }
+}

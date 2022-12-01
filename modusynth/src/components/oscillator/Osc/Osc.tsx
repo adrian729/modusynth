@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import OscStore from 'src/context/oscContext';
+import OscStore from 'src/context/OscStore';
 
 import OscController from '../OscController';
 
@@ -11,8 +11,8 @@ interface OscProps {
 }
 const Osc: FC<OscProps> = ({ type, mute }) => {
     return (
-        <OscStore>
-            <OscController defaultType={type} defaultMute={mute} />
+        <OscStore type={type} mute={mute}>
+            <OscController />
         </OscStore>
     );
 };

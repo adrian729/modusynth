@@ -7,11 +7,8 @@ interface OscNodeSettings {
     detune?: number;
 }
 
-export interface OscNodeProps {
+export interface OscNodeProps extends OscNodeSettings {
     // eslint-disable-next-line no-undef
-    type?: OscillatorType;
-    frequency?: number;
-    detune?: number;
     envelope?: Envelope;
 }
 

@@ -6,6 +6,7 @@ export interface Envelope {
 }
 
 export interface OscSettings {
+    // eslint-disable-next-line no-undef
     type: OscillatorType;
     detune: number;
     envelope: Envelope;

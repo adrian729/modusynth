@@ -10,6 +10,7 @@
         "@types/jest": "^27.5.2",
         "@types/node": "^16.18.3",
         "@types/react-redux": "^7.1.24",
+        "classnames": "^2.3.2",
         "node-sass": "^7.0.3",
         "qwerty-hancock": "github:stuartmemo/qwerty-hancock",
         "react": "^18.2.0",

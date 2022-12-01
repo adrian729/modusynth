@@ -1,7 +1,7 @@
+import DroneController from '../../components/DroneController';
+import Keyboard from '../../components/keyboard/Keyboard';
+import Osc from '../../components/oscillator/Osc';
 import './App.scss';
-import DroneController from './components/DroneController';
-import Keyboard from './components/keyboard/KeyboardComponent';
-import Osc from './components/oscillator/Osc';
 
 const App = () => {
     return (

@@ -1,24 +1,20 @@
-import { ChangeEventHandler, FC, MouseEventHandler } from 'react';
+import { ChangeEventHandler, FC, InputHTMLAttributes } from 'react';
 
 import './Slider.scss';
 
-interface SliderProps {
+interface SliderProps extends InputHTMLAttributes<HTMLInputElement> {
     id: string;
     value: number;
-    min?: number;
-    max?: number;
-    step?: number;
     change: ChangeEventHandler;
-    onClick?: MouseEventHandler;
 }
 const Slider: FC<SliderProps> = ({
     id,
     value,
     change,
-    onClick,
-    step = 1,
     min = 0,
     max = 100,
+    step = 1,
+    ...restProps
 }) => {
     return (
         <div className="slider">
@@ -32,8 +28,8 @@ const Slider: FC<SliderProps> = ({
                 max={max}
                 step={step}
                 onChange={change}
-                onClick={onClick}
                 type="range"
+                {...restProps}
             />
         </div>
     );

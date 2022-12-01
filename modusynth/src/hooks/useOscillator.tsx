@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import { CTX } from 'src/context/MainAudioContext';
-import OscNode, { OscNodeProps, OscNodeType } from 'src/context/OscNode';
-import { OscCTX } from 'src/context/oscContext';
+import { OscCTX } from 'src/context/OscStore';
+import OscNode, { OscNodeProps, OscNodeType } from 'src/hooks/OscNode';
 import { getFreezeCount } from 'src/reducers/dronesSlice';
 import { getNotes } from 'src/reducers/notesSlice';
 import { OscSettings } from 'src/types/oscillator';
@@ -16,19 +16,22 @@ interface OscState {
 }
 
 const useOscillator = (): void => {
+    const freezeCount = getFreezeCount();
+    const activeNotes = getNotes();
+
     const { audioContext, mainGain } = useSafeContext(CTX);
-    const { oscCtxState } = useSafeContext(OscCTX);
-    let { settings } = oscCtxState;
-    let { type, detune, envelope, gain, mute } = settings;
+    const {
+        oscCtxState: { settings },
+    } = useSafeContext(OscCTX);
+    const { type, detune, envelope, gain, mute } = settings;
+
     const defaultState = {
         noteNodes: {},
         droneNodes: {},
         gainControl: audioContext.createGain(),
     };
-    const [oscState, setOscState] = useState<OscState>(defaultState);
-    let { noteNodes, gainControl } = oscState;
-    const freezeCount = getFreezeCount();
-    const activeNotes = getNotes();
+    const [{ noteNodes, gainControl }, setOscState] =
+        useState<OscState>(defaultState);
 
     /**
      * Setup gainControl connection and initial gain

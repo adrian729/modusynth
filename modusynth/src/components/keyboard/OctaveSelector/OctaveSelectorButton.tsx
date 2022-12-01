@@ -1,13 +1,18 @@
-import { FC, MouseEvent } from 'react';
+import { ButtonHTMLAttributes, FC, MouseEvent } from 'react';
 
+import classNames from 'classnames';
 import { useAppDispatch } from 'src/app/hooks';
 import { changeOctave, getOctave } from 'src/reducers/notesSlice';
 
-interface OctaveSelectorButtonProps {
+import './OctaveSelector.scss';
+
+interface OctaveSelectorButtonProps
+    extends ButtonHTMLAttributes<HTMLButtonElement> {
     octaveNumber: number;
 }
 const OctaveSelectorButton: FC<OctaveSelectorButtonProps> = ({
     octaveNumber,
+    ...restProps
 }) => {
     const dispatch = useAppDispatch();
     const octave = getOctave();
@@ -22,7 +27,11 @@ const OctaveSelectorButton: FC<OctaveSelectorButtonProps> = ({
         <button
             id={`${octaveNumber}octave`}
             onClick={onClick}
-            className={octaveNumber === octave ? 'active' : ''}
+            className={classNames(
+                octaveNumber === octave ? 'active' : '',
+                'octaveselector__button',
+            )}
+            {...restProps}
         >
             {`C${octaveNumber}`}
         </button>
