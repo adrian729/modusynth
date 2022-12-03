@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { QwertyHancock } from 'qwerty-hancock';
 import { useAppDispatch } from 'src/app/hooks';
-import { addNote, getOctave, removeNote } from 'src/reducers/notesSlice';
+import { addNote, getOctave, removeNote } from 'src/reducers/oscillatorsSlice';
 
 export const useKeyboard = (): void => {
     const dispatch = useAppDispatch();

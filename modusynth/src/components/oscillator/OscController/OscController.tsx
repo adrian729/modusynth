@@ -1,11 +1,15 @@
 import { ChangeEvent, FC } from 'react';
 
-import { UPDATE_SETTINGS } from 'src/actions/oscActions';
+import { useAppDispatch } from 'src/app/hooks';
 import Slider from 'src/components/core/Slider';
-import { OscCTX } from 'src/context/OscStore';
+import { OscCTX } from 'src/context/OscContext';
 import useOscillator from 'src/hooks/useOscillator';
 import useSafeContext from 'src/hooks/useSafeContext';
-import { OscSettings } from 'src/types/oscillator';
+import {
+    getOscillatorSettings,
+    updateOscSetting,
+} from 'src/reducers/oscillatorsSlice';
+import { OscSettings, OscSettingsTypes } from 'src/types/oscillator';
 
 import ADSR from '../ADSR';
 import Detune from '../Detune';
@@ -14,32 +18,31 @@ import WaveTypeSelector from '../WaveTypeSelector';
 import './OscController.scss';
 
 const OscController: FC = () => {
-    const { oscCtxState, dispatchOscState } = useSafeContext(OscCTX);
-    let { settings } = oscCtxState;
+    const dispatch = useAppDispatch();
+    const { oscId } = useSafeContext(OscCTX);
+    const settings = getOscillatorSettings(oscId);
     let { gain } = settings;
     useOscillator();
 
     const change = (e: ChangeEvent): void => {
         let { id, value } = e.target as HTMLInputElement;
-        let newSettings = {
-            ...settings,
-            [id]: value as unknown as number,
-        } as OscSettings;
-        dispatchOscState({
-            type: UPDATE_SETTINGS,
-            payload: { settings: newSettings },
-        });
+        dispatch(
+            updateOscSetting({
+                oscId,
+                settingId: id as keyof OscSettings,
+                value: value as OscSettingsTypes,
+            }),
+        );
     };
 
-    const onResetValue = (id: string, val: number): void => {
-        let newSettings: OscSettings = {
-            ...settings,
-            [id]: val,
-        };
-        dispatchOscState({
-            type: UPDATE_SETTINGS,
-            payload: { settings: newSettings },
-        });
+    const onResetValue = (id: string, value: number): void => {
+        dispatch(
+            updateOscSetting({
+                oscId,
+                settingId: id as keyof OscSettings,
+                value: value as OscSettingsTypes,
+            }),
+        );
     };
 
     return (

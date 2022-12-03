@@ -1,39 +1,32 @@
-import { Envelope } from 'src/types/oscillator';
+import { Envelope, OscNodeSettings } from 'src/types/oscillator';
 
-interface OscNodeSettings {
+export interface ChangeSettingsParams {
     // eslint-disable-next-line no-undef
     type?: OscillatorType;
-    frequency?: number;
     detune?: number;
-}
-
-export interface OscNodeProps extends OscNodeSettings {
-    // eslint-disable-next-line no-undef
-    envelope?: Envelope;
 }
 
 export interface OscNodeType {
     stop(): void;
-    changeSettings(settings: OscNodeSettings): void;
+    changeSettings(settings: ChangeSettingsParams): void;
 }
 
-const OscNode = (
-    audioContext: AudioContext,
-    connection: AudioNode,
-    oscNodeProps: OscNodeProps,
-): OscNodeType => {
-    let { type, frequency, detune, envelope } = oscNodeProps;
+const setupOsc = (
+    osc: OscillatorNode,
+    { type, frequency, detune }: OscNodeSettings,
+): void => {
+    osc.type = type;
+    osc.frequency.value = frequency;
+    osc.detune.value = detune;
+};
+
+const setupGateGain = (
+    gateGain: GainNode,
+    { attack, decay, sustain }: Envelope,
+    currentTime: number,
+): void => {
     let easing = 0.005;
 
-    let osc: OscillatorNode = audioContext.createOscillator();
-    osc.frequency.value = frequency!;
-    osc.detune.value = detune!;
-    osc.type = type!;
-    let gateGain: GainNode = audioContext.createGain();
-    osc.connect(gateGain);
-    gateGain.connect(connection);
-    let { currentTime } = audioContext;
-    let { attack, decay, sustain } = envelope!;
     gateGain.gain.cancelScheduledValues(currentTime);
     gateGain.gain.setValueAtTime(0, currentTime + easing);
     gateGain.gain.linearRampToValueAtTime(1, currentTime + attack);
@@ -41,11 +34,29 @@ const OscNode = (
         sustain,
         currentTime + attack + decay + easing,
     );
+};
+
+const OscNode = (
+    audioContext: AudioContext,
+    connection: AudioNode,
+    oscNodeProps: OscNodeSettings,
+): OscNodeType => {
+    let { envelope } = oscNodeProps;
+    let { currentTime } = audioContext;
+    let osc: OscillatorNode = audioContext.createOscillator();
+    let gateGain: GainNode = audioContext.createGain();
+
+    setupOsc(osc, oscNodeProps);
+    setupGateGain(gateGain, envelope, currentTime);
+
+    osc.connect(gateGain);
+    gateGain.connect(connection);
     osc.start();
 
     const stop = () => {
         let { currentTime } = audioContext;
-        let { release } = envelope!;
+        let { release } = envelope;
+
         gateGain.gain.cancelScheduledValues(currentTime);
         gateGain.gain.setTargetAtTime(0, currentTime, release);
         setTimeout(() => {
@@ -53,14 +64,13 @@ const OscNode = (
         }, 10000);
     };
 
-    const changeSettings = (settings: OscNodeSettings) => {
-        let { type, frequency, detune } = settings;
+    const changeSettings = (settings: ChangeSettingsParams) => {
+        let { type, detune } = settings;
+
         if (type !== undefined) {
             osc.type = type;
         }
-        if (frequency !== undefined) {
-            osc.frequency.value = frequency;
-        }
+
         if (detune !== undefined) {
             osc.detune.value = detune;
         }

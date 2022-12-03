@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, FC, MouseEvent } from 'react';
 
 import classNames from 'classnames';
 import { useAppDispatch } from 'src/app/hooks';
-import { changeOctave, getOctave } from 'src/reducers/notesSlice';
+import { changeOctave, getOctave } from 'src/reducers/oscillatorsSlice';
 
 import './OctaveSelector.scss';
 
@@ -18,8 +18,8 @@ const OctaveSelectorButton: FC<OctaveSelectorButtonProps> = ({
     const octave = getOctave();
 
     const onClick = (e: MouseEvent): void => {
-        let { id } = e.target as HTMLInputElement;
-        let newOctave = parseInt(id.replace('octave', ''));
+        const { id } = e.target as HTMLInputElement;
+        const newOctave = parseInt(id.replace('octave', ''));
         dispatch(changeOctave(newOctave));
     };
 

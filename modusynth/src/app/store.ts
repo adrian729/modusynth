@@ -1,11 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import dronesReducer from 'src/reducers/dronesSlice';
-import notesReducer from 'src/reducers/notesSlice';
+import oscillatorsReducer from 'src/reducers/oscillatorsSlice';
 
 const store = configureStore({
     reducer: {
-        notes: notesReducer,
-        drones: dronesReducer,
+        oscillators: oscillatorsReducer,
     },
 });
 export default store;

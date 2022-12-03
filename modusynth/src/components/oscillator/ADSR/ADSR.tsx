@@ -1,40 +1,40 @@
 import { ChangeEvent, FC } from 'react';
 
-import { UPDATE_SETTINGS } from 'src/actions/oscActions';
+import { useAppDispatch } from 'src/app/hooks';
 import Slider from 'src/components/core/Slider';
-import { OscCTX } from 'src/context/OscStore';
+import { OscCTX } from 'src/context/OscContext';
 import useSafeContext from 'src/hooks/useSafeContext';
-import { OscSettings } from 'src/types/oscillator';
+import {
+    getOscillatorSettings,
+    updateOscSetting,
+} from 'src/reducers/oscillatorsSlice';
 
 const ADSR: FC = () => {
-    const { oscCtxState, dispatchOscState } = useSafeContext(OscCTX);
-    const { settings } = oscCtxState;
+    const dispatch = useAppDispatch();
+    const { oscId } = useSafeContext(OscCTX);
+    const settings = getOscillatorSettings(oscId);
     const { envelope } = settings;
     const { attack, decay, sustain, release } = envelope;
 
     const change = (e: ChangeEvent): void => {
         const { id, value } = e.target as HTMLInputElement;
-        const newEnvelope = { ...envelope, [id]: parseFloat(value) };
-        const newSettings: OscSettings = {
-            ...settings,
-            envelope: newEnvelope,
-        };
-        dispatchOscState({
-            type: UPDATE_SETTINGS,
-            payload: { settings: newSettings },
-        });
+        dispatch(
+            updateOscSetting({
+                oscId,
+                settingId: 'envelope',
+                value: { ...envelope, [id]: parseFloat(value) },
+            }),
+        );
     };
 
     const onResetValue = (id: string, val: number): void => {
-        const newEnvelope = { ...envelope, [id]: val };
-        const newSettings: OscSettings = {
-            ...settings,
-            envelope: newEnvelope,
-        };
-        dispatchOscState({
-            type: UPDATE_SETTINGS,
-            payload: { settings: newSettings },
-        });
+        dispatch(
+            updateOscSetting({
+                oscId,
+                settingId: 'envelope',
+                value: { ...envelope, [id]: val },
+            }),
+        );
     };
 
     return (

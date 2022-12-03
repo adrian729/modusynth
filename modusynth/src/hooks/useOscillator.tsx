@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 
 import { CTX } from 'src/context/MainAudioContext';
-import { OscCTX } from 'src/context/OscStore';
-import OscNode, { OscNodeProps, OscNodeType } from 'src/hooks/OscNode';
-import { getFreezeCount } from 'src/reducers/dronesSlice';
-import { getNotes } from 'src/reducers/notesSlice';
-import { OscSettings } from 'src/types/oscillator';
+import { OscCTX } from 'src/context/OscContext';
+import OscNode, { OscNodeType } from 'src/hooks/OscNode';
+import { getNotes, getOscillatorSettings } from 'src/reducers/oscillatorsSlice';
+import { OscNodeSettings, OscSettings } from 'src/types/oscillator';
 
 import useSafeContext from './useSafeContext';
 
@@ -15,15 +14,13 @@ interface OscState {
     gainControl: GainNode;
 }
 
+// TODO: Refactor all this hook, add again drones functionallity with redux context
 const useOscillator = (): void => {
-    const freezeCount = getFreezeCount();
-    const activeNotes = getNotes();
-
+    const { oscId } = useSafeContext(OscCTX);
     const { audioContext, mainGain } = useSafeContext(CTX);
-    const {
-        oscCtxState: { settings },
-    } = useSafeContext(OscCTX);
-    const { type, detune, envelope, gain, mute } = settings;
+    const activeNotes = getNotes();
+    const settings = getOscillatorSettings(oscId);
+    const { type, detune, gain, mute } = settings;
 
     const defaultState = {
         noteNodes: {},
@@ -39,7 +36,6 @@ const useOscillator = (): void => {
     useEffect((): void => {
         gainControl.gain.value = 0.5;
         gainControl.connect(mainGain);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     /**
@@ -49,7 +45,6 @@ const useOscillator = (): void => {
         let { currentTime } = audioContext;
         gainControl.gain.cancelScheduledValues(currentTime);
         gainControl.gain.setValueAtTime(mute ? 0 : gain, currentTime);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mute, gain]);
 
     /**
@@ -67,48 +62,47 @@ const useOscillator = (): void => {
             );
             return { ...prevOscState, noteNodes: newNoteNodes };
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeNotes]);
 
     /**
      * Update nodes on droneNotes change
      */
-    useEffect((): void => {
-        setOscState((prevOscState) => {
-            let { droneNodes } = prevOscState;
-            let newDroneNodes = { ...droneNodes };
-            if (freezeCount > 0) {
-                if (!mute) {
-                    let oscNodeProps: OscNodeProps = {
-                        type,
-                        frequency: 0,
-                        detune,
-                        envelope,
-                    };
+    // useEffect((): void => {
+    //     setOscState((prevOscState) => {
+    //         let { droneNodes } = prevOscState;
+    //         let newDroneNodes = { ...droneNodes };
+    //         if (freezeCount > 0) {
+    //             if (!mute) {
+    //                 let oscNodeProps: OscNodeSettings = {
+    //                     type,
+    //                     frequency: 0,
+    //                     detune,
+    //                     envelope,
+    //                 };
 
-                    addActive(
-                        newDroneNodes,
-                        activeNotes,
-                        Object.keys(activeNotes),
-                        audioContext,
-                        gainControl,
-                        oscNodeProps,
-                    );
-                }
-            } else {
-                removeInactive(newDroneNodes, new Set());
-            }
-            return { ...prevOscState, droneNodes: newDroneNodes };
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [freezeCount]);
+    //                 addActive(
+    //                     newDroneNodes,
+    //                     activeNotes,
+    //                     Object.keys(activeNotes),
+    //                     audioContext,
+    //                     gainControl,
+    //                     oscNodeProps,
+    //                 );
+    //             }
+    //         } else {
+    //             removeInactive(newDroneNodes, new Set());
+    //         }
+    //         return { ...prevOscState, droneNodes: newDroneNodes };
+    //     });
+    // }, [freezeCount]);
 
     /**
      * Update osc settings
      */
     useEffect((): void => {
-        Object.values(noteNodes).map((val) => val.changeSettings(settings));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        Object.values(noteNodes).map((val) =>
+            val.changeSettings({ type, detune }),
+        );
     }, [settings]);
 };
 export default useOscillator;
@@ -131,12 +125,12 @@ const addActive = (
     activeKeys: string[],
     audioContext: AudioContext,
     connection: AudioNode,
-    oscNodeProps: OscNodeProps,
+    oscNodeProps: OscNodeSettings,
 ): void => {
     activeKeys
         .filter((key) => !records[key])
         .forEach((key) => {
-            let oscNodePropsWithFreq: OscNodeProps = {
+            let oscNodePropsWithFreq: OscNodeSettings = {
                 ...oscNodeProps,
                 frequency: activeRecords[key],
             };
@@ -164,7 +158,7 @@ const updateNodes = (
     removeInactive(newNodes, noteKeysSet);
 
     if (addIfMuted || !mute) {
-        let oscNodeProps: OscNodeProps = {
+        let oscNodeProps: OscNodeSettings = {
             type,
             frequency: 0,
             detune,

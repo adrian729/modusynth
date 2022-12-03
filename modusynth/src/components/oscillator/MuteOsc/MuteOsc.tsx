@@ -1,22 +1,30 @@
 import { FC } from 'react';
 
 import classNames from 'classnames';
-import { UPDATE_SETTINGS } from 'src/actions/oscActions';
-import { OscCTX } from 'src/context/OscStore';
+import { useAppDispatch } from 'src/app/hooks';
+import { OscCTX } from 'src/context/OscContext';
 import useSafeContext from 'src/hooks/useSafeContext';
+import {
+    getOscillatorSettings,
+    updateOscSetting,
+} from 'src/reducers/oscillatorsSlice';
 
 import './MuteOsc.scss';
 
 const MuteOsc: FC = () => {
-    const { oscCtxState, dispatchOscState } = useSafeContext(OscCTX);
-    let { settings } = oscCtxState;
+    const dispatch = useAppDispatch();
+    const { oscId } = useSafeContext(OscCTX);
+    const settings = getOscillatorSettings(oscId);
     let { mute } = settings;
 
     const toggleMuted = (): void => {
-        dispatchOscState({
-            type: UPDATE_SETTINGS,
-            payload: { settings: { ...settings, mute: !mute } },
-        });
+        dispatch(
+            updateOscSetting({
+                oscId,
+                settingId: 'mute',
+                value: !mute,
+            }),
+        );
     };
 
     return (

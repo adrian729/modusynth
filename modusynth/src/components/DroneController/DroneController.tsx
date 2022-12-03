@@ -1,32 +1,34 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
-import { freeze, hasDrones, relsease } from 'src/reducers/dronesSlice';
+import { freeze, release } from 'src/reducers/oscillatorsSlice';
 
 import './DroneController.scss';
 
 const DroneController: FC = () => {
     const dispatch = useAppDispatch();
-    const drones = hasDrones();
+    const [hasDrones, setHasDrones] = useState<boolean>();
 
     const addDrones = (): void => {
         dispatch(freeze());
+        setHasDrones(true);
     };
 
     const killDrones = (): void => {
-        dispatch(relsease());
+        dispatch(release());
+        setHasDrones(false);
     };
 
     return (
         <div className="dronecontroller">
             <button
-                className={drones ? 'freeze--active' : ''}
+                className={hasDrones ? 'freeze--active' : ''}
                 onClick={addDrones}
             >
                 FREEZE
             </button>
             <button
-                className={drones ? 'release--active' : ''}
+                className={hasDrones ? 'release--active' : ''}
                 onClick={killDrones}
             >
                 RELEASE

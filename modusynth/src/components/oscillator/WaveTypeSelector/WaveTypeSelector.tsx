@@ -1,28 +1,30 @@
 import { FC, MouseEvent } from 'react';
 
-import { UPDATE_SETTINGS } from 'src/actions/oscActions';
-import { OscCTX } from 'src/context/OscStore';
+import { useAppDispatch } from 'src/app/hooks';
+import { OscCTX } from 'src/context/OscContext';
 import useSafeContext from 'src/hooks/useSafeContext';
-import { OscSettings } from 'src/types/oscillator';
+import {
+    getOscillatorSettings,
+    updateOscSetting,
+} from 'src/reducers/oscillatorsSlice';
 
 const waveTypes = ['sine', 'triangle', 'square', 'sawtooth'];
 const WaveTypeSelector: FC = () => {
-    const { oscCtxState, dispatchOscState } = useSafeContext(OscCTX);
-    let { settings } = oscCtxState;
-    let { type } = settings;
+    const dispatch = useAppDispatch();
+    const { oscId } = useSafeContext(OscCTX);
+    const settings = getOscillatorSettings(oscId);
+    const { type } = settings;
 
     const changeType = (e: MouseEvent): void => {
-        let { id } = e.target as HTMLInputElement;
-        dispatchOscState({
-            type: UPDATE_SETTINGS,
-            payload: {
-                settings: {
-                    ...settings,
-                    // eslint-disable-next-line no-undef
-                    type: id,
-                } as OscSettings,
-            },
-        });
+        const { id } = e.target as HTMLInputElement;
+        dispatch(
+            updateOscSetting({
+                oscId,
+                settingId: 'type',
+                // eslint-disable-next-line no-undef
+                value: id as OscillatorType,
+            }),
+        );
     };
 
     return (
