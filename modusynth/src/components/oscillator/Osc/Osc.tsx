@@ -11,7 +11,7 @@ import {
 
 import OscController from '../OscController';
 
-interface OscProps {
+export interface OscProps {
     // eslint-disable-next-line no-undef
     type?: OscillatorType;
     mute?: boolean;

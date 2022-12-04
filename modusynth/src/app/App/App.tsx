@@ -1,14 +1,25 @@
+import { useState } from 'react';
+
 import DroneController from '../../components/DroneController';
 import Keyboard from '../../components/keyboard/Keyboard';
 import Osc from '../../components/oscillator/Osc';
 import './App.scss';
 
 const App = () => {
+    const [oscList, setOscList] = useState<any[]>([]);
+
+    const addOsc = () => {
+        setOscList(oscList.concat(<Osc />));
+    };
+
     return (
         <div className="App">
             <h1>ModuSynth</h1>
             <Keyboard />
             <DroneController />
+            <button id="addOsc" onClick={addOsc}>
+                Add oscillator
+            </button>
             <div
                 style={{
                     margin: '2rem auto',
@@ -20,18 +31,8 @@ const App = () => {
                     gridTemplateColumns: '50% 50%',
                 }}
             >
-                <div style={{ margin: 'auto' }}>
-                    <Osc />
-                </div>
-                <div style={{ margin: 'auto' }}>
-                    <Osc type="triangle" />
-                </div>
-                <div style={{ margin: 'auto' }}>
-                    <Osc type="square" />
-                </div>
-                <div style={{ margin: 'auto' }}>
-                    <Osc type="square" mute={true} />
-                </div>
+                <Osc />
+                {oscList}
             </div>
         </div>
     );
