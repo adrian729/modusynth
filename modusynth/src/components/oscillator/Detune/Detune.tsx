@@ -8,7 +8,6 @@ import {
     getOscillatorSettings,
     updateOscSetting,
 } from 'src/reducers/oscillatorsSlice';
-import { OscSettings } from 'src/types/oscillator';
 
 interface DetuneState {
     slider: number;
