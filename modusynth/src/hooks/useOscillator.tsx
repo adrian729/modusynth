@@ -3,32 +3,35 @@ import { useEffect, useState } from 'react';
 import { CTX } from 'src/context/MainAudioContext';
 import { OscCTX } from 'src/context/OscContext';
 import OscNode, { OscNodeType } from 'src/hooks/OscNode';
-import { getNotes, getOscillatorSettings } from 'src/reducers/oscillatorsSlice';
-import { OscNodeSettings, OscSettings } from 'src/types/oscillator';
+import {
+    getNotes,
+    getOscillatorDrones,
+    getOscillatorSettings,
+} from 'src/reducers/oscillatorsSlice';
+import { OscNodeSettings } from 'src/types/oscillator';
 
 import useSafeContext from './useSafeContext';
 
 interface OscState {
-    noteNodes: Record<string, OscNodeType>;
-    droneNodes: Record<string, OscNodeType>;
+    noteNodes: Record<string, OscNodeType | undefined>;
+    droneNodes: Record<string, OscNodeType | undefined>;
     gainControl: GainNode;
 }
 
-// TODO: Refactor all this hook, add again drones functionallity with redux context
 const useOscillator = (): void => {
+    const { context } = useSafeContext(CTX);
+    const { audioContext, mainGain } = context;
     const { oscId } = useSafeContext(OscCTX);
-    const { audioContext, mainGain } = useSafeContext(CTX);
     const activeNotes = getNotes();
     const settings = getOscillatorSettings(oscId);
     const { type, detune, gain, mute } = settings;
-
-    const defaultState = {
-        noteNodes: {},
-        droneNodes: {},
-        gainControl: audioContext.createGain(),
-    };
-    const [{ noteNodes, gainControl }, setOscState] =
-        useState<OscState>(defaultState);
+    const drones = getOscillatorDrones(oscId);
+    const [{ noteNodes, droneNodes, gainControl }, setOscState] =
+        useState<OscState>({
+            noteNodes: {},
+            droneNodes: {},
+            gainControl: audioContext.createGain(),
+        });
 
     /**
      * Setup gainControl connection and initial gain
@@ -48,131 +51,81 @@ const useOscillator = (): void => {
     }, [mute, gain]);
 
     /**
-     * Update nodes on activeNotes change
+     * Update note nodes on active notes change
      */
     useEffect((): void => {
         setOscState((prevOscState) => {
-            let { noteNodes } = prevOscState;
-            let newNoteNodes = updateNodes(
-                audioContext,
-                gainControl,
-                noteNodes,
-                activeNotes,
-                settings,
-            );
+            const newNoteNodes = { ...prevOscState.noteNodes };
+            const { mute, ...oscSettings } = settings;
+
+            // Remove inactive notes
+            deleteInactive(newNoteNodes, activeNotes, droneNodes);
+
+            if (!mute) {
+                // Add active notes
+                Object.keys(activeNotes)
+                    .filter((key) => !newNoteNodes[key])
+                    .forEach((key) => {
+                        newNoteNodes[key] = OscNode(audioContext, gainControl, {
+                            ...oscSettings,
+                            frequency: activeNotes[key],
+                            envelope: { ...oscSettings.envelope },
+                        } as OscNodeSettings);
+                    });
+            }
+
             return { ...prevOscState, noteNodes: newNoteNodes };
         });
     }, [activeNotes]);
 
     /**
-     * Update nodes on droneNotes change
+     * Update drone nodes and note nodes on drone notes change
      */
-    // useEffect((): void => {
-    //     setOscState((prevOscState) => {
-    //         let { droneNodes } = prevOscState;
-    //         let newDroneNodes = { ...droneNodes };
-    //         if (freezeCount > 0) {
-    //             if (!mute) {
-    //                 let oscNodeProps: OscNodeSettings = {
-    //                     type,
-    //                     frequency: 0,
-    //                     detune,
-    //                     envelope,
-    //                 };
+    useEffect((): void => {
+        setOscState((prevOscState) => {
+            let { droneNodes } = prevOscState;
+            let newDroneNodes = { ...droneNodes };
 
-    //                 addActive(
-    //                     newDroneNodes,
-    //                     activeNotes,
-    //                     Object.keys(activeNotes),
-    //                     audioContext,
-    //                     gainControl,
-    //                     oscNodeProps,
-    //                 );
-    //             }
-    //         } else {
-    //             removeInactive(newDroneNodes, new Set());
-    //         }
-    //         return { ...prevOscState, droneNodes: newDroneNodes };
-    //     });
-    // }, [freezeCount]);
+            // Delete inactive drones
+            deleteInactive(newDroneNodes, drones, noteNodes);
+
+            // Add new drone nodes references to the note nodes
+            Object.entries(noteNodes)
+                .filter(
+                    ([key]) => !newDroneNodes[key] && drones[key] !== undefined,
+                )
+                .forEach(([key, val]) => {
+                    if (val !== undefined) {
+                        newDroneNodes[key] = val;
+                    }
+                });
+            return { ...prevOscState, droneNodes: newDroneNodes };
+        });
+    }, [drones]);
 
     /**
      * Update osc settings
      */
     useEffect((): void => {
         Object.values(noteNodes).map((val) =>
-            val.changeSettings({ type, detune }),
+            val?.changeSettings({ type, detune }),
         );
     }, [settings]);
 };
 export default useOscillator;
 
-const removeInactive = (
-    records: Record<string, OscNodeType>,
-    activeKeys: Set<string>,
+const deleteInactive = (
+    nodes: Record<string, OscNodeType | undefined>,
+    keyMapping: Record<string, any>,
+    dependencyNodes: Record<string, OscNodeType | undefined>,
 ): void => {
-    Object.keys(records)
-        .filter((key) => !activeKeys.has(key))
+    Object.keys(nodes)
+        .filter((key) => !keyMapping[key])
         .forEach((key) => {
-            records[key].stop();
-            delete records[key];
+            if (nodes[key] !== dependencyNodes[key]) {
+                nodes[key]?.stop();
+            }
+            nodes[key] = undefined;
+            delete nodes[key];
         });
-};
-
-const addActive = (
-    records: Record<string, OscNodeType>,
-    activeRecords: Record<string, number>,
-    activeKeys: string[],
-    audioContext: AudioContext,
-    connection: AudioNode,
-    oscNodeProps: OscNodeSettings,
-): void => {
-    activeKeys
-        .filter((key) => !records[key])
-        .forEach((key) => {
-            let oscNodePropsWithFreq: OscNodeSettings = {
-                ...oscNodeProps,
-                frequency: activeRecords[key],
-            };
-            records[key] = OscNode(
-                audioContext,
-                connection,
-                oscNodePropsWithFreq,
-            );
-        });
-};
-
-const updateNodes = (
-    audioContext: AudioContext,
-    connection: AudioNode,
-    oldNodes: Record<string, OscNodeType>,
-    notes: Record<string, number>,
-    settings: OscSettings,
-    addIfMuted: boolean = true,
-): Record<string, OscNodeType> => {
-    let { type, detune, envelope, mute } = settings;
-    let newNodes = { ...oldNodes };
-    let noteKeys = Object.keys(notes);
-    let noteKeysSet = new Set(noteKeys);
-
-    removeInactive(newNodes, noteKeysSet);
-
-    if (addIfMuted || !mute) {
-        let oscNodeProps: OscNodeSettings = {
-            type,
-            frequency: 0,
-            detune,
-            envelope,
-        };
-        addActive(
-            newNodes,
-            notes,
-            noteKeys,
-            audioContext,
-            connection,
-            oscNodeProps,
-        );
-    }
-
-    return newNodes;
 };

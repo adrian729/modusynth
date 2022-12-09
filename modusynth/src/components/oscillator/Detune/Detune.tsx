@@ -71,19 +71,20 @@ const Detune: FC = () => {
     // TODO: refactor this into smaller parts/array of values/change names (2ND, 3RD, 4TH etc)
     return (
         <div>
-            <select id="down" onChange={changeDetune}>
-                <option value={12}>Oct</option>
-                <option value={11}>VII</option>
-                <option value={10}>VIIb</option>
-                <option value={9}>VI</option>
-                <option value={8}>VIb</option>
-                <option value={7}>V</option>
-                <option value={6}>Vb</option>
-                <option value={5}>IV</option>
-                <option value={4}>III</option>
-                <option value={3}>IIIb</option>
-                <option value={2}>II</option>
-                <option value={1}>IIb</option>
+            <select id="down" onChange={changeDetune} value={down}>
+                <option value={24}>2OCT</option>
+                <option value={12}>OCT</option>
+                <option value={11}>7TH</option>
+                <option value={10}>-7TH</option>
+                <option value={9}>6TH</option>
+                <option value={8}>-6TH</option>
+                <option value={7}>5TH</option>
+                <option value={6}>-5TH</option>
+                <option value={5}>4TH</option>
+                <option value={4}>3RD</option>
+                <option value={3}>-3RD</option>
+                <option value={2}>2ND</option>
+                <option value={1}>-2ND</option>
                 <option value={0}>-</option>
             </select>
             <Slider
@@ -95,19 +96,20 @@ const Detune: FC = () => {
                 onSliderReset={onResetValue}
                 resetValue={0}
             />
-            <select id="up" onChange={changeDetune}>
-                <option value={12}>Oct</option>
-                <option value={11}>VII</option>
-                <option value={10}>VIIb</option>
-                <option value={9}>VI</option>
-                <option value={8}>VIb</option>
-                <option value={7}>V</option>
-                <option value={6}>Vb</option>
-                <option value={5}>IV</option>
-                <option value={4}>III</option>
-                <option value={3}>IIIb</option>
-                <option value={2}>II</option>
-                <option value={1}>IIb</option>
+            <select id="up" onChange={changeDetune} value={up}>
+                <option value={24}>2OCT</option>
+                <option value={12}>OCT</option>
+                <option value={11}>7TH</option>
+                <option value={10}>-7TH</option>
+                <option value={9}>6TH</option>
+                <option value={8}>-6TH</option>
+                <option value={7}>5TH</option>
+                <option value={6}>-5TH</option>
+                <option value={5}>4TH</option>
+                <option value={4}>3RD</option>
+                <option value={3}>-3RD</option>
+                <option value={2}>2ND</option>
+                <option value={1}>-2ND</option>
                 <option value={0}>-</option>
             </select>
         </div>

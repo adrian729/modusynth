@@ -1,15 +1,20 @@
 import { useState } from 'react';
 
+import { CTX } from 'src/context/MainAudioContext';
+import useSafeContext from 'src/hooks/useSafeContext';
+
 import DroneController from '../../components/DroneController';
 import Keyboard from '../../components/keyboard/Keyboard';
 import Osc from '../../components/oscillator/Osc';
 import './App.scss';
 
 const App = () => {
-    const [oscList, setOscList] = useState<any[]>([]);
+    const { addOscillator } = useSafeContext(CTX);
+    const [oscList, setOscList] = useState<any[]>([<Osc key={0} />]);
 
     const addOsc = () => {
-        setOscList(oscList.concat(<Osc />));
+        setOscList(oscList.concat(<Osc key={oscList.length} />));
+        addOscillator(oscList.length + 1);
     };
 
     return (
@@ -31,7 +36,6 @@ const App = () => {
                     gridTemplateColumns: '50% 50%',
                 }}
             >
-                <Osc />
                 {oscList}
             </div>
         </div>

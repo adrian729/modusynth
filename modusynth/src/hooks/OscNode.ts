@@ -7,46 +7,21 @@ export interface ChangeSettingsParams {
 }
 
 export interface OscNodeType {
-    stop(): void;
-    changeSettings(settings: ChangeSettingsParams): void;
+    stop: () => void;
+    changeSettings: (settings: ChangeSettingsParams) => void;
 }
-
-const setupOsc = (
-    osc: OscillatorNode,
-    { type, frequency, detune }: OscNodeSettings,
-): void => {
-    osc.type = type;
-    osc.frequency.value = frequency;
-    osc.detune.value = detune;
-};
-
-const setupGateGain = (
-    gateGain: GainNode,
-    { attack, decay, sustain }: Envelope,
-    currentTime: number,
-): void => {
-    let easing = 0.005;
-
-    gateGain.gain.cancelScheduledValues(currentTime);
-    gateGain.gain.setValueAtTime(0, currentTime + easing);
-    gateGain.gain.linearRampToValueAtTime(1, currentTime + attack);
-    gateGain.gain.linearRampToValueAtTime(
-        sustain,
-        currentTime + attack + decay + easing,
-    );
-};
 
 const OscNode = (
     audioContext: AudioContext,
     connection: AudioNode,
-    oscNodeProps: OscNodeSettings,
+    OscNodeSettings: OscNodeSettings,
 ): OscNodeType => {
-    let { envelope } = oscNodeProps;
+    let { envelope } = OscNodeSettings;
     let { currentTime } = audioContext;
     let osc: OscillatorNode = audioContext.createOscillator();
     let gateGain: GainNode = audioContext.createGain();
 
-    setupOsc(osc, oscNodeProps);
+    setupOsc(osc, OscNodeSettings);
     setupGateGain(gateGain, envelope, currentTime);
 
     osc.connect(gateGain);
@@ -80,3 +55,28 @@ const OscNode = (
 };
 
 export default OscNode;
+
+const setupOsc = (
+    osc: OscillatorNode,
+    { type, frequency, detune }: OscNodeSettings,
+): void => {
+    osc.type = type;
+    osc.frequency.value = frequency;
+    osc.detune.value = detune;
+};
+
+const setupGateGain = (
+    gateGain: GainNode,
+    { attack, decay, sustain }: Envelope,
+    currentTime: number,
+): void => {
+    let easing = 0.005;
+
+    gateGain.gain.cancelScheduledValues(currentTime);
+    gateGain.gain.setValueAtTime(0, currentTime + easing);
+    gateGain.gain.linearRampToValueAtTime(1, currentTime + attack);
+    gateGain.gain.linearRampToValueAtTime(
+        sustain,
+        currentTime + attack + decay + easing,
+    );
+};

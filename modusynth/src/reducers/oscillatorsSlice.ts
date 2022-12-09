@@ -98,7 +98,10 @@ export const oscillatorsSlice = createSlice({
             const { oscillators } = state;
             Object.entries(oscillators)
                 .filter(([, osc]) => !osc.settings.mute)
-                .forEach(([, osc]) => (osc.drones = state.notes));
+                .forEach(
+                    ([, osc]) =>
+                        (osc.drones = { ...state.notes, ...osc.drones }),
+                );
         },
         release: (state): void => {
             const { oscillators } = state;
