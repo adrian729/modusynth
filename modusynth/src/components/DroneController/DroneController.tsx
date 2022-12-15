@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
-import { freeze, release } from 'src/reducers/oscillatorsSlice';
+import { freeze, release } from 'src/reducers/oscillators/oscillatorsSlice';
 
 import './DroneController.scss';
 
@@ -21,16 +21,10 @@ const DroneController: FC = () => {
 
     return (
         <div className="dronecontroller">
-            <button
-                className={hasDrones ? 'freeze--active' : ''}
-                onClick={addDrones}
-            >
+            <button className={hasDrones ? 'active' : ''} onClick={addDrones}>
                 FREEZE
             </button>
-            <button
-                className={hasDrones ? 'release--active' : ''}
-                onClick={killDrones}
-            >
+            <button className={hasDrones ? 'warning' : ''} onClick={killDrones}>
                 RELEASE
             </button>
         </div>

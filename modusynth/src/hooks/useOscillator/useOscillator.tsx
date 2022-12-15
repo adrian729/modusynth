@@ -1,22 +1,17 @@
 import { useEffect, useState } from 'react';
 
-import { CTX } from 'src/context/MainAudioContext';
+import { CTX } from 'src/context/MainAudioCTX/MainAudioCTX';
 import { OscCTX } from 'src/context/OscContext';
-import OscNode, { OscNodeType } from 'src/hooks/OscNode';
+import OscNode from 'src/hooks/useOscillator/OscNode';
 import {
     getNotes,
     getOscillatorDrones,
     getOscillatorSettings,
-} from 'src/reducers/oscillatorsSlice';
+} from 'src/reducers/oscillators/oscillatorsSlice';
 import { OscNodeSettings } from 'src/types/oscillator';
 
-import useSafeContext from './useSafeContext';
-
-interface OscState {
-    noteNodes: Record<string, OscNodeType | undefined>;
-    droneNodes: Record<string, OscNodeType | undefined>;
-    gainControl: GainNode;
-}
+import useSafeContext from '../useSafeContext';
+import { OscNodeType, OscState } from './types';
 
 const useOscillator = (): void => {
     const { context } = useSafeContext(CTX);
@@ -51,7 +46,7 @@ const useOscillator = (): void => {
     }, [mute, gain]);
 
     /**
-     * Update note nodes on active notes change
+     * Update note nodes on active notes or mute change
      */
     useEffect((): void => {
         setOscState((prevOscState) => {
@@ -59,7 +54,7 @@ const useOscillator = (): void => {
             const { mute, ...oscSettings } = settings;
 
             // Remove inactive notes
-            deleteInactive(newNoteNodes, activeNotes, droneNodes);
+            deleteInactive(newNoteNodes, mute ? {} : activeNotes, droneNodes);
 
             if (!mute) {
                 // Add active notes
@@ -76,7 +71,7 @@ const useOscillator = (): void => {
 
             return { ...prevOscState, noteNodes: newNoteNodes };
         });
-    }, [activeNotes]);
+    }, [activeNotes, mute]);
 
     /**
      * Update drone nodes and note nodes on drone notes change

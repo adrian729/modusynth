@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 
 import App from './app/App';
 import store from './app/store';
-import MainAudioContext from './context/MainAudioContext';
+import MainAudioCTX from './context/MainAudioCTX/MainAudioCTX';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
@@ -16,9 +16,9 @@ const root = ReactDOM.createRoot(
 root.render(
     // <React.StrictMode>
     <Provider store={store}>
-        <MainAudioContext>
+        <MainAudioCTX>
             <App />
-        </MainAudioContext>
+        </MainAudioCTX>
     </Provider>,
     // </React.StrictMode>
 );

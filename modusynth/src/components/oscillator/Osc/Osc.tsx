@@ -7,11 +7,11 @@ import {
     addOscillator,
     getOscillator,
     updateOscSetting,
-} from 'src/reducers/oscillatorsSlice';
+} from 'src/reducers/oscillators/oscillatorsSlice';
 
 import OscController from '../OscController';
 
-export interface OscProps {
+interface OscProps {
     // eslint-disable-next-line no-undef
     type?: OscillatorType;
     mute?: boolean;

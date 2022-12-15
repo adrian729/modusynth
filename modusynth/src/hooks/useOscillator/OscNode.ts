@@ -1,15 +1,6 @@
 import { Envelope, OscNodeSettings } from 'src/types/oscillator';
 
-export interface ChangeSettingsParams {
-    // eslint-disable-next-line no-undef
-    type?: OscillatorType;
-    detune?: number;
-}
-
-export interface OscNodeType {
-    stop: () => void;
-    changeSettings: (settings: ChangeSettingsParams) => void;
-}
+import { ChangeSettingsParams, OscNodeType } from './types';
 
 const OscNode = (
     audioContext: AudioContext,

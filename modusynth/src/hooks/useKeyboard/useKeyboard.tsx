@@ -2,7 +2,11 @@ import { useEffect } from 'react';
 
 import { QwertyHancock } from 'qwerty-hancock';
 import { useAppDispatch } from 'src/app/hooks';
-import { addNote, getOctave, removeNote } from 'src/reducers/oscillatorsSlice';
+import {
+    addNote,
+    getOctave,
+    removeNote,
+} from 'src/reducers/oscillators/oscillatorsSlice';
 
 export const useKeyboard = (): void => {
     const dispatch = useAppDispatch();
@@ -14,7 +18,7 @@ export const useKeyboard = (): void => {
             width: '449',
             height: '90',
             octaves: 2,
-            startNote: `C${octave}` || 'C4',
+            startNote: `C${octave || 4}`,
             whiteKeyColour: 'black',
             blackKeyColour: 'white',
             activeColour: 'mediumturquoise',

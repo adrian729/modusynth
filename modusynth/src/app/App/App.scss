@@ -1,8 +1,49 @@
+:root {
+    --slate-color-50: #f8fafc;
+    --slate-color-100: #f1f5f9;
+    --slate-color-200: #e2e8f0;
+    --slate-color-300: #cbd5e1;
+    --slate-color-400: #94a3b8;
+    --slate-color-500: #64748b;
+    --slate-color-600: #475569;
+    --slate-color-700: #334155;
+    --slate-color-800: #1e293b;
+    --slate-color-900: #0f172a;
+
+    --aqua-color-100: #84ffff;
+    --aqua-color-200: #18ffff;
+    --aqua-color-400: #00e5ff;
+    --aqua-color-700: #00b8d4;
+}
+
 .App {
+    position: relative;
     text-align: center;
-    background-color: white;
+    background-color: var(--slate-color-50);
+    width: 100vw;
+    height: 100vh;
+}
+
+h1 {
+    margin: 0;
+}
+
+button {
+    border: 0;
+    border-radius: 0.1rem;
+    padding: 0.1rem 0.5rem;
+    margin: 0 0.1rem;
+    background-color: var(--slate-color-500);
+    color: var(--slate-color-50);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
 
 button.active {
-    background-color: aqua;
+    background-color: var(--aqua-color-200);
+    color: var(--slate-color-900);
+}
+
+button.warning {
+    background-color: red;
+    color: var(--slate-color-50);
 }

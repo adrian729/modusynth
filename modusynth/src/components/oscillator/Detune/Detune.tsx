@@ -7,7 +7,7 @@ import useSafeContext from 'src/hooks/useSafeContext';
 import {
     getOscillatorSettings,
     updateOscSetting,
-} from 'src/reducers/oscillatorsSlice';
+} from 'src/reducers/oscillators/oscillatorsSlice';
 
 interface DetuneState {
     slider: number;

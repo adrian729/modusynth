@@ -7,7 +7,7 @@ import useSafeContext from 'src/hooks/useSafeContext';
 import {
     getOscillatorSettings,
     updateOscSetting,
-} from 'src/reducers/oscillatorsSlice';
+} from 'src/reducers/oscillators/oscillatorsSlice';
 
 import './MuteOsc.scss';
 
@@ -31,10 +31,7 @@ const MuteOsc: FC = () => {
         <button
             id="mute"
             name="mute"
-            className={classNames(
-                'muteosc__button',
-                mute && 'muteosc__button--active',
-            )}
+            className={classNames('muteosc__button', mute && 'warning')}
             onClick={toggleMuted}
         >
             M

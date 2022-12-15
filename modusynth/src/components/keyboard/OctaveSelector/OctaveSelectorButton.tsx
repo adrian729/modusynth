@@ -2,7 +2,10 @@ import { ButtonHTMLAttributes, FC, MouseEvent } from 'react';
 
 import classNames from 'classnames';
 import { useAppDispatch } from 'src/app/hooks';
-import { changeOctave, getOctave } from 'src/reducers/oscillatorsSlice';
+import {
+    changeOctave,
+    getOctave,
+} from 'src/reducers/oscillators/oscillatorsSlice';
 
 import './OctaveSelector.scss';
 

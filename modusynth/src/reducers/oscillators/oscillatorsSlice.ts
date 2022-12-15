@@ -3,20 +3,7 @@ import _ from 'lodash';
 import { useAppSelector } from 'src/app/hooks';
 import { Envelope, OscSettings, OscSettingsTypes } from 'src/types/oscillator';
 
-export type ID = string;
-export type NoteCode = string;
-export type Frequency = number;
-
-export interface OscNodeState {
-    drones: Record<NoteCode, Frequency>;
-    settings: OscSettings;
-}
-
-export interface OscillatorState {
-    octave: number;
-    notes: Record<NoteCode, Frequency>;
-    oscillators: Record<string, OscNodeState>;
-}
+import { OscillatorState } from './types';
 
 const initialState: OscillatorState = {
     octave: 4,
@@ -121,15 +108,23 @@ export const {
     release,
 } = oscillatorsSlice.actions;
 export const getOctave = () =>
-    useAppSelector((state) => state.oscillators.octave);
+    useAppSelector(({ oscillators }) => oscillators.octave);
 export const getNotes = () =>
-    useAppSelector((state) => state.oscillators.notes);
+    useAppSelector(({ oscillators }) => oscillators.notes);
 export const getOscillators = () =>
-    useAppSelector((state) => state.oscillators.oscillators);
+    useAppSelector(({ oscillators }) => oscillators.oscillators);
 export const getOscillator = (id: string) =>
-    useAppSelector((state) => state.oscillators.oscillators[id]);
+    useAppSelector(({ oscillators }) => oscillators.oscillators[id]);
 export const getOscillatorDrones = (id: string) =>
-    useAppSelector((state) => state.oscillators.oscillators[id].drones);
+    useAppSelector(({ oscillators }) => oscillators.oscillators[id].drones);
 export const getOscillatorSettings = (id: string) =>
-    useAppSelector((state) => state.oscillators.oscillators[id].settings);
+    useAppSelector(({ oscillators }) => oscillators.oscillators[id].settings);
+export const getActiveOscillatorsCount = () =>
+    useAppSelector(
+        ({ oscillators }) =>
+            Object.values(oscillators.oscillators).filter(
+                (osc) => osc.settings && !osc.settings.mute,
+            ).length,
+    );
+
 export default oscillatorsSlice.reducer;

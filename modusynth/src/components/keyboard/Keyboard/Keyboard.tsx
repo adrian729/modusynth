@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { useKeyboard } from 'src/hooks/useKeyboard';
+import { useKeyboard } from 'src/hooks/useKeyboard/useKeyboard';
 
 import OctaveSelector from '../OctaveSelector';
 import './Keyboard.scss';
