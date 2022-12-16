@@ -1,18 +1,22 @@
-import { Envelope, OscNodeSettings } from 'src/types/oscillator';
+import { Envelope } from 'src/types/oscillator';
 
-import { ChangeSettingsParams, OscNodeType } from './types';
+import {
+    ChangeOscModuleSettingsProps,
+    OscModule,
+    OscModuleSettings,
+} from './types';
 
-const OscNode = (
+const OscillatorModule = (
     audioContext: AudioContext,
     connection: AudioNode,
-    OscNodeSettings: OscNodeSettings,
-): OscNodeType => {
-    let { envelope } = OscNodeSettings;
+    oscModuleSettings: OscModuleSettings,
+): OscModule => {
+    let { envelope } = oscModuleSettings;
     let { currentTime } = audioContext;
     let osc: OscillatorNode = audioContext.createOscillator();
     let gateGain: GainNode = audioContext.createGain();
 
-    setupOsc(osc, OscNodeSettings);
+    setupOsc(osc, oscModuleSettings);
     setupGateGain(gateGain, envelope, currentTime);
 
     osc.connect(gateGain);
@@ -30,7 +34,7 @@ const OscNode = (
         }, 10000);
     };
 
-    const changeSettings = (settings: ChangeSettingsParams) => {
+    const changeOscSettings = (settings: ChangeOscModuleSettingsProps) => {
         let { type, detune } = settings;
 
         if (type !== undefined) {
@@ -42,14 +46,13 @@ const OscNode = (
         }
     };
 
-    return { stop, changeSettings };
+    return { stop, changeOscSettings };
 };
-
-export default OscNode;
+export default OscillatorModule;
 
 const setupOsc = (
     osc: OscillatorNode,
-    { type, frequency, detune }: OscNodeSettings,
+    { type, frequency, detune }: OscModuleSettings,
 ): void => {
     osc.type = type;
     osc.frequency.value = frequency;

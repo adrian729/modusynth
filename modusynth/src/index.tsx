@@ -3,9 +3,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 
-import App from './app/App';
-import store from './app/store';
-import MainAudioCTX from './context/MainAudioCTX/MainAudioCTX';
+import App from './App/App';
+import store from './App/store';
+import { MainAudioContextProvider } from './context/MainAudioContext';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
@@ -16,9 +16,9 @@ const root = ReactDOM.createRoot(
 root.render(
     // <React.StrictMode>
     <Provider store={store}>
-        <MainAudioCTX>
+        <MainAudioContextProvider>
             <App />
-        </MainAudioCTX>
+        </MainAudioContextProvider>
     </Provider>,
     // </React.StrictMode>
 );

@@ -1,17 +1,19 @@
 import { useState } from 'react';
 
-import DroneController from '../../components/DroneController';
-import Keyboard from '../../components/keyboard/Keyboard';
-import Osc from '../../components/oscillator/Osc';
+import Button from 'src/components/core/Button';
+
+import DroneController from '../components/DroneController';
+import Keyboard from '../components/Keyboard/Keyboard';
+import Oscillator from '../components/Oscillator';
 import './App.scss';
 
 const App = () => {
     const [oscList, setOscList] = useState<any[]>([
-        <Osc key={0} mute={false} />,
+        <Oscillator key={0} mute={false} />,
     ]);
 
     const addOsc = () => {
-        setOscList(oscList.concat(<Osc key={oscList.length} />));
+        setOscList(oscList.concat(<Oscillator key={oscList.length} />));
     };
 
     return (
@@ -31,9 +33,7 @@ const App = () => {
                     position: 'relative',
                 }}
             >
-                <button id="addOsc" onClick={addOsc}>
-                    Add Oscillator
-                </button>
+                <Button id="addOsc" title="Add Oscillator" onClick={addOsc} />
                 <div
                     style={{
                         display: 'grid',

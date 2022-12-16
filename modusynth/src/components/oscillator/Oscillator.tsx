@@ -1,22 +1,22 @@
 import { FC, useEffect, useState } from 'react';
 
 import _ from 'lodash';
-import { useAppDispatch } from 'src/app/hooks';
-import { OscCTX } from 'src/context/OscContext';
+import { useAppDispatch } from 'src/App/hooks';
+import OscillatorContext from 'src/context/OscillatorContext';
 import {
     addOscillator,
     getOscillator,
     updateOscSetting,
-} from 'src/reducers/oscillators/oscillatorsSlice';
+} from 'src/reducers/synthSlice';
 
-import OscController from '../OscController';
+import OscController from './components/OscController';
 
 interface OscProps {
     // eslint-disable-next-line no-undef
     type?: OscillatorType;
     mute?: boolean;
 }
-const Osc: FC<OscProps> = ({ type, mute }) => {
+const Oscillator: FC<OscProps> = ({ type, mute }) => {
     const dispatch = useAppDispatch();
     const [oscId] = useState<string>(_.uniqueId('osc_'));
     const oscillatorCreated = getOscillator(oscId);
@@ -40,10 +40,10 @@ const Osc: FC<OscProps> = ({ type, mute }) => {
     }, []);
 
     return (
-        <OscCTX.Provider value={{ oscId }}>
+        <OscillatorContext.Provider value={{ oscId }}>
             {oscillatorCreated ? <OscController /> : null}
-        </OscCTX.Provider>
+        </OscillatorContext.Provider>
     );
 };
 
-export default Osc;
+export default Oscillator;

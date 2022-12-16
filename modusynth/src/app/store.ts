@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import oscillatorsReducer from 'src/reducers/oscillators/oscillatorsSlice';
+import oscillatorsReducer from 'src/reducers/synthSlice';
 
 const store = configureStore({
     reducer: {

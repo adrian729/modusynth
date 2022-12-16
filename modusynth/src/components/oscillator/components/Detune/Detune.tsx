@@ -1,13 +1,13 @@
 import { ChangeEvent, FC, useEffect, useState } from 'react';
 
-import { useAppDispatch } from 'src/app/hooks';
+import { useAppDispatch } from 'src/App/hooks';
 import Slider from 'src/components/core/Slider';
-import { OscCTX } from 'src/context/OscContext';
+import OscillatorContext from 'src/context/OscillatorContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import {
     getOscillatorSettings,
     updateOscSetting,
-} from 'src/reducers/oscillators/oscillatorsSlice';
+} from 'src/reducers/synthSlice';
 
 interface DetuneState {
     slider: number;
@@ -27,7 +27,7 @@ const calculateSlider = (detune: number, down: number, up: number): number =>
 
 const Detune: FC = () => {
     const dispatch = useAppDispatch();
-    const { oscId } = useSafeContext(OscCTX);
+    const { oscId } = useSafeContext(OscillatorContext);
     const settings = getOscillatorSettings(oscId);
     const { detune } = settings;
     const [detuneState, setDetuneState] = useState<DetuneState>({

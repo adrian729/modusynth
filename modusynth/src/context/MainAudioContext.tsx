@@ -1,9 +1,7 @@
 import { createContext, useEffect } from 'react';
 
-import { getActiveOscillatorsCount } from 'src/reducers/oscillators/oscillatorsSlice';
+import { getActiveOscillatorsCount } from 'src/reducers/synthSlice';
 import { Props } from 'src/types/core';
-
-import { MainAudioCTXState } from './types';
 
 let audioContext = new AudioContext();
 let out = audioContext.destination;
@@ -17,13 +15,18 @@ let compressor = audioContext.createDynamicsCompressor();
 filter.connect(compressor);
 compressor.connect(out);
 
-export const CTX = createContext<{
-    context: MainAudioCTXState;
+export interface MainAudioContextState {
+    audioContext: AudioContext;
+    mainGain: GainNode;
+}
+
+const MainAudioContext = createContext<{
+    context: MainAudioContextState;
 } | null>(null);
 
-const MainAudioCTX = ({ children }: Props) => {
+export const MainAudioContextProvider = ({ children }: Props) => {
     const activeOscillatorsCount = getActiveOscillatorsCount();
-    const defaultContext: MainAudioCTXState = {
+    const defaultContext: MainAudioContextState = {
         audioContext,
         mainGain,
     };
@@ -37,9 +40,10 @@ const MainAudioCTX = ({ children }: Props) => {
     }, [activeOscillatorsCount]);
 
     return (
-        <CTX.Provider value={{ context: defaultContext }}>
+        <MainAudioContext.Provider value={{ context: defaultContext }}>
             {children}
-        </CTX.Provider>
+        </MainAudioContext.Provider>
     );
 };
-export default MainAudioCTX;
+
+export default MainAudioContext;

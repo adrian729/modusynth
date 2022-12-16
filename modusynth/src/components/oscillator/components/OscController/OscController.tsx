@@ -1,15 +1,15 @@
 import { ChangeEvent, FC } from 'react';
 
-import { useAppDispatch } from 'src/app/hooks';
+import { useAppDispatch } from 'src/App/hooks';
 import Slider from 'src/components/core/Slider';
-import { OscCTX } from 'src/context/OscContext';
+import OscillatorContext from 'src/context/OscillatorContext';
 import useOscillator from 'src/hooks/useOscillator/useOscillator';
 import useSafeContext from 'src/hooks/useSafeContext';
 import {
     getOscillatorSettings,
     updateOscSetting,
-} from 'src/reducers/oscillators/oscillatorsSlice';
-import { OscSettings, OscSettingsTypes } from 'src/types/oscillator';
+} from 'src/reducers/synthSlice';
+import { OscSettingsTypes, OscillatorSettings } from 'src/types/oscillator';
 
 import ADSR from '../ADSR';
 import Detune from '../Detune';
@@ -19,7 +19,7 @@ import './OscController.scss';
 
 const OscController: FC = () => {
     const dispatch = useAppDispatch();
-    const { oscId } = useSafeContext(OscCTX);
+    const { oscId } = useSafeContext(OscillatorContext);
     const settings = getOscillatorSettings(oscId);
     let { gain } = settings;
     useOscillator();
@@ -29,7 +29,7 @@ const OscController: FC = () => {
         dispatch(
             updateOscSetting({
                 oscId,
-                settingId: id as keyof OscSettings,
+                settingId: id as keyof OscillatorSettings,
                 value: value as OscSettingsTypes,
             }),
         );
@@ -39,7 +39,7 @@ const OscController: FC = () => {
         dispatch(
             updateOscSetting({
                 oscId,
-                settingId: id as keyof OscSettings,
+                settingId: id as keyof OscillatorSettings,
                 value: value as OscSettingsTypes,
             }),
         );

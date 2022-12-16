@@ -2,6 +2,7 @@ import { Context, useContext } from 'react';
 
 const useSafeContext = <T>(context: Context<T>) => {
     const value = useContext(context);
+
     if (value === undefined) {
         const contextName = context.displayName || 'Context';
         throw new Error(

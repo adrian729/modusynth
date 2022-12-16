@@ -1,17 +1,17 @@
 import { ChangeEvent, FC } from 'react';
 
-import { useAppDispatch } from 'src/app/hooks';
+import { useAppDispatch } from 'src/App/hooks';
 import Slider from 'src/components/core/Slider';
-import { OscCTX } from 'src/context/OscContext';
+import OscillatorContext from 'src/context/OscillatorContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import {
     getOscillatorSettings,
     updateOscSetting,
-} from 'src/reducers/oscillators/oscillatorsSlice';
+} from 'src/reducers/synthSlice';
 
 const ADSR: FC = () => {
     const dispatch = useAppDispatch();
-    const { oscId } = useSafeContext(OscCTX);
+    const { oscId } = useSafeContext(OscillatorContext);
     const settings = getOscillatorSettings(oscId);
     const { envelope } = settings;
     const { attack, decay, sustain, release } = envelope;

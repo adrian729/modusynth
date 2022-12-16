@@ -1,19 +1,19 @@
 import { FC } from 'react';
 
-import classNames from 'classnames';
-import { useAppDispatch } from 'src/app/hooks';
-import { OscCTX } from 'src/context/OscContext';
+import { useAppDispatch } from 'src/App/hooks';
+import Button from 'src/components/core/Button';
+import OscillatorContext from 'src/context/OscillatorContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import {
     getOscillatorSettings,
     updateOscSetting,
-} from 'src/reducers/oscillators/oscillatorsSlice';
+} from 'src/reducers/synthSlice';
 
 import './MuteOsc.scss';
 
 const MuteOsc: FC = () => {
     const dispatch = useAppDispatch();
-    const { oscId } = useSafeContext(OscCTX);
+    const { oscId } = useSafeContext(OscillatorContext);
     const settings = getOscillatorSettings(oscId);
     let { mute } = settings;
 
@@ -28,14 +28,14 @@ const MuteOsc: FC = () => {
     };
 
     return (
-        <button
+        <Button
             id="mute"
             name="mute"
-            className={classNames('muteosc__button', mute && 'warning')}
+            title="M"
+            buttonKind={mute ? 'warning' : undefined}
+            className="muteosc__button"
             onClick={toggleMuted}
-        >
-            M
-        </button>
+        />
     );
 };
 

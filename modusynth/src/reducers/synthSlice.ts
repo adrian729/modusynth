@@ -1,11 +1,28 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
-import { useAppSelector } from 'src/app/hooks';
-import { Envelope, OscSettings, OscSettingsTypes } from 'src/types/oscillator';
+import { useAppSelector } from 'src/App/hooks';
+import {
+    Envelope,
+    OscSettingsTypes,
+    OscillatorSettings,
+} from 'src/types/oscillator';
 
-import { OscillatorState } from './types';
+type OscID = string;
+type NoteName = string;
+type Frequency = number;
 
-const initialState: OscillatorState = {
+export interface OscillatorState {
+    drones: Record<NoteName, Frequency>;
+    settings: OscillatorSettings;
+}
+
+export interface SynthState {
+    octave: number;
+    notes: Record<NoteName, Frequency>;
+    oscillators: Record<OscID, OscillatorState>;
+}
+
+const initialState: SynthState = {
     octave: 4,
     notes: {},
     oscillators: {},
@@ -18,7 +35,7 @@ const defaultEnvelope: Envelope = {
     release: 0.1,
 };
 
-const defaultSettings: OscSettings = {
+const defaultSettings: OscillatorSettings = {
     type: 'sine',
     detune: 0,
     envelope: defaultEnvelope,
@@ -26,7 +43,7 @@ const defaultSettings: OscSettings = {
     mute: false,
 };
 
-export const oscillatorsSlice = createSlice({
+export const synthSlice = createSlice({
     name: 'oscillators',
     initialState,
     reducers: {
@@ -57,7 +74,7 @@ export const oscillatorsSlice = createSlice({
             state,
             action: PayloadAction<{
                 oscId: string;
-                settingId: keyof OscSettings;
+                settingId: keyof OscillatorSettings;
                 value: OscSettingsTypes;
             }>,
         ): void => {
@@ -76,7 +93,10 @@ export const oscillatorsSlice = createSlice({
         },
         updateOscSettings: (
             state,
-            action: PayloadAction<{ oscId: string; settings: OscSettings }>,
+            action: PayloadAction<{
+                oscId: string;
+                settings: OscillatorSettings;
+            }>,
         ): void => {
             const { oscId, settings } = action.payload;
             state.oscillators[oscId].settings = settings;
@@ -106,7 +126,7 @@ export const {
     updateOscSettings,
     freeze,
     release,
-} = oscillatorsSlice.actions;
+} = synthSlice.actions;
 export const getOctave = () =>
     useAppSelector(({ oscillators }) => oscillators.octave);
 export const getNotes = () =>
@@ -127,4 +147,4 @@ export const getActiveOscillatorsCount = () =>
             ).length,
     );
 
-export default oscillatorsSlice.reducer;
+export default synthSlice.reducer;

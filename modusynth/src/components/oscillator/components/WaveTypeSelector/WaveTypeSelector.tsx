@@ -1,17 +1,18 @@
 import { FC, MouseEvent } from 'react';
 
-import { useAppDispatch } from 'src/app/hooks';
-import { OscCTX } from 'src/context/OscContext';
+import { useAppDispatch } from 'src/App/hooks';
+import Button from 'src/components/core/Button';
+import OscillatorContext from 'src/context/OscillatorContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import {
     getOscillatorSettings,
     updateOscSetting,
-} from 'src/reducers/oscillators/oscillatorsSlice';
+} from 'src/reducers/synthSlice';
 
 const waveTypes = ['sine', 'triangle', 'square', 'sawtooth'];
 const WaveTypeSelector: FC = () => {
     const dispatch = useAppDispatch();
-    const { oscId } = useSafeContext(OscCTX);
+    const { oscId } = useSafeContext(OscillatorContext);
     const settings = getOscillatorSettings(oscId);
     const { type } = settings;
 
@@ -30,14 +31,13 @@ const WaveTypeSelector: FC = () => {
     return (
         <div>
             {waveTypes.map((waveType) => (
-                <button
+                <Button
                     id={waveType}
                     key={waveType}
+                    title={waveType}
+                    buttonKind={waveType === type ? 'active' : undefined}
                     onClick={changeType}
-                    className={(waveType === type && 'active') || ''}
-                >
-                    {waveType}
-                </button>
+                />
             ))}
         </div>
     );

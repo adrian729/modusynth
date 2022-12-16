@@ -1,30 +1,29 @@
 import { useEffect, useState } from 'react';
 
-import { CTX } from 'src/context/MainAudioCTX/MainAudioCTX';
-import { OscCTX } from 'src/context/OscContext';
-import OscNode from 'src/hooks/useOscillator/OscNode';
+import MainAudioContext from 'src/context/MainAudioContext';
+import OscillatorContext from 'src/context/OscillatorContext';
+import OscillatorModule from 'src/hooks/useOscillator/OscillatorModule';
 import {
     getNotes,
     getOscillatorDrones,
     getOscillatorSettings,
-} from 'src/reducers/oscillators/oscillatorsSlice';
-import { OscNodeSettings } from 'src/types/oscillator';
+} from 'src/reducers/synthSlice';
 
 import useSafeContext from '../useSafeContext';
-import { OscNodeType, OscState } from './types';
+import { OscModule, OscModuleSettings, OscState } from './types';
 
 const useOscillator = (): void => {
-    const { context } = useSafeContext(CTX);
+    const { context } = useSafeContext(MainAudioContext);
     const { audioContext, mainGain } = context;
-    const { oscId } = useSafeContext(OscCTX);
+    const { oscId } = useSafeContext(OscillatorContext);
     const activeNotes = getNotes();
     const settings = getOscillatorSettings(oscId);
     const { type, detune, gain, mute } = settings;
     const drones = getOscillatorDrones(oscId);
-    const [{ noteNodes, droneNodes, gainControl }, setOscState] =
+    const [{ noteModules, droneModules, gainControl }, setOscState] =
         useState<OscState>({
-            noteNodes: {},
-            droneNodes: {},
+            noteModules: {},
+            droneModules: {},
             gainControl: audioContext.createGain(),
         });
 
@@ -46,55 +45,64 @@ const useOscillator = (): void => {
     }, [mute, gain]);
 
     /**
-     * Update note nodes on active notes or mute change
+     * Update note modules on active notes or mute change
      */
     useEffect((): void => {
         setOscState((prevOscState) => {
-            const newNoteNodes = { ...prevOscState.noteNodes };
+            const newNoteModules = { ...prevOscState.noteModules };
             const { mute, ...oscSettings } = settings;
 
             // Remove inactive notes
-            deleteInactive(newNoteNodes, mute ? {} : activeNotes, droneNodes);
+            deleteInactive(
+                newNoteModules,
+                mute ? {} : activeNotes,
+                droneModules,
+            );
 
             if (!mute) {
                 // Add active notes
                 Object.keys(activeNotes)
-                    .filter((key) => !newNoteNodes[key])
+                    .filter((key) => !newNoteModules[key])
                     .forEach((key) => {
-                        newNoteNodes[key] = OscNode(audioContext, gainControl, {
-                            ...oscSettings,
-                            frequency: activeNotes[key],
-                            envelope: { ...oscSettings.envelope },
-                        } as OscNodeSettings);
+                        newNoteModules[key] = OscillatorModule(
+                            audioContext,
+                            gainControl,
+                            {
+                                ...oscSettings,
+                                frequency: activeNotes[key],
+                                envelope: { ...oscSettings.envelope },
+                            } as OscModuleSettings,
+                        );
                     });
             }
 
-            return { ...prevOscState, noteNodes: newNoteNodes };
+            return { ...prevOscState, noteModules: newNoteModules };
         });
     }, [activeNotes, mute]);
 
     /**
-     * Update drone nodes and note nodes on drone notes change
+     * Update drone modules and note modules on drone notes change
      */
     useEffect((): void => {
         setOscState((prevOscState) => {
-            let { droneNodes } = prevOscState;
-            let newDroneNodes = { ...droneNodes };
+            let { droneModules } = prevOscState;
+            let newDroneModules = { ...droneModules };
 
             // Delete inactive drones
-            deleteInactive(newDroneNodes, drones, noteNodes);
+            deleteInactive(newDroneModules, drones, noteModules);
 
-            // Add new drone nodes references to the note nodes
-            Object.entries(noteNodes)
+            // Add new drone modules references to the note modules
+            Object.entries(noteModules)
                 .filter(
-                    ([key]) => !newDroneNodes[key] && drones[key] !== undefined,
+                    ([key]) =>
+                        !newDroneModules[key] && drones[key] !== undefined,
                 )
                 .forEach(([key, val]) => {
                     if (val !== undefined) {
-                        newDroneNodes[key] = val;
+                        newDroneModules[key] = val;
                     }
                 });
-            return { ...prevOscState, droneNodes: newDroneNodes };
+            return { ...prevOscState, droneModules: newDroneModules };
         });
     }, [drones]);
 
@@ -102,25 +110,25 @@ const useOscillator = (): void => {
      * Update osc settings
      */
     useEffect((): void => {
-        Object.values(noteNodes).map((val) =>
-            val?.changeSettings({ type, detune }),
+        Object.values(noteModules).map((val) =>
+            val?.changeOscSettings({ type, detune }),
         );
     }, [settings]);
 };
 export default useOscillator;
 
 const deleteInactive = (
-    nodes: Record<string, OscNodeType | undefined>,
+    modules: Record<string, OscModule | undefined>,
     keyMapping: Record<string, any>,
-    dependencyNodes: Record<string, OscNodeType | undefined>,
+    dependencyModules: Record<string, OscModule | undefined>,
 ): void => {
-    Object.keys(nodes)
+    Object.keys(modules)
         .filter((key) => !keyMapping[key])
         .forEach((key) => {
-            if (nodes[key] !== dependencyNodes[key]) {
-                nodes[key]?.stop();
+            if (modules[key] !== dependencyModules[key]) {
+                modules[key]?.stop();
             }
-            nodes[key] = undefined;
-            delete nodes[key];
+            modules[key] = undefined;
+            delete modules[key];
         });
 };

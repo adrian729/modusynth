@@ -30,6 +30,10 @@
         "declarationMap": true,
         "types": ["node", "jest", "@testing-library/jest-dom"]
     },
-    "include": ["src", "src/**/*", "src/hooks/useKeyboard/quertyhancock.d.ts"],
+    "include": [
+        "src",
+        "src/**/*",
+        "src/components/Keyboard/types/quertyhancock.d.ts"
+    ],
     "exclude": ["node_modules"]
 }

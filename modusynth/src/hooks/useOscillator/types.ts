@@ -1,16 +1,26 @@
-export interface ChangeSettingsParams {
+import { Envelope } from 'src/types/oscillator';
+
+export interface OscModuleSettings {
+    // eslint-disable-next-line no-undef
+    type: OscillatorType;
+    frequency: number;
+    detune: number;
+    envelope: Envelope;
+}
+
+export interface ChangeOscModuleSettingsProps {
     // eslint-disable-next-line no-undef
     type?: OscillatorType;
     detune?: number;
 }
 
-export interface OscNodeType {
+export interface OscModule {
     stop: () => void;
-    changeSettings: (settings: ChangeSettingsParams) => void;
+    changeOscSettings: (settings: ChangeOscModuleSettingsProps) => void;
 }
 
 export interface OscState {
-    noteNodes: Record<string, OscNodeType | undefined>;
-    droneNodes: Record<string, OscNodeType | undefined>;
+    noteModules: Record<string, OscModule | undefined>;
+    droneModules: Record<string, OscModule | undefined>;
     gainControl: GainNode;
 }

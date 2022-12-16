@@ -1,12 +1,8 @@
 import { useEffect } from 'react';
 
 import { QwertyHancock } from 'qwerty-hancock';
-import { useAppDispatch } from 'src/app/hooks';
-import {
-    addNote,
-    getOctave,
-    removeNote,
-} from 'src/reducers/oscillators/oscillatorsSlice';
+import { useAppDispatch } from 'src/App/hooks';
+import { addNote, getOctave, removeNote } from 'src/reducers/synthSlice';
 
 export const useKeyboard = (): void => {
     const dispatch = useAppDispatch();
