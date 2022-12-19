@@ -3,11 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import _ from 'lodash';
 import { useAppDispatch } from 'src/App/hooks';
 import OscillatorContext from 'src/context/OscillatorContext';
-import {
-    addOscillator,
-    getOscillator,
-    updateOscSetting,
-} from 'src/reducers/synthSlice';
+import { addOscillator, oscillatorExists } from 'src/reducers/synthSlice';
 
 import OscController from './components/OscController';
 
@@ -16,27 +12,14 @@ interface OscProps {
     type?: OscillatorType;
     mute?: boolean;
 }
+
 const Oscillator: FC<OscProps> = ({ type, mute }) => {
     const dispatch = useAppDispatch();
     const [oscId] = useState<string>(_.uniqueId('osc_'));
-    const oscillatorCreated = getOscillator(oscId);
+    const oscillatorCreated = oscillatorExists(oscId);
 
     useEffect((): void => {
-        dispatch(addOscillator(oscId));
-        if (type) {
-            dispatch(
-                updateOscSetting({
-                    oscId,
-                    settingId: 'type',
-                    value: type,
-                }),
-            );
-        }
-        if (mute !== undefined) {
-            dispatch(
-                updateOscSetting({ oscId, settingId: 'mute', value: mute }),
-            );
-        }
+        dispatch(addOscillator({ oscId, type, mute }));
     }, []);
 
     return (

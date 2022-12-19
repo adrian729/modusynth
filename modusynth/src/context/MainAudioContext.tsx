@@ -1,4 +1,4 @@
-import { createContext, useEffect } from 'react';
+import { createContext, useState } from 'react';
 
 import { getActiveOscillatorsCount } from 'src/reducers/synthSlice';
 import { Props } from 'src/types/core';
@@ -30,14 +30,15 @@ export const MainAudioContextProvider = ({ children }: Props) => {
         audioContext,
         mainGain,
     };
-
-    useEffect(() => {
-        const { currentTime } = audioContext;
-        mainGain.gain.setValueAtTime(
+    const [prevActiveOscillatorsCount, setPrevActiveOscillatorsCount] =
+        useState<number>(0);
+    if (prevActiveOscillatorsCount !== activeOscillatorsCount) {
+        mainGain.gain.value = Math.max(
+            0.005,
             0.25 / Math.max(activeOscillatorsCount, 1),
-            currentTime,
         );
-    }, [activeOscillatorsCount]);
+        setPrevActiveOscillatorsCount(activeOscillatorsCount);
+    }
 
     return (
         <MainAudioContext.Provider value={{ context: defaultContext }}>

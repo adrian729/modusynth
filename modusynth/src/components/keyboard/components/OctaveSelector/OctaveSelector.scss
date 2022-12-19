@@ -1,8 +1,12 @@
 .octaveselector {
-    margin: '1rem';
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
 
     &__button {
         font-size: x-small;
-        padding: 0.2rem;
     }
 }

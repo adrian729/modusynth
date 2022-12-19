@@ -1,31 +1,38 @@
-import { useEffect } from 'react';
-
 import { QwertyHancock } from 'qwerty-hancock';
 import { useAppDispatch } from 'src/App/hooks';
 import { addNote, getOctave, removeNote } from 'src/reducers/synthSlice';
+import { useWindowSize } from 'usehooks-ts';
+
+const createKeyboard = (width: number, octave: number): any => {
+    const [keyboardWidth, keyboardHeight, numOctaves] =
+        width && width < 600 ? [Math.floor(width * 0.9), 150, 1] : [449, 90, 2];
+
+    return new QwertyHancock({
+        id: 'keyboard',
+        width: keyboardWidth,
+        height: keyboardHeight,
+        octaves: numOctaves,
+        startNote: `C${octave !== undefined ? octave : 4}`,
+        whiteKeyColour: 'black',
+        blackKeyColour: 'white',
+        activeColour: 'mediumturquoise',
+        borderColour: 'white',
+    });
+};
 
 export const useKeyboard = (): void => {
     const dispatch = useAppDispatch();
     const octave = getOctave();
+    const { width } = useWindowSize();
 
-    useEffect((): void => {
-        const keyboard = new QwertyHancock({
-            id: 'keyboard',
-            width: '449',
-            height: '90',
-            octaves: 2,
-            startNote: `C${octave || 4}`,
-            whiteKeyColour: 'black',
-            blackKeyColour: 'white',
-            activeColour: 'mediumturquoise',
-            borderColour: 'white',
-        });
+    if (document.getElementById('keyboard')) {
+        const keyboard = createKeyboard(width, octave);
         keyboard.keyDown = (note: string, freq: number): void => {
             dispatch(addNote({ note, freq }));
         };
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        keyboard.keyUp = (note: string, _: number): void => {
+
+        keyboard.keyUp = (note: string): void => {
             dispatch(removeNote(note));
         };
-    }, [octave]);
+    }
 };

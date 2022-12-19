@@ -1,12 +1,10 @@
-import React from 'react';
-
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 
 import App from './App/App';
 import store from './App/store';
 import { MainAudioContextProvider } from './context/MainAudioContext';
-import './index.css';
+import './index.scss';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(

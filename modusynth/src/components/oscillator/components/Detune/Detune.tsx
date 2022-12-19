@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 
 import { useAppDispatch } from 'src/App/hooks';
 import Slider from 'src/components/core/Slider';
@@ -15,15 +15,33 @@ interface DetuneState {
     up: number;
 }
 
-const calculateDetune = (slider: number, down: number, up: number): number => {
+interface SliderChangeProps {
+    slider: number;
+    down: number;
+    up: number;
+}
+interface DetuneChangeProps {
+    detune: number;
+    down: number;
+    up: number;
+}
+
+interface SaveDivisionProps {
+    dividend: number;
+    divisor: number;
+}
+
+const calculateDetune = ({ slider, down, up }: SliderChangeProps): number => {
     return slider < 0 ? slider * down : slider * up;
 };
 
-const saveDivision = (dividend: number, divisor: number): number =>
+const saveDivision = ({ dividend, divisor }: SaveDivisionProps): number =>
     divisor === 0 ? 0 : dividend / divisor;
 
-const calculateSlider = (detune: number, down: number, up: number): number =>
-    detune < 0 ? saveDivision(detune, down) : saveDivision(detune, up);
+const calculateSlider = ({ detune, down, up }: DetuneChangeProps): number =>
+    saveDivision({ dividend: detune, divisor: detune < 0 ? down : up });
+
+const defaultOptionVal = 12;
 
 const Detune: FC = () => {
     const dispatch = useAppDispatch();
@@ -31,41 +49,51 @@ const Detune: FC = () => {
     const settings = getOscillatorSettings(oscId);
     const { detune } = settings;
     const [detuneState, setDetuneState] = useState<DetuneState>({
-        slider: 0,
-        down: 12,
-        up: 12,
+        slider: calculateSlider({
+            detune,
+            down: defaultOptionVal,
+            up: defaultOptionVal,
+        }),
+        down: defaultOptionVal,
+        up: defaultOptionVal,
     });
     const { slider, down, up } = detuneState;
 
-    useEffect(() => {
-        setDetuneState({
-            ...detuneState,
-            slider: calculateSlider(detune, down, up),
-        });
-    }, []);
-
-    useEffect(() => {
+    const updateDetuneOscSetting = ({
+        slider,
+        down,
+        up,
+    }: SliderChangeProps): void => {
         dispatch(
             updateOscSetting({
                 oscId,
                 settingId: 'detune',
-                value: calculateDetune(slider, down, up),
+                value: calculateDetune({ slider, down, up }),
             }),
         );
-    }, [slider, up, down]);
+    };
 
     const changeDetune = (e: ChangeEvent): void => {
-        let { id, value } = e.target as HTMLInputElement;
-        setDetuneState({ ...detuneState, [id]: parseInt(value) });
+        const { id, value } = e.target as HTMLInputElement;
+        const intValue = parseInt(value);
+        setDetuneState({ ...detuneState, [id]: value });
+        updateDetuneOscSetting({
+            slider,
+            down: id === 'down' ? intValue : down,
+            up: id === 'up' ? intValue : up,
+        });
     };
 
     const change = (e: ChangeEvent): void => {
         const { value } = e.target as HTMLInputElement;
-        setDetuneState({ ...detuneState, slider: parseInt(value) });
+        const intValue = parseInt(value);
+        setDetuneState({ ...detuneState, slider: intValue });
+        updateDetuneOscSetting({ slider: intValue, down, up });
     };
 
     const onResetValue = (id: string, val: number): void => {
         setDetuneState({ ...detuneState, [id]: val });
+        updateDetuneOscSetting({ slider: val, down, up });
     };
 
     // TODO: refactor this into smaller parts/array of values/change names (2ND, 3RD, 4TH etc)

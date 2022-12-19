@@ -12,20 +12,32 @@ import {
 import useSafeContext from '../useSafeContext';
 import { OscModule, OscModuleSettings, OscState } from './types';
 
+const updateGainControl = (
+    gainControlGain: AudioParam,
+    gain: number,
+    mute: boolean,
+    currentTime: number,
+): void => {
+    gainControlGain.cancelScheduledValues(currentTime);
+    gainControlGain.setValueAtTime(mute ? 0.0 : gain, currentTime);
+};
+
 const useOscillator = (): void => {
-    const { context } = useSafeContext(MainAudioContext);
-    const { audioContext, mainGain } = context;
+    const {
+        context: { audioContext, mainGain },
+    } = useSafeContext(MainAudioContext);
     const { oscId } = useSafeContext(OscillatorContext);
-    const activeNotes = getNotes();
-    const settings = getOscillatorSettings(oscId);
-    const { type, detune, gain, mute } = settings;
-    const drones = getOscillatorDrones(oscId);
     const [{ noteModules, droneModules, gainControl }, setOscState] =
         useState<OscState>({
             noteModules: {},
             droneModules: {},
             gainControl: audioContext.createGain(),
         });
+
+    const activeNotes = getNotes();
+    const settings = getOscillatorSettings(oscId);
+    const { type, detune, gain, mute } = settings;
+    const drones = getOscillatorDrones(oscId);
 
     /**
      * Setup gainControl connection and initial gain
@@ -40,8 +52,7 @@ const useOscillator = (): void => {
      */
     useEffect((): void => {
         let { currentTime } = audioContext;
-        gainControl.gain.cancelScheduledValues(currentTime);
-        gainControl.gain.setValueAtTime(mute ? 0 : gain, currentTime);
+        updateGainControl(gainControl.gain, gain, mute, currentTime);
     }, [mute, gain]);
 
     /**

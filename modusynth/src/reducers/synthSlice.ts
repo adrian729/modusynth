@@ -55,20 +55,39 @@ export const synthSlice = createSlice({
             state,
             action: PayloadAction<{ note: string; freq: number }>,
         ): void => {
-            let { note, freq } = action.payload;
+            const { note, freq } = action.payload;
             if (note && freq) {
                 state.notes[note] = freq;
             }
         },
         removeNote: (state, action: PayloadAction<string>): void => {
-            let { notes } = state;
+            const { notes } = state;
             delete notes[action.payload];
         },
-        addOscillator: (state, action: PayloadAction<string>): void => {
-            state.oscillators[action.payload] = {
-                drones: {},
-                settings: defaultSettings,
-            };
+        addOscillator: (
+            state,
+            action: PayloadAction<{
+                oscId: OscID;
+                // eslint-disable-next-line no-undef
+                type?: OscillatorType;
+                mute?: boolean;
+            }>,
+        ): void => {
+            const { oscId, type, mute } = action.payload;
+            let osc = state.oscillators[oscId];
+            if (!osc) {
+                osc = {
+                    drones: {},
+                    settings: _.cloneDeep(defaultSettings),
+                };
+                state.oscillators[oscId] = osc;
+            }
+            if (type !== undefined) {
+                osc.settings.type = type;
+            }
+            if (mute !== undefined) {
+                osc.settings.mute = mute;
+            }
         },
         updateOscSetting: (
             state,
@@ -79,7 +98,12 @@ export const synthSlice = createSlice({
             }>,
         ): void => {
             const { oscId, settingId, value } = action.payload;
-            const { settings } = state.oscillators[oscId];
+            const osc = state.oscillators[oscId];
+            if (!osc) {
+                return;
+            }
+
+            const { settings } = osc;
             if (settingId === 'type') {
                 // eslint-disable-next-line no-undef
                 settings[settingId] = value as OscillatorType;
@@ -99,7 +123,10 @@ export const synthSlice = createSlice({
             }>,
         ): void => {
             const { oscId, settings } = action.payload;
-            state.oscillators[oscId].settings = settings;
+            const osc = state.oscillators[oscId];
+            if (osc) {
+                osc.settings = settings;
+            }
         },
         freeze: (state): void => {
             const { oscillators } = state;
@@ -133,6 +160,8 @@ export const getNotes = () =>
     useAppSelector(({ oscillators }) => oscillators.notes);
 export const getOscillators = () =>
     useAppSelector(({ oscillators }) => oscillators.oscillators);
+export const oscillatorExists = (id: string) =>
+    useAppSelector(({ oscillators }) => !!oscillators.oscillators[id]);
 export const getOscillator = (id: string) =>
     useAppSelector(({ oscillators }) => oscillators.oscillators[id]);
 export const getOscillatorDrones = (id: string) =>

@@ -6,7 +6,7 @@ import './Button.scss';
 
 type ButtonKind = 'active' | 'warning' | undefined;
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     title: string;
     buttonKind?: ButtonKind;
 }
