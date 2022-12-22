@@ -1,12 +1,11 @@
 import { FC, useState } from 'react';
 
 import { useAppDispatch } from 'src/App/hooks';
+import Button from 'src/components/01_core/Button';
 import { freeze, release } from 'src/reducers/synthSlice';
+import 'src/styles/index.scss';
 
-import Button from '../core/Button';
-import './DroneController.scss';
-
-const DroneController: FC = () => {
+const Freezer: FC = () => {
     const dispatch = useAppDispatch();
     const [hasDrones, setHasDrones] = useState<boolean>();
 
@@ -21,7 +20,7 @@ const DroneController: FC = () => {
     };
 
     return (
-        <div className="dronecontroller">
+        <div id="freezer">
             <Button
                 title="FREEZE"
                 buttonKind={hasDrones ? 'active' : undefined}
@@ -36,4 +35,4 @@ const DroneController: FC = () => {
     );
 };
 
-export default DroneController;
+export default Freezer;

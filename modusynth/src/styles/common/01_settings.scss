@@ -1,0 +1,60 @@
+// Settings – used with preprocessors and contain font, colors definitions, etc.  It’s important not to output any CSS.
+
+// 1. Variables sass
+
+// 1.1 Colours
+$gray-50: #f9fafb;
+$gray-100: #f3f4f6;
+$gray-200: #e5e7eb;
+$gray-300: #d1d5db;
+$gray-400: #9ca3af;
+$gray-500: #6b7280;
+$gray-600: #4b5563;
+$gray-700: #374151;
+$gray-800: #1f2937;
+$gray-900: #111827;
+
+$slate-50: #f8fafc;
+$slate-100: #f1f5f9;
+$slate-200: #e2e8f0;
+$slate-300: #cbd5e1;
+$slate-400: #94a3b8;
+$slate-500: #64748b;
+$slate-600: #475569;
+$slate-700: #334155;
+$slate-800: #1e293b;
+$slate-900: #0f172a;
+
+$aqua-100: #84ffff;
+$aqua-200: #18ffff;
+$aqua-400: #00e5ff;
+$aqua-700: #00b8d4;
+
+$primary: $gray-500;
+$secondary: $gray-400;
+$gray-secondary: $gray-600;
+$text-color: $gray-900;
+$text-color--light: $gray-50;
+$link-color: $gray-400;
+$button-color: $gray-50;
+$button-color--active: $gray-500;
+$button-color--warning: $gray-600;
+
+// 1.2 Spacings
+
+// 2. Custom Props
+:root {
+    --primary: #{$primary};
+    --secondary: #{$secondary};
+
+    --primary-50: #{$gray-50};
+    --primary-100: #{$gray-100};
+    --primary-200: #{$gray-200};
+    --primary-300: #{$gray-300};
+    --primary-400: #{$gray-400};
+    --primary-500: #{$gray-500};
+    --primary-600: #{$gray-600};
+    --primary-700: #{$gray-700};
+    --primary-800: #{$gray-800};
+    --primary-900: #{$gray-900};
+}

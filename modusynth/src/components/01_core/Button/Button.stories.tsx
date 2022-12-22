@@ -1,9 +1,8 @@
+import { ReactElement } from 'react';
+
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
-import '../../../App/App.scss';
-import '../../../index.scss';
 import Button, { ButtonProps } from './Button';
-import './Button.scss';
 
 const args: ButtonProps = {
     title: 'Button',
@@ -12,10 +11,10 @@ const args: ButtonProps = {
 export default {
     args,
     component: Button,
-    title: 'core/Button',
+    title: 'components/core/Button',
 } as ComponentMeta<typeof Button>;
 
-const ButtonStory: ComponentStory<typeof Button> = (args) => (
+const ButtonStory: ComponentStory<typeof Button> = (args): ReactElement => (
     <Button {...args} />
 );
 

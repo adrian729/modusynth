@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, FC } from 'react';
 
 import classNames from 'classnames';
 
-import './Button.scss';
+import './styles.scss';
 
 type ButtonKind = 'active' | 'warning' | undefined;
 
@@ -18,7 +18,10 @@ const Button: FC<ButtonProps> = ({
     ...props
 }: ButtonProps) => {
     return (
-        <button className={classNames(buttonKind, className)} {...props}>
+        <button
+            className={classNames('button', buttonKind, className)}
+            {...props}
+        >
             {title}
         </button>
     );

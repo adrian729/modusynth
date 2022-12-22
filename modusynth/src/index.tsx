@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 import App from './App/App';
 import store from './App/store';
 import { MainAudioContextProvider } from './context/MainAudioContext';
-import './index.scss';
 import reportWebVitals from './reportWebVitals';
+import './styles/index.scss';
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement,
