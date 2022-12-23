@@ -1,7 +1,7 @@
 import { FC, MouseEvent } from 'react';
 
-import { useAppDispatch } from 'src/App/hooks';
-import Button from 'src/components/core/Button';
+import { useAppDispatch } from 'src/app/hooks';
+import Button from 'src/components/01_core/button';
 import OscillatorContext from 'src/context/OscillatorContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import {

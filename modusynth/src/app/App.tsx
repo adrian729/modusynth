@@ -1,7 +1,7 @@
-import OscillatorsPanel from 'src/components/OscillatorsPanel';
+import OscillatorsPanel from 'src/components/oscillatorsPanel';
 
-import DroneController from '../components/DroneController';
-import Keyboard from '../components/Keyboard/Keyboard';
+import Freezer from '../components/freezer';
+import Keyboard from '../components/keyboard';
 import './App.scss';
 
 const App = () => {
@@ -9,7 +9,7 @@ const App = () => {
         <div className="App">
             <h1>ModuSynth</h1>
             <Keyboard />
-            <DroneController />
+            <Freezer />
             <OscillatorsPanel />
         </div>
     );

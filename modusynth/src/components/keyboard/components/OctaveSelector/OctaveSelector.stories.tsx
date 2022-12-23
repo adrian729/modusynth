@@ -2,8 +2,8 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { Provider } from 'react-redux';
 import { MainAudioContextProvider } from 'src/context/MainAudioContext';
 
-import '../../../../App/App.scss';
-import store from '../../../../App/store';
+import '../../../../app/App.scss';
+import store from '../../../../app/store';
 import '../../../../index.scss';
 import OctaveSelector from './OctaveSelector';
 import './OctaveSelector.scss';

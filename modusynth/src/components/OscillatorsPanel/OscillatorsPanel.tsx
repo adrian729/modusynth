@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 
-import Button from '../01_core/Button';
-import Oscillator from '../Oscillator/Oscillator';
+import Button from '../01_core/button';
+import Oscillator from '../oscillator/Oscillator';
 import './OscillatorsPanel.scss';
 
 const OscillatorsPanel: FC = () => {

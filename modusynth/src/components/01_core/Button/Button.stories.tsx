@@ -11,7 +11,7 @@ const args: ButtonProps = {
 export default {
     args,
     component: Button,
-    title: 'components/core/Button',
+    title: 'components/01_core/Button',
 } as ComponentMeta<typeof Button>;
 
 const ButtonStory: ComponentStory<typeof Button> = (args): ReactElement => (

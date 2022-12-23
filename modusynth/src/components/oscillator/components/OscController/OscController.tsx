@@ -1,7 +1,7 @@
 import { ChangeEvent, FC } from 'react';
 
-import { useAppDispatch } from 'src/App/hooks';
-import Slider from 'src/components/core/Slider';
+import { useAppDispatch } from 'src/app/hooks';
+import Slider from 'src/components/01_core/slider';
 import OscillatorContext from 'src/context/OscillatorContext';
 import useOscillator from 'src/hooks/useOscillator/useOscillator';
 import useSafeContext from 'src/hooks/useSafeContext';
@@ -11,11 +11,11 @@ import {
 } from 'src/reducers/synthSlice';
 import { OscSettingsTypes, OscillatorSettings } from 'src/types/oscillator';
 
-import ADSR from '../ADSR';
-import Detune from '../Detune';
-import MuteOsc from '../MuteOsc/MuteOsc';
-import WaveTypeSelector from '../WaveTypeSelector';
-import './OscController.scss';
+import Detune from '../detune';
+import Envelope from '../envelope';
+import MuteOsc from '../muteOsc';
+import WaveTypeSelector from '../waveTypeSelector';
+import './styles.scss';
 
 const OscController: FC = () => {
     const dispatch = useAppDispatch();
@@ -60,7 +60,7 @@ const OscController: FC = () => {
                 onSliderReset={onResetValue}
                 resetValue={1}
             />
-            <ADSR />
+            <Envelope />
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import { ChangeEvent, FC, InputHTMLAttributes, MouseEvent } from 'react';
 
-import './Slider.scss';
+import './styles.scss';
 
 interface SliderProps extends InputHTMLAttributes<HTMLInputElement> {
     id: string;

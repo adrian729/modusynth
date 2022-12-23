@@ -1,8 +1,8 @@
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 
-import App from './App/App';
-import store from './App/store';
+import App from './app/App';
+import store from './app/store';
 import { MainAudioContextProvider } from './context/MainAudioContext';
 import reportWebVitals from './reportWebVitals';
 import './styles/index.scss';

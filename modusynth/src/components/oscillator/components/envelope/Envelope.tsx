@@ -1,7 +1,7 @@
 import { ChangeEvent, FC } from 'react';
 
-import { useAppDispatch } from 'src/App/hooks';
-import Slider from 'src/components/core/Slider';
+import { useAppDispatch } from 'src/app/hooks';
+import Slider from 'src/components/01_core/slider';
 import OscillatorContext from 'src/context/OscillatorContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import {
@@ -9,7 +9,7 @@ import {
     updateOscSetting,
 } from 'src/reducers/synthSlice';
 
-const ADSR: FC = () => {
+const Envelope: FC = () => {
     const dispatch = useAppDispatch();
     const { oscId } = useSafeContext(OscillatorContext);
     const settings = getOscillatorSettings(oscId);
@@ -83,4 +83,4 @@ const ADSR: FC = () => {
     );
 };
 
-export default ADSR;
+export default Envelope;

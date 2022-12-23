@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
-import { useAppSelector } from 'src/App/hooks';
+import { useAppSelector } from 'src/app/hooks';
 import {
     Envelope,
     OscSettingsTypes,

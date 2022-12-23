@@ -2,7 +2,7 @@ import { ReactElement } from 'react';
 
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { Provider } from 'react-redux';
-import store from 'src/App/store';
+import store from 'src/app/store';
 
 import Freezer from './Freezer';
 

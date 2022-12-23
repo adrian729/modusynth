@@ -1,5 +1,5 @@
 import { QwertyHancock } from 'qwerty-hancock';
-import { useAppDispatch } from 'src/App/hooks';
+import { useAppDispatch } from 'src/app/hooks';
 import { addNote, getOctave, removeNote } from 'src/reducers/synthSlice';
 import { useWindowSize } from 'usehooks-ts';
 

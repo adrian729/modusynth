@@ -1,10 +1,10 @@
 import { FC, MouseEvent } from 'react';
 
-import { useAppDispatch } from 'src/App/hooks';
-import Button from 'src/components/core/Button';
+import { useAppDispatch } from 'src/app/hooks';
+import Button from 'src/components/01_core/button';
 import { changeOctave, getOctave } from 'src/reducers/synthSlice';
 
-import './OctaveSelector.scss';
+import './styles.scss';
 
 const octaves = [...Array(9).keys()];
 

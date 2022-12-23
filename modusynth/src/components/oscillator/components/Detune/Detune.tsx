@@ -1,7 +1,7 @@
 import { ChangeEvent, FC, useState } from 'react';
 
-import { useAppDispatch } from 'src/App/hooks';
-import Slider from 'src/components/core/Slider';
+import { useAppDispatch } from 'src/app/hooks';
+import Slider from 'src/components/01_core/slider';
 import OscillatorContext from 'src/context/OscillatorContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import {

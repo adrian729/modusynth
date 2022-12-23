@@ -1,11 +1,11 @@
 import { FC, useEffect, useState } from 'react';
 
 import _ from 'lodash';
-import { useAppDispatch } from 'src/App/hooks';
+import { useAppDispatch } from 'src/app/hooks';
 import OscillatorContext from 'src/context/OscillatorContext';
 import { addOscillator, oscillatorExists } from 'src/reducers/synthSlice';
 
-import OscController from './components/OscController';
+import OscController from './components/oscController';
 
 interface OscProps {
     // eslint-disable-next-line no-undef
