@@ -1,3 +1,89 @@
-.slider {
-    display: inline-block;
+$slider-size: 12rem;
+$track-height: 0.2rem;
+$thumb-height: 1.5rem;
+$thumb-width: 3rem;
+$margin-top-fix: $track-height/2 - $thumb-height/2;
+$outline-offset: 0.125;
+
+.slider__container {
+    height: $slider-size;
+    width: $thumb-height;
+    position: relative;
+}
+
+.vertical {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: rotate(-90deg)
+        translate(
+            $slider-size/2 - $outline-offset,
+            $thumb-height/2 - $slider-size/2
+        );
+}
+
+/********** Range Input Styles **********/
+/*Range Reset*/
+input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    margin: 0;
+    cursor: pointer;
+    width: $slider-size;
+}
+
+/* Removes default focus */
+input[type='range']:focus {
+    outline: none;
+}
+
+/***** Chrome, Safari, Opera and Edge Chromium styles *****/
+/* slider track */
+input[type='range']::-webkit-slider-runnable-track {
+    background-color: black;
+    height: $track-height;
+}
+
+/* slider thumb */
+input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    margin-top: $margin-top-fix; /* Centers thumb on the track */
+
+    /*custom styles*/
+    background-color: rgb(176, 176, 176);
+    border: 0.05rem solid black;
+    height: $thumb-height;
+    width: $thumb-width;
+}
+
+input[type='range']:focus::-webkit-slider-thumb {
+    border: 0.1rem solid black;
+    outline: 0.1rem solid black;
+    outline-offset: $outline-offset;
+}
+
+/******** Firefox styles ********/
+/* slider track */
+input[type='range']::-moz-range-track {
+    background-color: black;
+    height: 0.2rem;
+}
+
+/* slider thumb */
+input[type='range']::-moz-range-thumb {
+    border: none; /*Removes extra border that FF applies*/
+    border-radius: 0; /*Removes default border-radius that FF applies*/
+
+    /*custom styles*/
+    background-color: rgb(176, 176, 176);
+    height: 2rem;
+    width: 1rem;
+}
+
+input[type='range']:focus::-moz-range-thumb {
+    border: 0.1rem solid black;
+    outline: 0.1rem solid black;
+    outline-offset: $outline-offset;
 }

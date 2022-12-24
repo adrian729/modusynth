@@ -1,9 +1,11 @@
 import { ChangeEvent, FC } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
+import List from 'src/components/00_layouts/list';
+import Box from 'src/components/01_core/box/Box';
 import Slider from 'src/components/01_core/slider';
+import useOscillator from 'src/components/oscillator/hooks/useOscillator/useOscillator';
 import OscillatorContext from 'src/context/OscillatorContext';
-import useOscillator from 'src/hooks/useOscillator/useOscillator';
 import useSafeContext from 'src/hooks/useSafeContext';
 import {
     getOscillatorSettings,
@@ -46,22 +48,24 @@ const OscController: FC = () => {
     };
 
     return (
-        <div className="osccontroller">
+        <Box className="osccontroller">
             <MuteOsc />
             <WaveTypeSelector />
-            <Detune />
-            <Slider
-                id="gain"
-                value={gain}
-                min={0.1}
-                max={2}
-                step={0.1}
-                onChange={change}
-                onSliderReset={onResetValue}
-                resetValue={1}
-            />
-            <Envelope />
-        </div>
+            <List direction="row" alignment="center">
+                <Detune />
+                <Slider
+                    id="gain"
+                    value={gain}
+                    min={0.1}
+                    max={2}
+                    step={0.1}
+                    onChange={change}
+                    onSliderReset={onResetValue}
+                    resetValue={1}
+                />
+                <Envelope />
+            </List>
+        </Box>
     );
 };
 export default OscController;

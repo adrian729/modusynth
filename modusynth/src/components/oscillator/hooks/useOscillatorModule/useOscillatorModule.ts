@@ -1,20 +1,19 @@
-import { Envelope } from 'src/types/oscillator';
-
 import {
     ChangeOscModuleSettingsProps,
+    Envelope,
     OscModule,
     OscModuleSettings,
-} from './types';
+} from 'src/types/oscillator';
 
-const OscillatorModule = (
+const useOscillatorModule = (
     audioContext: AudioContext,
     connection: AudioNode,
     oscModuleSettings: OscModuleSettings,
 ): OscModule => {
-    let { envelope } = oscModuleSettings;
-    let { currentTime } = audioContext;
-    let osc: OscillatorNode = audioContext.createOscillator();
-    let gateGain: GainNode = audioContext.createGain();
+    const { envelope } = oscModuleSettings;
+    const { currentTime } = audioContext;
+    const osc: OscillatorNode = audioContext.createOscillator();
+    const gateGain: GainNode = audioContext.createGain();
 
     setupOsc(osc, oscModuleSettings);
     setupGateGain(gateGain, envelope, currentTime);
@@ -24,8 +23,8 @@ const OscillatorModule = (
     osc.start();
 
     const stop = () => {
-        let { currentTime } = audioContext;
-        let { release } = envelope;
+        const { currentTime } = audioContext;
+        const { release } = envelope;
 
         gateGain.gain.cancelScheduledValues(currentTime);
         gateGain.gain.setTargetAtTime(0, currentTime, release);
@@ -35,7 +34,7 @@ const OscillatorModule = (
     };
 
     const changeOscSettings = (settings: ChangeOscModuleSettingsProps) => {
-        let { type, detune } = settings;
+        const { type, detune } = settings;
 
         if (type !== undefined) {
             osc.type = type;
@@ -48,7 +47,7 @@ const OscillatorModule = (
 
     return { stop, changeOscSettings };
 };
-export default OscillatorModule;
+export default useOscillatorModule;
 
 const setupOsc = (
     osc: OscillatorNode,
@@ -64,7 +63,7 @@ const setupGateGain = (
     { attack, decay, sustain }: Envelope,
     currentTime: number,
 ): void => {
-    let easing = 0.005;
+    const easing = 0.005;
 
     gateGain.gain.cancelScheduledValues(currentTime);
     gateGain.gain.setValueAtTime(0, currentTime + easing);

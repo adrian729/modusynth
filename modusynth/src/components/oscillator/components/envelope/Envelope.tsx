@@ -1,6 +1,7 @@
 import { ChangeEvent, FC } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
+import List from 'src/components/00_layouts/list/List';
 import Slider from 'src/components/01_core/slider';
 import OscillatorContext from 'src/context/OscillatorContext';
 import useSafeContext from 'src/hooks/useSafeContext';
@@ -38,7 +39,7 @@ const Envelope: FC = () => {
     };
 
     return (
-        <div>
+        <List direction="row">
             <Slider
                 id="attack"
                 value={attack}
@@ -79,7 +80,7 @@ const Envelope: FC = () => {
                 onSliderReset={onResetValue}
                 resetValue={0.1}
             />
-        </div>
+        </List>
     );
 };
 

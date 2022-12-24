@@ -9,8 +9,6 @@ import {
     updateOscSetting,
 } from 'src/reducers/synthSlice';
 
-import './styles.scss';
-
 const MuteOsc: FC = () => {
     const dispatch = useAppDispatch();
     const { oscId } = useSafeContext(OscillatorContext);
@@ -33,7 +31,6 @@ const MuteOsc: FC = () => {
             name="mute"
             title="M"
             buttonKind={mute ? 'warning' : undefined}
-            className="muteosc__button"
             onClick={toggleMuted}
         />
     );

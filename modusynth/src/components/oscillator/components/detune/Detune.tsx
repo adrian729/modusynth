@@ -99,7 +99,7 @@ const Detune: FC = () => {
     // TODO: refactor this into smaller parts/array of values/change names (2ND, 3RD, 4TH etc)
     return (
         <div>
-            <select id="down" onChange={changeDetune} value={down}>
+            <select id="up" onChange={changeDetune} value={up}>
                 <option value={24}>2OCT</option>
                 <option value={12}>OCT</option>
                 <option value={11}>7TH</option>
@@ -124,7 +124,7 @@ const Detune: FC = () => {
                 onSliderReset={onResetValue}
                 resetValue={0}
             />
-            <select id="up" onChange={changeDetune} value={up}>
+            <select id="down" onChange={changeDetune} value={down}>
                 <option value={24}>2OCT</option>
                 <option value={12}>OCT</option>
                 <option value={11}>7TH</option>

@@ -1,8 +1,17 @@
-// Settings – used with preprocessors and contain font, colors definitions, etc.  It’s important not to output any CSS.
+/**
+ * Settings – used with preprocessors and contain font,
+ * colors definitions, etc.  
+ * It’s important not to output any CSS.
+ */
 
-// 1. Variables sass
+/*------------------------------------*\
+# 1. Variables SASS
+\*------------------------------------*/
 
-// 1.1 Colours
+/*------------------------------------*\
+## 1.1 Colours
+\*------------------------------------*/
+
 $gray-50: #f9fafb;
 $gray-100: #f3f4f6;
 $gray-200: #e5e7eb;
@@ -40,9 +49,14 @@ $button-color: $gray-50;
 $button-color--active: $gray-500;
 $button-color--warning: $gray-600;
 
-// 1.2 Spacings
+/*------------------------------------*\
+## 1.2 Spacings
+\*------------------------------------*/
 
-// 2. Custom Props
+/*------------------------------------*\
+# 2. Custom Properties
+\*------------------------------------*/
+
 :root {
     --primary: #{$primary};
     --secondary: #{$secondary};

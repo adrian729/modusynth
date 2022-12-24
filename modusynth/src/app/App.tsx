@@ -1,17 +1,30 @@
+import { Provider } from 'react-redux';
+import Section from 'src/components/01_core/section';
+import Freezer from 'src/components/freezer';
+import Keyboard from 'src/components/keyboard';
 import OscillatorsPanel from 'src/components/oscillatorsPanel';
+import { MainAudioContextProvider } from 'src/context/MainAudioContext';
 
-import Freezer from '../components/freezer';
-import Keyboard from '../components/keyboard';
-import './App.scss';
+import store from './store';
 
 const App = () => {
     return (
-        <div className="App">
-            <h1>ModuSynth</h1>
-            <Keyboard />
-            <Freezer />
-            <OscillatorsPanel />
-        </div>
+        <Provider store={store}>
+            <MainAudioContextProvider>
+                <Section>
+                    <h1 className="center__text">ModuSynth</h1>
+                </Section>
+                <Section>
+                    <Keyboard />
+                </Section>
+                <Section>
+                    <Freezer />
+                </Section>
+                <Section>
+                    <OscillatorsPanel />
+                </Section>
+            </MainAudioContextProvider>
+        </Provider>
     );
 };
 

@@ -3,15 +3,15 @@ import { createContext, useState } from 'react';
 import { getActiveOscillatorsCount } from 'src/reducers/synthSlice';
 import { Props } from 'src/types/core';
 
-let audioContext = new AudioContext();
-let out = audioContext.destination;
+const audioContext = new AudioContext();
+const out = audioContext.destination;
 
-let mainGain = audioContext.createGain();
+const mainGain = audioContext.createGain();
 mainGain.gain.value = 0.2;
-let filter = audioContext.createBiquadFilter();
+const filter = audioContext.createBiquadFilter();
 mainGain.connect(filter);
 filter.connect(out);
-let compressor = audioContext.createDynamicsCompressor();
+const compressor = audioContext.createDynamicsCompressor();
 filter.connect(compressor);
 compressor.connect(out);
 

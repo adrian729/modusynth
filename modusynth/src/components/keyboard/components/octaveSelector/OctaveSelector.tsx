@@ -1,6 +1,7 @@
 import { FC, MouseEvent } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
+import List from 'src/components/00_layouts/list';
 import Button from 'src/components/01_core/button';
 import { changeOctave, getOctave } from 'src/reducers/synthSlice';
 
@@ -14,23 +15,23 @@ const OctaveSelector: FC = () => {
 
     const onClick = (e: MouseEvent): void => {
         const { id } = e.target as HTMLInputElement;
-        const newOctave = parseInt(id.replace('octave', ''));
+        const newOctave = parseInt(id.replace('C', ''));
         dispatch(changeOctave(newOctave));
     };
 
     return (
-        <div className="octaveselector">
+        <List className="octaveselector" direction="row" alignment="center">
             {octaves.map((octave) => (
                 <Button
                     key={octave}
+                    id={`C${octave}`}
                     title={`C${octave}`}
-                    id={`octave${octave}`}
+                    className={'octaveselector__item'}
                     onClick={onClick}
-                    className={'octaveselector__button'}
                     buttonKind={currentOctave === octave ? 'active' : undefined}
                 />
             ))}
-        </div>
+        </List>
     );
 };
 

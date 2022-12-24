@@ -1,18 +1,27 @@
-import { FC } from 'react';
+import { FC, useRef } from 'react';
 
 import { useKeyboard } from 'src/components/keyboard/hooks/useKeyboard';
 
-import './Keyboard.scss';
+import Container from '../00_layouts/container';
 import OctaveSelector from './components/octaveSelector';
 
 const Keyboard: FC = () => {
-    useKeyboard();
+    const keyboardWrapperRef = useRef<HTMLDivElement>(null);
+    const keyboardRef = useRef<HTMLDivElement>(null);
+    const keyboardWidth = useKeyboard({ keyboardRef });
+    const { current } = keyboardWrapperRef;
+
+    if (current && keyboardWidth > 0) {
+        current.style.width = `${keyboardWidth}px`;
+    }
 
     return (
-        <div className="keyboard">
-            <div id="keyboard"></div>
+        <Container alignContent="center-content">
+            <div ref={keyboardWrapperRef}>
+                <div id="keyboard" ref={keyboardRef}></div>
+            </div>
             <OctaveSelector />
-        </div>
+        </Container>
     );
 };
 

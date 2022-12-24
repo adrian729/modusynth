@@ -1,7 +1,18 @@
 .list {
-    .list-item {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 1rem 2rem;
+
+    &.row {
+        flex-flow: row wrap;
     }
 
-    &.horizontal {
+    &.column {
+        flex-flow: column wrap;
+    }
+
+    &.center {
+        align-items: center;
+        justify-content: center;
     }
 }

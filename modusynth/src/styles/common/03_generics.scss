@@ -1,0 +1,64 @@
+/** 
+* Generic – reset and/or normalize styles, 
+* box-sizing definition, etc.
+* This is the first layer which generates 
+* actual CSS.
+*/
+
+/*------------------------------------*\
+# 1. Resets
+\*------------------------------------*/
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+p,
+h1,
+h2,
+h3,
+h4 {
+    margin: 0;
+    padding: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    padding-block-start: 0;
+    padding-block-end: 0;
+    padding-inline-start: 0;
+    padding-inline-end: 0;
+}
+
+input,
+textarea,
+button {
+    font-family: inherit;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+/*------------------------------------*\
+# 1. Normalize and definitions
+\*------------------------------------*/
+
+body {
+    position: relative;
+
+    background: $gray-50;
+    min-height: 100vh;
+
+    color: $text-color;
+    font-family: Lucida Console, Lucida Sans Typewriter, monaco,
+        Bitstream Vera Sans Mono, monospace;
+
+    padding: 2rem 3rem;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

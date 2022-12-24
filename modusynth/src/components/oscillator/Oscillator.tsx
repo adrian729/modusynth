@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 
 import _ from 'lodash';
 import { useAppDispatch } from 'src/app/hooks';
@@ -15,7 +15,7 @@ interface OscProps {
 
 const Oscillator: FC<OscProps> = ({ type, mute }) => {
     const dispatch = useAppDispatch();
-    const [oscId] = useState<string>(_.uniqueId('osc_'));
+    const oscId = useMemo(() => _.uniqueId('osc_'), []);
     const oscillatorCreated = oscillatorExists(oscId);
 
     useEffect((): void => {

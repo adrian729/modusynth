@@ -1,9 +1,6 @@
 import ReactDOM from 'react-dom/client';
-import { Provider } from 'react-redux';
 
 import App from './app/App';
-import store from './app/store';
-import { MainAudioContextProvider } from './context/MainAudioContext';
 import reportWebVitals from './reportWebVitals';
 import './styles/index.scss';
 
@@ -13,11 +10,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
     // <React.StrictMode>
-    <Provider store={store}>
-        <MainAudioContextProvider>
-            <App />
-        </MainAudioContextProvider>
-    </Provider>,
+    <App />,
     // </React.StrictMode>
 );
 

@@ -2,15 +2,16 @@ import { useEffect, useState } from 'react';
 
 import MainAudioContext from 'src/context/MainAudioContext';
 import OscillatorContext from 'src/context/OscillatorContext';
-import OscillatorModule from 'src/hooks/useOscillator/OscillatorModule';
+import useSafeContext from 'src/hooks/useSafeContext';
 import {
     getNotes,
     getOscillatorDrones,
     getOscillatorSettings,
 } from 'src/reducers/synthSlice';
+import { OscModule, OscModuleSettings } from 'src/types/oscillator';
 
-import useSafeContext from '../useSafeContext';
-import { OscModule, OscModuleSettings, OscState } from './types';
+import OscillatorModule from '../useOscillatorModule/useOscillatorModule';
+import { OscState } from './types';
 
 const updateGainControl = (
     gainControlGain: AudioParam,
@@ -51,7 +52,7 @@ const useOscillator = (): void => {
      * Update gainControl on gain or mute change
      */
     useEffect((): void => {
-        let { currentTime } = audioContext;
+        const { currentTime } = audioContext;
         updateGainControl(gainControl.gain, gain, mute, currentTime);
     }, [mute, gain]);
 

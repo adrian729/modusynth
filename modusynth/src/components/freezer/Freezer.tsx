@@ -1,9 +1,9 @@
 import { FC, useState } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
+import List from 'src/components/00_layouts/list';
 import Button from 'src/components/01_core/button';
 import { freeze, release } from 'src/reducers/synthSlice';
-import 'src/styles/index.scss';
 
 const Freezer: FC = () => {
     const dispatch = useAppDispatch();
@@ -20,7 +20,7 @@ const Freezer: FC = () => {
     };
 
     return (
-        <div id="freezer">
+        <List direction="row" alignment="center">
             <Button
                 title="FREEZE"
                 buttonKind={hasDrones ? 'active' : undefined}
@@ -31,7 +31,7 @@ const Freezer: FC = () => {
                 buttonKind={hasDrones ? 'warning' : undefined}
                 onClick={killDrones}
             />
-        </div>
+        </List>
     );
 };
 

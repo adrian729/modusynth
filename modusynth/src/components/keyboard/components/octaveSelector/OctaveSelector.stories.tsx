@@ -1,16 +1,13 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { Provider } from 'react-redux';
+import store from 'src/app/store';
 import { MainAudioContextProvider } from 'src/context/MainAudioContext';
 
-import '../../../../app/App.scss';
-import store from '../../../../app/store';
-import '../../../../index.scss';
 import OctaveSelector from './OctaveSelector';
-import './OctaveSelector.scss';
 
 export default {
     component: OctaveSelector,
-    title: 'core/OctaveSelector',
+    title: 'components/keyboard/components/OctaveSelector',
 } as ComponentMeta<typeof OctaveSelector>;
 
 const OctaveSelectorStory: ComponentStory<typeof OctaveSelector> = () => (

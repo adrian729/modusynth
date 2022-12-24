@@ -1,3 +1,5 @@
+import { RefObject } from 'react';
+
 import { QwertyHancock } from 'qwerty-hancock';
 import { useAppDispatch } from 'src/app/hooks';
 import { addNote, getOctave, removeNote } from 'src/reducers/synthSlice';
@@ -7,7 +9,7 @@ const createKeyboard = (width: number, octave: number): any => {
     const [keyboardWidth, keyboardHeight, numOctaves] =
         width && width < 600 ? [Math.floor(width * 0.9), 150, 1] : [449, 90, 2];
 
-    return new QwertyHancock({
+    const keyboard = new QwertyHancock({
         id: 'keyboard',
         width: keyboardWidth,
         height: keyboardHeight,
@@ -18,15 +20,20 @@ const createKeyboard = (width: number, octave: number): any => {
         activeColour: 'mediumturquoise',
         borderColour: 'white',
     });
+
+    return { keyboard, keyboardWidth };
 };
 
-export const useKeyboard = (): void => {
+interface UseKeyboardArgs {
+    keyboardRef: RefObject<HTMLDivElement>;
+}
+export const useKeyboard = ({ keyboardRef }: UseKeyboardArgs): number => {
     const dispatch = useAppDispatch();
     const octave = getOctave();
     const { width } = useWindowSize();
 
-    if (document.getElementById('keyboard')) {
-        const keyboard = createKeyboard(width, octave);
+    if (keyboardRef.current) {
+        const { keyboard, keyboardWidth } = createKeyboard(width, octave);
         keyboard.keyDown = (note: string, freq: number): void => {
             dispatch(addNote({ note, freq }));
         };
@@ -34,5 +41,8 @@ export const useKeyboard = (): void => {
         keyboard.keyUp = (note: string): void => {
             dispatch(removeNote(note));
         };
+        return keyboardWidth;
     }
+
+    return -1;
 };
