@@ -1,9 +1,11 @@
 import { ChangeEvent, FC, InputHTMLAttributes, MouseEvent } from 'react';
 
+import Container from 'src/components/00_layouts/container/Container';
+
 import './styles.scss';
 
 type Orientation = 'vertical' | 'horizontal';
-interface SliderProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface SliderProps extends InputHTMLAttributes<HTMLInputElement> {
     id: string;
     value: number;
     min?: number;
@@ -29,17 +31,20 @@ const Slider: FC<SliderProps> = ({
     const handleClick = (e: MouseEvent): void => {
         let { detail, target } = e;
         if (detail === 2) {
-            let val: number = resetValue ?? (max + min) / 2;
-            let { id } = target as HTMLInputElement;
+            const val: number = resetValue ?? (max + min) / 2;
+            const { id } = target as HTMLInputElement;
             onSliderReset(id, val);
         }
     };
 
     return (
-        <div className="flex flex-col flex-nowrap justify-center items-center">
-            <h6>{id}</h6>
-            <div>
-                <h6>{value ? Math.floor(value * 100) / 100 : 0}</h6>
+        <Container alignContent="center-content">
+            {/* <div className="flex flex-col flex-nowrap justify-center items-center"> */}
+            <div className="slider__header">
+                <h6 className="slider__title">{id}</h6>
+                <h6 className="slider__value">
+                    {value ? Math.floor(value * 100) / 100 : 0}
+                </h6>
             </div>
             <div className="slider__container">
                 <input
@@ -55,23 +60,8 @@ const Slider: FC<SliderProps> = ({
                     {...restProps}
                 />
             </div>
-        </div>
-        // <div className="slider">
-        // <h6>
-        //     {id}: {value ? Math.round(value * 100) / 100 : 0}
-        // </h6>
-        //     <input
-        //         id={id}
-        //         value={value}
-        //         min={min}
-        //         max={max}
-        //         step={step}
-        //         type="range"
-        //         onClick={handleClick}
-        //         onChange={onChange}
-        //         {...restProps}
-        //     />
-        // </div>
+            {/* </div> */}
+        </Container>
     );
 };
 

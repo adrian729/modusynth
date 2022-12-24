@@ -27,7 +27,7 @@ const OscController: FC = () => {
     useOscillator();
 
     const change = (e: ChangeEvent): void => {
-        let { id, value } = e.target as HTMLInputElement;
+        const { id, value } = e.target as HTMLInputElement;
         dispatch(
             updateOscSetting({
                 oscId,

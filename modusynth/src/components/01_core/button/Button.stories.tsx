@@ -22,23 +22,19 @@ const ButtonStory: ComponentStory<typeof Button> = (args): ReactElement => (
 export const Default = ButtonStory.bind({});
 export const Active = ButtonStory.bind({});
 Active.args = {
-    ...args,
     buttonKind: 'active',
 };
 export const Warning = ButtonStory.bind({});
 Warning.args = {
-    ...args,
     buttonKind: 'warning',
 };
 
 // Text length
 export const ShortText = ButtonStory.bind({});
 ShortText.args = {
-    ...args,
     title: 'S',
 };
 export const LongText = ButtonStory.bind({});
 LongText.args = {
-    ...args,
     title: 'Lorem ipsum dolor sit amet',
 };
