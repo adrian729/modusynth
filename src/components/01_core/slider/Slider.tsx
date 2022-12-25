@@ -27,7 +27,7 @@ const Slider: FC<SliderProps> = ({
     onSliderReset,
     orientation = 'vertical',
     ...restProps
-}: any) => {
+}: SliderProps) => {
     const handleClick = (e: MouseEvent): void => {
         let { detail, target } = e;
         if (detail === 2) {
@@ -38,7 +38,7 @@ const Slider: FC<SliderProps> = ({
     };
 
     return (
-        <Container alignContent="center-content">
+        <Container alignContent="center-content" className="slider">
             {/* <div className="flex flex-col flex-nowrap justify-center items-center"> */}
             <div className="slider__header">
                 <h6 className="slider__title">{id}</h6>
@@ -56,7 +56,7 @@ const Slider: FC<SliderProps> = ({
                     onClick={handleClick}
                     onChange={onChange}
                     type="range"
-                    className={orientation}
+                    className={!!orientation && `slider--${orientation}`}
                     {...restProps}
                 />
             </div>

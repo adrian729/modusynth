@@ -1,15 +1,16 @@
 @import 'src/styles/common/index.scss';
 
-$slider-size: 12rem;
+$slider-height: 12rem;
+$track-width: 0.3rem;
 $track-height: 0.3rem;
-$thumb-height: 1.5rem;
-$thumb-width: 3.2rem;
-$margin-top-fix: $track-height/2 - $thumb-height/2;
-$outline-offset: 0.125;
+$thumb-width: 1.5rem;
+$thumb-height: 3.2rem;
+$margin-top-fix: $track-width/2 - $thumb-width/2;
+$outline-offset: 0.15;
 
+/********** Slider header and wrapper **********/
 .slider {
     &__header {
-        margin-bottom: 0;
         text-align: center;
         margin-bottom: 0.4rem;
     }
@@ -19,26 +20,27 @@ $outline-offset: 0.125;
     }
 
     &__value {
-        margin-top: 0.2rem;
         color: $gray-500;
+        margin-top: 0.2rem;
     }
 
     &__container {
-        height: $slider-size;
-        width: $thumb-height;
         position: relative;
-    }
-}
 
-.vertical {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    transform: rotate(-90deg)
-        translate(
-            $slider-size/2 - $outline-offset,
-            $thumb-height/2 - $slider-size/2
-        );
+        width: $thumb-width;
+        height: $slider-height;
+    }
+
+    &--vertical {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        transform: rotate(-90deg)
+            translate(
+                $slider-height/2 - $outline-offset,
+                $thumb-width/2 - $slider-height/2
+            );
+    }
 }
 
 /********** Range Input Styles **********/
@@ -49,7 +51,7 @@ input[type='range'] {
     background: transparent;
     margin: 0;
     cursor: pointer;
-    width: $slider-size;
+    width: $slider-height;
 }
 
 /* Removes default focus */
@@ -60,9 +62,16 @@ input[type='range']:focus {
 /***** Chrome, Safari, Opera and Edge Chromium styles *****/
 /* slider track */
 input[type='range']::-webkit-slider-runnable-track {
-    background-color: $gray-900;
-    height: $track-height;
+    // background-color: $gray-900;
     border-radius: 2px;
+    background: linear-gradient(
+        to bottom,
+        $gray-900 0%,
+        $gray-900 20%,
+        $gray-800 80%,
+        $gray-400 100%
+    );
+    height: $track-width;
 }
 
 /* slider thumb */
@@ -72,8 +81,8 @@ input[type='range']::-webkit-slider-thumb {
     margin-top: $margin-top-fix; /* Centers thumb on the track */
 
     /*custom styles*/
-    height: $thumb-height;
-    width: $thumb-width;
+    height: $thumb-width;
+    width: $thumb-height;
 
     background: linear-gradient(
         to left,
