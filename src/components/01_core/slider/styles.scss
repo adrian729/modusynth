@@ -1,9 +1,9 @@
 @import 'src/styles/common/index.scss';
 
 $slider-size: 12rem;
-$track-height: 0.25rem;
+$track-height: 0.3rem;
 $thumb-height: 1.5rem;
-$thumb-width: 3rem;
+$thumb-width: 3.2rem;
 $margin-top-fix: $track-height/2 - $thumb-height/2;
 $outline-offset: 0.125;
 
@@ -11,6 +11,16 @@ $outline-offset: 0.125;
     &__header {
         margin-bottom: 0;
         text-align: center;
+        margin-bottom: 0.4rem;
+    }
+
+    &__title {
+        font-weight: bolder;
+    }
+
+    &__value {
+        margin-top: 0.2rem;
+        color: $gray-500;
     }
 
     &__container {
@@ -50,8 +60,9 @@ input[type='range']:focus {
 /***** Chrome, Safari, Opera and Edge Chromium styles *****/
 /* slider track */
 input[type='range']::-webkit-slider-runnable-track {
-    background-color: $gray-700;
+    background-color: $gray-900;
     height: $track-height;
+    border-radius: 2px;
 }
 
 /* slider thumb */
@@ -66,17 +77,65 @@ input[type='range']::-webkit-slider-thumb {
 
     background: linear-gradient(
         to left,
-        $gray-900 0%,
-        $gray-400 5%,
-        $gray-400 5%,
-        $gray-400 10%,
-        $gray-900 25%,
-        $gray-700 34%,
-        $gray-700 34%,
-        $gray-400 73%,
-        $gray-400 75%,
-        $gray-900 100%
+        $gray-700 0%,
+        $gray-500 13.5%,
+        $gray-400 15%,
+
+        $gray-800 17%,
+        $gray-800 19%,
+        $gray-900 19%,
+        $gray-900 19.5%,
+        $gray-500 20%,
+
+        $gray-800 21.5%,
+        $gray-800 27%,
+        $gray-900 27%,
+        $gray-900 27.8%,
+        $gray-400 28.5%,
+        $gray-500 28.5%,
+        $gray-600 29%,
+
+        $gray-800 31%,
+        $gray-700 37%,
+        $gray-900 37%,
+        $gray-900 37.8%,
+        $gray-400 38.5%,
+        $gray-500 38.5%,
+        $gray-700 40%,
+
+        $gray-800 49%,
+        $gray-200 49%,
+        $gray-200 51%,
+
+        $gray-800 51%,
+        $gray-600 61%,
+        $gray-900 61%,
+        $gray-900 61.5%,
+        $gray-400 62%,
+        $gray-500 62.5%,
+        $gray-600 64%,
+
+        $gray-600 71.5%,
+        $gray-900 71.5%,
+        $gray-900 72.3%,
+        $gray-400 72.5%,
+        $gray-500 73%,
+        $gray-600 74%,
+
+        $gray-600 75%,
+        $gray-500 81%,
+        $gray-900 81%,
+        $gray-900 81.5%,
+        $gray-400 82%,
+        $gray-500 83.5%,
+
+        $gray-500 86%,
+        $gray-900 87.5%,
+
+        $gray-700 95%,
+        $gray-600 100%
     );
+    border-radius: 1px;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.12), 0 3px 5px rgba(0, 0, 0, 0.24);
 }
 
@@ -87,24 +146,24 @@ input[type='range']:focus::-webkit-slider-thumb {
 
 /******** Firefox styles ********/
 /* slider track */
-input[type='range']::-moz-range-track {
-    background-color: black;
-    height: 0.2rem;
-}
+// input[type='range']::-moz-range-track {
+//     background-color: black;
+//     height: 0.2rem;
+// }
 
-/* slider thumb */
-input[type='range']::-moz-range-thumb {
-    border: none; /*Removes extra border that FF applies*/
-    border-radius: 0; /*Removes default border-radius that FF applies*/
+// /* slider thumb */
+// input[type='range']::-moz-range-thumb {
+//     border: none; /*Removes extra border that FF applies*/
+//     border-radius: 0; /*Removes default border-radius that FF applies*/
 
-    /*custom styles*/
-    background-color: rgb(176, 176, 176);
-    height: 2rem;
-    width: 1rem;
-}
+//     /*custom styles*/
+//     background-color: rgb(176, 176, 176);
+//     height: 2rem;
+//     width: 1rem;
+// }
 
-input[type='range']:focus::-moz-range-thumb {
-    border: 0.1rem solid black;
-    outline: 0.1rem solid black;
-    outline-offset: $outline-offset;
-}
+// input[type='range']:focus::-moz-range-thumb {
+//     border: 0.1rem solid black;
+//     outline: 0.1rem solid black;
+//     outline-offset: $outline-offset;
+// }
