@@ -1,9 +1,7 @@
 import { FC, useRef } from 'react';
 
-import { useKeyboard } from 'src/components/keyboard/hooks/useKeyboard';
-
-import Container from '../00_layouts/container';
-import OctaveSelector from './components/octaveSelector';
+import OctaveSelector from '../octaveSelector/OctaveSelector';
+import { useKeyboard } from './hooks/useKeyboard';
 
 const Keyboard: FC = () => {
     const keyboardWrapperRef = useRef<HTMLDivElement>(null);
@@ -16,12 +14,10 @@ const Keyboard: FC = () => {
     }
 
     return (
-        <Container alignContent="center-content">
-            <div ref={keyboardWrapperRef}>
-                <div id="keyboard" ref={keyboardRef}></div>
-            </div>
+        <div ref={keyboardWrapperRef}>
             <OctaveSelector />
-        </Container>
+            <div id="keyboard" ref={keyboardRef}></div>
+        </div>
     );
 };
 

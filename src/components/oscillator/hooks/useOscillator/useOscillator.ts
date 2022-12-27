@@ -25,7 +25,7 @@ const updateGainControl = (
 
 const useOscillator = (): void => {
     const {
-        context: { audioContext, mainGain },
+        context: { audioContext, mainGainNode },
     } = useSafeContext(MainAudioContext);
     const { oscId } = useSafeContext(OscillatorContext);
     const [{ noteModules, droneModules, gainControl }, setOscState] =
@@ -45,7 +45,7 @@ const useOscillator = (): void => {
      */
     useEffect((): void => {
         gainControl.gain.value = 0.5;
-        gainControl.connect(mainGain);
+        gainControl.connect(mainGainNode);
     }, []);
 
     /**

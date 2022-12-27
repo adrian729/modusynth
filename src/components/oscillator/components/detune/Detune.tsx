@@ -97,6 +97,7 @@ const Detune: FC = () => {
     };
 
     // TODO: refactor this into smaller parts/array of values/change names (2ND, 3RD, 4TH etc)
+    // TODO: separate into Osc Detune and general Detune or Slider with Options
     return (
         <div>
             <select id="up" onChange={changeDetune} value={up}>

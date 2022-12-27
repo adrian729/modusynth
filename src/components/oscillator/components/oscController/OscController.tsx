@@ -56,7 +56,6 @@ const OscController: FC = () => {
                 <Slider
                     id="gain"
                     value={gain}
-                    min={0.1}
                     max={2}
                     step={0.1}
                     onChange={change}

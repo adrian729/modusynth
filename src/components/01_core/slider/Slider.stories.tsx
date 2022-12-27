@@ -33,3 +33,15 @@ const SliderStory: ComponentStory<typeof Slider> = (args): ReactElement => {
 };
 
 export const Default = SliderStory.bind({});
+
+export const TitleBottom = SliderStory.bind({});
+TitleBottom.args = {
+    ...args,
+    titlePosition: 'bottom',
+};
+
+export const NoTitle = SliderStory.bind({});
+NoTitle.args = {
+    ...args,
+    titlePosition: 'none',
+};

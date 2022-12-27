@@ -1,8 +1,8 @@
 import { Provider } from 'react-redux';
 import Section from 'src/components/01_core/section';
 import Freezer from 'src/components/freezer';
-import Keyboard from 'src/components/keyboard';
 import OscillatorsPanel from 'src/components/oscillatorsPanel';
+import SynthPanel from 'src/components/synthPanel/SynthPanel';
 import { MainAudioContextProvider } from 'src/context/MainAudioContext';
 
 import store from './store';
@@ -15,7 +15,7 @@ const App = () => {
                     <h1 className="center__text">ModuSynth</h1>
                 </Section>
                 <Section>
-                    <Keyboard />
+                    <SynthPanel />
                 </Section>
                 <Section>
                     <Freezer />

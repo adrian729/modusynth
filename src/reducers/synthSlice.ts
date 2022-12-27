@@ -16,14 +16,26 @@ export interface OscillatorState {
     settings: OscillatorSettings;
 }
 
+export interface SynthSettings {
+    gain: number;
+    detune: number;
+}
+
 export interface SynthState {
     octave: number;
+    synthSettings: SynthSettings;
     notes: Record<NoteName, Frequency>;
     oscillators: Record<OscID, OscillatorState>;
 }
 
+const initialSynthSettings: SynthSettings = {
+    gain: 0.2,
+    detune: 0,
+};
+
 const initialState: SynthState = {
     octave: 4,
+    synthSettings: initialSynthSettings,
     notes: {},
     oscillators: {},
 };
@@ -44,13 +56,37 @@ const defaultSettings: OscillatorSettings = {
 };
 
 export const synthSlice = createSlice({
-    name: 'oscillators',
+    name: 'synth',
     initialState,
     reducers: {
         changeOctave: (state, action: PayloadAction<number>): void => {
             state.octave = action.payload;
             state.notes = {};
         },
+        /** Synth Settings */
+        updateSynthGain: (state, action: PayloadAction<number>): void => {
+            state.synthSettings.gain = action.payload;
+        },
+        updateSynthDetune: (state, action: PayloadAction<number>): void => {
+            state.synthSettings.detune = action.payload;
+        },
+        updateSynthSetting: (
+            state,
+            action: PayloadAction<{
+                settingId: keyof SynthSettings;
+                value: OscSettingsTypes;
+            }>,
+        ): void => {
+            const { settingId, value } = action.payload;
+            const { synthSettings } = state;
+
+            if (settingId === 'gain') {
+                synthSettings[settingId] = value as number;
+            } else if (settingId === 'detune' || settingId === 'gain') {
+                synthSettings[settingId] = value as number;
+            }
+        },
+        /** Notes */
         addNote: (
             state,
             action: PayloadAction<{ note: string; freq: number }>,
@@ -60,6 +96,7 @@ export const synthSlice = createSlice({
                 state.notes[note] = freq;
             }
         },
+        /** Oscillators */
         removeNote: (state, action: PayloadAction<string>): void => {
             const { notes } = state;
             delete notes[action.payload];
@@ -146,6 +183,9 @@ export const synthSlice = createSlice({
 
 export const {
     changeOctave,
+    updateSynthGain,
+    updateSynthDetune,
+    updateSynthSetting,
     addNote,
     removeNote,
     addOscillator,
@@ -154,24 +194,26 @@ export const {
     freeze,
     release,
 } = synthSlice.actions;
-export const getOctave = () =>
-    useAppSelector(({ oscillators }) => oscillators.octave);
-export const getNotes = () =>
-    useAppSelector(({ oscillators }) => oscillators.notes);
+export const getOctave = () => useAppSelector(({ synth }) => synth.octave);
+export const getSynthGain = () =>
+    useAppSelector(({ synth }) => synth.synthSettings.gain);
+export const getSynthDetune = () =>
+    useAppSelector(({ synth }) => synth.synthSettings.detune);
+export const getNotes = () => useAppSelector(({ synth }) => synth.notes);
 export const getOscillators = () =>
-    useAppSelector(({ oscillators }) => oscillators.oscillators);
+    useAppSelector(({ synth }) => synth.oscillators);
 export const oscillatorExists = (id: string) =>
-    useAppSelector(({ oscillators }) => !!oscillators.oscillators[id]);
+    useAppSelector(({ synth }) => !!synth.oscillators[id]);
 export const getOscillator = (id: string) =>
-    useAppSelector(({ oscillators }) => oscillators.oscillators[id]);
+    useAppSelector(({ synth }) => synth.oscillators[id]);
 export const getOscillatorDrones = (id: string) =>
-    useAppSelector(({ oscillators }) => oscillators.oscillators[id].drones);
+    useAppSelector(({ synth }) => synth.oscillators[id].drones);
 export const getOscillatorSettings = (id: string) =>
-    useAppSelector(({ oscillators }) => oscillators.oscillators[id].settings);
+    useAppSelector(({ synth }) => synth.oscillators[id].settings);
 export const getActiveOscillatorsCount = () =>
     useAppSelector(
-        ({ oscillators }) =>
-            Object.values(oscillators.oscillators).filter(
+        ({ synth }) =>
+            Object.values(synth.oscillators).filter(
                 (osc) => osc.settings && !osc.settings.mute,
             ).length,
     );

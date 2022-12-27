@@ -1,31 +1,35 @@
 @import 'src/styles/common/index.scss';
 
-$slider-height: 12rem;
+$slider-height: 10rem;
 $track-width: 0.3rem;
-$track-height: 0.3rem;
 $thumb-width: 1.5rem;
 $thumb-height: 3.2rem;
-$margin-top-fix: $track-width/2 - $thumb-width/2;
-$outline-offset: 0.15;
+$margin-top-fix: calc($track-width/2) - calc($thumb-width/2);
+$outline-offset: 0.15rem;
 
 /********** Slider header and wrapper **********/
 .slider {
+    padding: 0;
+
     &__header {
         text-align: center;
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.2rem;
     }
 
     &__title {
+        text-align: center;
         font-weight: bolder;
+        margin-bottom: 0.2rem;
     }
 
     &__value {
         color: $gray-500;
-        margin-top: 0.2rem;
     }
 
     &__container {
         position: relative;
+        margin-top: 0;
+        margin-bottom: 0;
 
         width: $thumb-width;
         height: $slider-height;
@@ -37,8 +41,8 @@ $outline-offset: 0.15;
         left: 0;
         transform: rotate(-90deg)
             translate(
-                $slider-height/2 - $outline-offset,
-                $thumb-width/2 - $slider-height/2
+                calc($slider-height/2) - $outline-offset,
+                calc($thumb-width/2) - calc($slider-height/2)
             );
     }
 }
