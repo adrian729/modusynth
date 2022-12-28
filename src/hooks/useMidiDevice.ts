@@ -60,25 +60,17 @@ const useMidiDevice = (): void => {
         return (440 / 32) * 2 ** ((midiNote - 9) / 12);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     function noteOn(note: number, velocity: number) {
-        const [noteName, midiNote] = useMidiNotes(note);
-        console.log(
-            `NOTE ON MIDI Note: ${midiNote}, Note Name: ${noteName}, Velocity: ${velocity}, Freq: ${midiToFreq(
-                note,
-            )}`,
-        );
+        // TODO: add velocity feature to Oscillators
+        const [noteName] = useMidiNotes(note);
         if (noteName) {
             dispatch(addNote({ note: noteName, freq: midiToFreq(note) }));
         }
     }
 
     function noteOff(note: number) {
-        const [noteName, midiNote] = useMidiNotes(note);
-        console.log(
-            `NOTE OFF MIDI Note: ${midiNote}, Note Name: ${noteName}, Freq: ${midiToFreq(
-                note,
-            )}`,
-        );
+        const [noteName] = useMidiNotes(note);
         if (noteName) {
             dispatch(removeNote(noteName));
         }
