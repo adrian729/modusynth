@@ -51,7 +51,7 @@ export const useKeyboard = ({ keyboardRef }: UseKeyboardArgs): number => {
             windowWidth,
         });
         keyboard.keyDown = (note: string, freq: number): void => {
-            dispatch(addNote({ note, freq }));
+            dispatch(addNote({ note, frequency: freq }));
         };
 
         keyboard.keyUp = (note: string): void => {

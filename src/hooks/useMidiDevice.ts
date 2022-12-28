@@ -65,7 +65,13 @@ const useMidiDevice = (): void => {
         // TODO: add velocity feature to Oscillators
         const [noteName] = useMidiNotes(note);
         if (noteName) {
-            dispatch(addNote({ note: noteName, freq: midiToFreq(note) }));
+            dispatch(
+                addNote({
+                    note: noteName,
+                    frequency: midiToFreq(note),
+                    velocity,
+                }),
+            );
         }
     }
 

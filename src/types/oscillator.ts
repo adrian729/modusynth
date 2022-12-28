@@ -22,6 +22,7 @@ export interface OscModuleSettings {
     frequency: number;
     detune: number;
     envelope: Envelope;
+    velocity?: number; // from 1 to 127, note key velocity
 }
 
 export interface ChangeOscModuleSettingsProps {

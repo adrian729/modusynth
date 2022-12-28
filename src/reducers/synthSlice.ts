@@ -8,11 +8,11 @@ import {
 } from 'src/types/oscillator';
 
 type OscID = string;
-type NoteName = string;
+type NoteKey = string;
 type Frequency = number;
 
 export interface OscillatorState {
-    drones: Record<NoteName, Frequency>;
+    drones: Record<NoteKey, Note>;
     settings: OscillatorSettings;
 }
 
@@ -21,10 +21,15 @@ export interface SynthSettings {
     detune: number;
 }
 
+export interface Note {
+    frequency: Frequency;
+    velocity?: number;
+}
+
 export interface SynthState {
     octave: number;
     synthSettings: SynthSettings;
-    notes: Record<NoteName, Frequency>;
+    notes: Record<NoteKey, Note>;
     oscillators: Record<OscID, OscillatorState>;
 }
 
@@ -89,11 +94,15 @@ export const synthSlice = createSlice({
         /** Notes */
         addNote: (
             state,
-            action: PayloadAction<{ note: string; freq: number }>,
+            action: PayloadAction<{
+                note: string;
+                frequency: number;
+                velocity?: number;
+            }>,
         ): void => {
-            const { note, freq } = action.payload;
-            if (note && freq) {
-                state.notes[note] = freq;
+            const { note, frequency, velocity } = action.payload;
+            if (note && frequency) {
+                state.notes[note] = { frequency, velocity };
             }
         },
         /** Oscillators */

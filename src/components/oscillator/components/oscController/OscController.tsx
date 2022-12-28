@@ -4,7 +4,7 @@ import { useAppDispatch } from 'src/app/hooks';
 import List from 'src/components/00_layouts/list';
 import Box from 'src/components/01_core/box/Box';
 import Slider from 'src/components/01_core/slider';
-import useOscillator from 'src/components/oscillator/hooks/useOscillator/useOscillator';
+import useOscillator from 'src/components/oscillator/hooks/useOscillator';
 import OscillatorContext from 'src/context/OscillatorContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import {
@@ -57,7 +57,7 @@ const OscController: FC = () => {
                     id="gain"
                     value={gain}
                     max={2}
-                    step={0.1}
+                    step={0.01}
                     onChange={change}
                     onSliderReset={onResetValue}
                     resetValue={1}

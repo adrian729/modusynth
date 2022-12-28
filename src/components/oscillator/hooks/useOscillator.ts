@@ -10,31 +10,24 @@ import {
 } from 'src/reducers/synthSlice';
 import { OscModule, OscModuleSettings } from 'src/types/oscillator';
 
-import OscillatorModule from '../useOscillatorModule/useOscillatorModule';
-import { OscState } from './types';
-
-const updateGainControl = (
-    gainControlGain: AudioParam,
-    gain: number,
-    mute: boolean,
-    currentTime: number,
-): void => {
-    gainControlGain.cancelScheduledValues(currentTime);
-    gainControlGain.setValueAtTime(mute ? 0.0 : gain, currentTime);
-};
+import OscillatorModule from './useOscillatorModule';
 
 const useOscillator = (): void => {
     const {
         context: { audioContext, mainGainNode },
     } = useSafeContext(MainAudioContext);
-    const { oscId } = useSafeContext(OscillatorContext);
+    interface OscState {
+        noteModules: Record<string, OscModule | undefined>;
+        droneModules: Record<string, OscModule | undefined>;
+        gainControl: GainNode;
+    }
     const [{ noteModules, droneModules, gainControl }, setOscState] =
         useState<OscState>({
             noteModules: {},
             droneModules: {},
             gainControl: audioContext.createGain(),
         });
-
+    const { oscId } = useSafeContext(OscillatorContext);
     const activeNotes = getNotes();
     const settings = getOscillatorSettings(oscId);
     const { type, detune, gain, mute } = settings;
@@ -76,15 +69,17 @@ const useOscillator = (): void => {
                 Object.keys(activeNotes)
                     .filter((key) => !newNoteModules[key])
                     .forEach((key) => {
-                        newNoteModules[key] = OscillatorModule(
+                        const { frequency, velocity } = activeNotes[key];
+                        newNoteModules[key] = OscillatorModule({
                             audioContext,
-                            gainControl,
-                            {
+                            connection: gainControl,
+                            oscModuleSettings: {
                                 ...oscSettings,
-                                frequency: activeNotes[key],
+                                frequency: frequency,
                                 envelope: { ...oscSettings.envelope },
+                                velocity: velocity,
                             } as OscModuleSettings,
-                        );
+                        });
                     });
             }
 
@@ -143,4 +138,14 @@ const deleteInactive = (
             modules[key] = undefined;
             delete modules[key];
         });
+};
+
+const updateGainControl = (
+    gainControlGain: AudioParam,
+    gain: number,
+    mute: boolean,
+    currentTime: number,
+): void => {
+    gainControlGain.cancelScheduledValues(currentTime);
+    gainControlGain.setValueAtTime(mute ? 0.0 : gain, currentTime);
 };
