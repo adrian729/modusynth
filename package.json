@@ -1,4 +1,5 @@
 {
+    "homepage": "http://adrian729.github.io/modusynth",
     "name": "modusynth",
     "version": "0.1.0",
     "private": true,
@@ -28,6 +29,8 @@
         "web-vitals": "^2.1.4"
     },
     "scripts": {
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d build",
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
@@ -87,6 +90,7 @@
         "eslint-plugin-jsx-a11y": "^6.6.1",
         "eslint-plugin-prettier": "^4.2.1",
         "eslint-plugin-storybook": "^0.6.8",
+        "gh-pages": "^4.0.0",
         "prettier": "2.8.0",
         "prop-types": "^15.8.1",
         "typescript": "^4.9.3",
