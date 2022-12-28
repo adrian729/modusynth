@@ -1,6 +1,7 @@
 import { ChangeEvent } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
+import useMidiDevice from 'src/hooks/useMidiDevice';
 import {
     SynthSettings,
     getSynthDetune,
@@ -16,6 +17,8 @@ const SynthPanel = () => {
     const dispatch = useAppDispatch();
     const synthGain = getSynthGain();
     const detune = getSynthDetune();
+
+    useMidiDevice();
 
     const change = (id: string, value: number): void => {
         dispatch(
