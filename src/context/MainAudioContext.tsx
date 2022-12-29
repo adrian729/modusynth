@@ -21,7 +21,7 @@ compressor.connect(out);
 // TODO: add store for setGain and other settings
 export interface MainAudioContextState {
     audioContext: AudioContext;
-    mainGainNode: GainNode;
+    connection: AudioNode;
 }
 
 const MainAudioContext = createContext<{
@@ -41,7 +41,7 @@ export const MainAudioContextProvider = ({ children }: Props) => {
     const mainGain = getSynthGain();
     const defaultContext: MainAudioContextState = {
         audioContext,
-        mainGainNode,
+        connection: mainGainNode,
     };
     const [previous, setPrevious] = useState<Previous>({
         prevMainGain: 0.2,

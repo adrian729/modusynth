@@ -1,12 +1,21 @@
+import { useState } from 'react';
+
 import { useAppDispatch } from 'src/app/hooks';
-import { addNote, removeNote } from 'src/reducers/synthSlice';
+import {
+    addNote,
+    removeNote,
+    updateSynthDetune,
+} from 'src/reducers/synthSlice';
 
 import useMidiNotes from './useMidiNotes';
 
 const useMidiDevice = (): void => {
     const dispatch = useAppDispatch();
+    const [hasMidiAccess, setHasMidiAccess] = useState<boolean>(false);
 
-    navigator.requestMIDIAccess().then(success, failure);
+    if (!hasMidiAccess) {
+        navigator.requestMIDIAccess().then(success, failure);
+    }
 
     // eslint-disable-next-line no-undef
     function success(midiAccess: WebMidi.MIDIAccess) {
@@ -24,6 +33,8 @@ const useMidiDevice = (): void => {
             );
             input.addEventListener('midimessage', handleInput);
         });
+
+        setHasMidiAccess(true);
     }
 
     // eslint-disable-next-line no-undef
@@ -37,32 +48,48 @@ const useMidiDevice = (): void => {
 
     // eslint-disable-next-line no-undef
     function handleInput(inputEvent: WebMidi.MIDIMessageEvent) {
+        // console.log(
+        //     '🚀 ~ file: useMidiDevice.ts:47 ~ handleInput ~ inputEvent',
+        //     inputEvent,
+        // );
         const { data } = inputEvent;
         const command = data[0];
-        const midiNote = data[1];
-        const velocity = data[2];
+        const val1 = data[1];
+        const val2 = data[2];
 
         switch (command) {
-            case 144: // noteOn
-                if (velocity > 0) {
-                    noteOn(midiNote, velocity);
+            /**
+             * Knobs
+             * - val1: knob ID
+             * - val2: knob value
+             */
+            case 176:
+                dispatch(updateSynthDetune((val2 * 100) / 127));
+                break;
+            /**
+             * Keys
+             * - val1: midiNote
+             * - val2: velocity
+             */
+            case 144:
+                if (val2 > 0) {
+                    noteOn(val1, val2);
                 } else {
-                    noteOff(midiNote);
+                    noteOff(val1);
                 }
                 break;
             case 128: // noteOff
-                noteOff(midiNote);
+                noteOff(val1);
                 break;
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     function midiToFreq(midiNote: number): number {
         return (440 / 32) * 2 ** ((midiNote - 9) / 12);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     function noteOn(note: number, velocity: number) {
-        // TODO: add velocity feature to Oscillators
         const [noteName] = useMidiNotes(note);
         if (noteName) {
             dispatch(

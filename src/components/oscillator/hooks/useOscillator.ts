@@ -1,104 +1,124 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
 
+import _ from 'lodash';
 import MainAudioContext from 'src/context/MainAudioContext';
 import OscillatorContext from 'src/context/OscillatorContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import {
+    Note,
     getNotes,
     getOscillatorDrones,
     getOscillatorSettings,
+    getSynthDetune,
 } from 'src/reducers/synthSlice';
-import { OscModule, OscModuleSettings } from 'src/types/oscillator';
 
-import OscillatorModule from './useOscillatorModule';
+import OscillatorModule, {
+    OscillatorModuleParams,
+    OscillatorModuleType,
+    UpdateParams,
+} from './OscillatorModule';
 
 const useOscillator = (): void => {
     const {
-        context: { audioContext, mainGainNode },
+        context: { audioContext, connection },
     } = useSafeContext(MainAudioContext);
-    interface OscState {
-        noteModules: Record<string, OscModule | undefined>;
-        droneModules: Record<string, OscModule | undefined>;
-        gainControl: GainNode;
-    }
-    const [{ noteModules, droneModules, gainControl }, setOscState] =
-        useState<OscState>({
-            noteModules: {},
-            droneModules: {},
-            gainControl: audioContext.createGain(),
-        });
     const { oscId } = useSafeContext(OscillatorContext);
-    const activeNotes = getNotes();
     const settings = getOscillatorSettings(oscId);
-    const { type, detune, gain, mute } = settings;
+    const { type, detune, envelope, gain, mute } = settings;
+    const synthDetune = getSynthDetune();
+    const activeNotes = getNotes();
     const drones = getOscillatorDrones(oscId);
+
+    const [gainControl, setGainControl] = useState<GainNode>();
+    const [noteModules, setNoteModules] = useState<
+        Record<string, OscillatorModuleType | undefined>
+    >({});
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [droneModules, setDroneModules] = useState<
+        Record<string, OscillatorModuleType | undefined>
+    >({});
+
+    const [prevGain, setPrevGain] = useState<number>(gain);
+    const [prevMute, setPrevMute] = useState<boolean>(mute);
+    const [prevNotes, setPrevNotes] =
+        useState<Record<string, Note>>(activeNotes);
+    const [prevDrones, setPrevDrones] = useState<Record<string, Note>>(drones);
+    const [prevModuleSettings, setPrevModuleSettings] = useState<UpdateParams>({
+        type,
+        detune,
+        synthDetune,
+    });
 
     /**
      * Setup gainControl connection and initial gain
      */
-    useEffect((): void => {
-        gainControl.gain.value = 0.5;
-        gainControl.connect(mainGainNode);
-    }, []);
+    if (!gainControl) {
+        const newGainControl = audioContext.createGain();
+        newGainControl.gain.value = gain;
+        newGainControl.connect(connection);
+        setGainControl(newGainControl);
+    }
+
+    if (prevGain !== gain) {
+        setPrevGain(gain);
+    }
+
+    if (prevMute !== mute) {
+        setPrevMute(mute);
+    }
 
     /**
      * Update gainControl on gain or mute change
      */
-    useEffect((): void => {
+    if (gainControl && (prevGain !== gain || prevMute !== mute)) {
         const { currentTime } = audioContext;
         updateGainControl(gainControl.gain, gain, mute, currentTime);
-    }, [mute, gain]);
+    }
 
     /**
      * Update note modules on active notes or mute change
      */
-    useEffect((): void => {
-        setOscState((prevOscState) => {
-            const newNoteModules = { ...prevOscState.noteModules };
-            const { mute, ...oscSettings } = settings;
-
-            // Remove inactive notes
+    if (activeNotes !== prevNotes || mute !== prevMute) {
+        setNoteModules((prevNoteModules) => {
+            // DON'T do deep copy, we need to keep same instance for drones and notes.
+            const newNoteModules = { ...prevNoteModules };
             deleteInactive(
                 newNoteModules,
                 mute ? {} : activeNotes,
                 droneModules,
             );
-
             if (!mute) {
-                // Add active notes
                 Object.keys(activeNotes)
-                    .filter((key) => !newNoteModules[key])
+                    .filter((key) => !noteModules[key])
                     .forEach((key) => {
                         const { frequency, velocity } = activeNotes[key];
                         newNoteModules[key] = OscillatorModule({
+                            frequency,
+                            velocity,
                             audioContext,
                             connection: gainControl,
-                            oscModuleSettings: {
-                                ...oscSettings,
-                                frequency: frequency,
-                                envelope: { ...oscSettings.envelope },
-                                velocity: velocity,
-                            } as OscModuleSettings,
-                        });
+                            type,
+                            detune,
+                            envelope,
+                            synthDetune,
+                        } as OscillatorModuleParams);
                     });
             }
-
-            return { ...prevOscState, noteModules: newNoteModules };
+            return newNoteModules;
         });
-    }, [activeNotes, mute]);
+
+        setPrevNotes(activeNotes);
+    }
 
     /**
-     * Update drone modules and note modules on drone notes change
+     * Update drone modules on drones change
      */
-    useEffect((): void => {
-        setOscState((prevOscState) => {
-            let { droneModules } = prevOscState;
-            let newDroneModules = { ...droneModules };
-
-            // Delete inactive drones
+    if (drones !== prevDrones) {
+        setDroneModules((prevDroneModules) => {
+            // DON'T do deep copy, we need to keep same instance for drones and notes.
+            const newDroneModules = { ...prevDroneModules };
             deleteInactive(newDroneModules, drones, noteModules);
-
-            // Add new drone modules references to the note modules
             Object.entries(noteModules)
                 .filter(
                     ([key]) =>
@@ -109,25 +129,29 @@ const useOscillator = (): void => {
                         newDroneModules[key] = val;
                     }
                 });
-            return { ...prevOscState, droneModules: newDroneModules };
+            return newDroneModules;
         });
-    }, [drones]);
+
+        setPrevDrones(drones);
+    }
 
     /**
      * Update osc settings
      */
-    useEffect((): void => {
+    const moduleSettings: UpdateParams = { type, detune, synthDetune };
+    if (!_.isEqual(prevModuleSettings, moduleSettings)) {
         Object.values(noteModules).map((val) =>
-            val?.changeOscSettings({ type, detune }),
+            val?.update({ type, detune, synthDetune }),
         );
-    }, [settings]);
+        setPrevModuleSettings(moduleSettings);
+    }
 };
 export default useOscillator;
 
 const deleteInactive = (
-    modules: Record<string, OscModule | undefined>,
+    modules: Record<string, OscillatorModuleType | undefined>,
     keyMapping: Record<string, any>,
-    dependencyModules: Record<string, OscModule | undefined>,
+    dependencyModules: Record<string, OscillatorModuleType | undefined>,
 ): void => {
     Object.keys(modules)
         .filter((key) => !keyMapping[key])

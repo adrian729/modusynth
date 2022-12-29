@@ -209,6 +209,8 @@ export const getSynthGain = () =>
 export const getSynthDetune = () =>
     useAppSelector(({ synth }) => synth.synthSettings.detune);
 export const getNotes = () => useAppSelector(({ synth }) => synth.notes);
+export const isNoteActive = (id: string) =>
+    useAppSelector(({ synth }) => !!synth.notes[id]);
 export const getOscillators = () =>
     useAppSelector(({ synth }) => synth.oscillators);
 export const oscillatorExists = (id: string) =>
@@ -226,5 +228,7 @@ export const getActiveOscillatorsCount = () =>
                 (osc) => osc.settings && !osc.settings.mute,
             ).length,
     );
+export const isDroneActive = (oscId: OscID, noteKey: NoteKey) =>
+    useAppSelector(({ synth }) => !!synth.oscillators[oscId].drones[noteKey]);
 
 export default synthSlice.reducer;

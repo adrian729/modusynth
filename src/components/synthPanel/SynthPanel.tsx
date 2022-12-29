@@ -1,7 +1,7 @@
 import { ChangeEvent } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
-import useMidiDevice from 'src/hooks/useMidiDevice';
+import useMidiDevice from 'src/components/synthPanel/hooks/useMidiDevice';
 import {
     SynthSettings,
     getSynthDetune,
@@ -15,7 +15,7 @@ import './styles.scss';
 
 const SynthPanel = () => {
     const dispatch = useAppDispatch();
-    const synthGain = getSynthGain();
+    const gain = getSynthGain();
     const detune = getSynthDetune();
 
     useMidiDevice();
@@ -54,14 +54,13 @@ const SynthPanel = () => {
         onResetValue('detune', value);
     };
 
-    // TODO: finish detune from Oscillators and reuse here
-    // TODO: add main detune to useOscModules
+    // TODO: CHECK TO SEPARATE SLIDERS AND KB, SINCE ON RERENDER THE KB RERENDERS ALSO (green notes removed)
     return (
         <div className="synthPanel center">
             <Slider
                 id="synthGain"
                 label="gain"
-                value={synthGain}
+                value={gain}
                 max={1}
                 step={0.005}
                 onChange={changeGain}
