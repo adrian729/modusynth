@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
+import oscillatorsReducer from 'src/reducers/oscillatorsSlice';
 import synthReducer from 'src/reducers/synthSlice';
 
 const store = configureStore({
     reducer: {
         synth: synthReducer,
+        oscillators: oscillatorsReducer,
     },
 });
 export default store;

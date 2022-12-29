@@ -1,9 +1,7 @@
 import { createContext, useState } from 'react';
 
-import {
-    getActiveOscillatorsCount,
-    getSynthGain,
-} from 'src/reducers/synthSlice';
+import { getActiveOscillatorsCount } from 'src/reducers/oscillatorsSlice';
+import { getSynthGain } from 'src/reducers/synthSlice';
 import { Props } from 'src/types/core';
 
 const audioContext = new AudioContext();

@@ -1,0 +1,17 @@
+.container {
+    padding: 1rem 2rem;
+    &.center-content {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    & > * {
+        margin-bottom: 2rem;
+    }
+
+    & > *:last-child {
+        margin-bottom: 0;
+    }
+}

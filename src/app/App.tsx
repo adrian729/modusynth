@@ -1,8 +1,8 @@
 import { Provider } from 'react-redux';
-import Section from 'src/components/01_core/section';
-import Freezer from 'src/components/freezer';
-import OscillatorsPanel from 'src/components/oscillatorsPanel';
-import SynthPanel from 'src/components/synthPanel/SynthPanel';
+import Section from 'src/components/common/core/section';
+import Freezer from 'src/components/specific/freezer';
+import OscillatorsPanel from 'src/components/specific/oscillatorsPanel';
+import SynthPanel from 'src/components/specific/synthPanel/SynthPanel';
 import { MainAudioContextProvider } from 'src/context/MainAudioContext';
 
 import store from './store';
