@@ -1,3 +1,5 @@
+import { NoteName } from 'src/types/notes';
+
 const useMidiNotes = (
     note: string | number,
 ): [string | undefined, number | undefined] => {
@@ -24,7 +26,7 @@ const useMidiNotes = (
 
 export default useMidiNotes;
 
-const arrayNotes = [
+const arrayNotes: NoteName[] = [
     'A',
     'A#',
     'B',
