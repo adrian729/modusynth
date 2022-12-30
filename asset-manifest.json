@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/modusynth/static/css/main.229e7263.css",
-    "main.js": "/modusynth/static/js/main.8c251ef1.js",
+    "main.css": "/modusynth/static/css/main.54709ee9.css",
+    "main.js": "/modusynth/static/js/main.4ec4260d.js",
     "static/js/787.b816db95.chunk.js": "/modusynth/static/js/787.b816db95.chunk.js",
     "index.html": "/modusynth/index.html",
-    "main.229e7263.css.map": "/modusynth/static/css/main.229e7263.css.map",
-    "main.8c251ef1.js.map": "/modusynth/static/js/main.8c251ef1.js.map",
+    "main.54709ee9.css.map": "/modusynth/static/css/main.54709ee9.css.map",
+    "main.4ec4260d.js.map": "/modusynth/static/js/main.4ec4260d.js.map",
     "787.b816db95.chunk.js.map": "/modusynth/static/js/787.b816db95.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.229e7263.css",
-    "static/js/main.8c251ef1.js"
+    "static/css/main.54709ee9.css",
+    "static/js/main.4ec4260d.js"
   ]
 }
