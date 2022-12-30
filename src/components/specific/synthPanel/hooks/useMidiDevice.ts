@@ -86,16 +86,16 @@ const useMidiDevice = (): void => {
                 break;
             /**
              * Knobs
-             * - val1: knob ID
-             * - val2: knob value
+             * - val1: controller number/id
+             * - val2: controller value
              */
             case CONTROL_CHANGE:
                 console.log(status, val1, val2);
                 break;
             /**
              * Pitchbend
-             * - val1: least significant 7 bits
-             * - val2: most significant 7 bits
+             * - val1: least significant 7 bits of the value
+             * - val2: most significant 7 bits of the value
              * Range: [0, 16383]
              */
             case PITCH_BEND_CHANGE:
