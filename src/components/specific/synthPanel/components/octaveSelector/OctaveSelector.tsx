@@ -27,7 +27,7 @@ const OctaveSelector: FC = () => {
                     <Button
                         key={octave}
                         id={`octaveselector${octave}`}
-                        title={`${octave}`}
+                        title={`${octave > 0 ? '+' : ''}${octave}`}
                         className={'octaveselector__item'}
                         onClick={onClick}
                         buttonKind={

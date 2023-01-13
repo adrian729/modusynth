@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { FC, createContext, useState } from 'react';
 
 import { getActiveOscillatorsCount } from 'src/reducers/oscillatorsSlice';
 import { getSynthGain } from 'src/reducers/synthSlice';
@@ -34,7 +34,7 @@ interface Previous {
 const calculateGainValue = (gain: number, oscCount: number): number =>
     gain / Math.min(Math.max(oscCount, 1), 100);
 
-export const MainAudioContextProvider = ({ children }: Props) => {
+export const MainAudioContextProvider: FC<Props> = ({ children }) => {
     const activeOscillatorsCount = getActiveOscillatorsCount();
     const mainGain = getSynthGain();
     const defaultContext: MainAudioContextState = {

@@ -22,7 +22,7 @@ export interface SliderProps extends InputHTMLAttributes<HTMLInputElement> {
     step?: number;
     resetValue?: number;
     onChange: (e: ChangeEvent) => void;
-    onSliderReset: (id: string, val: number) => void;
+    onSliderReset?: (id: string, val: number) => void;
     sliderSize?: number;
     sliderSizeUnits?: string;
     orientation?: Orientation;
@@ -59,7 +59,7 @@ const Slider: FC<SliderProps> = ({
 
     const handleClick = (e: MouseEvent): void => {
         let { detail, target } = e;
-        if (detail === 2) {
+        if (detail === 2 && onSliderReset) {
             const val: number = resetValue ?? (max + min) / 2;
             const { id } = target as HTMLInputElement;
             onSliderReset(id, val);

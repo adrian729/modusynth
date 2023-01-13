@@ -1,29 +1,34 @@
+import { FC } from 'react';
+
 import { Provider } from 'react-redux';
-import Section from 'src/components/common/core/section';
-import Freezer from 'src/components/specific/freezer';
-import OscillatorsPanel from 'src/components/specific/oscillatorsPanel';
+import MainAudioComponent from 'src/components/modules/components/core/main/MainAudioComponent';
 import SynthPanel from 'src/components/specific/synthPanel/SynthPanel';
-import { MainAudioContextProvider } from 'src/context/MainAudioContext';
+import { Props } from 'src/types/core';
 
 import store from './store';
 
-const App = () => {
+const App: FC<Props> = () => {
     return (
         <Provider store={store}>
-            <MainAudioContextProvider>
-                <Section>
-                    <h1 className="center__text">ModuSynth</h1>
-                </Section>
-                <Section>
-                    <SynthPanel />
-                </Section>
-                <Section>
-                    <Freezer />
-                </Section>
-                <Section>
-                    <OscillatorsPanel />
-                </Section>
-            </MainAudioContextProvider>
+            <SynthPanel />
+            <MainAudioComponent />
+            {/* <div>
+                <canvas
+                    className="oscilloscope1"
+                    width="2000px"
+                    height="300px"
+                ></canvas>
+                <canvas
+                    className="oscilloscope2"
+                    width="2000px"
+                    height="300px"
+                ></canvas>
+                <canvas
+                    className="oscilloscope3"
+                    width="2000px"
+                    height="500px"
+                ></canvas>
+            </div> */}
         </Provider>
     );
 };
