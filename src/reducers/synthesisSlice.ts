@@ -24,16 +24,19 @@ export type CombinerModule = CombinatorModule;
 
 export interface Module {
     id: string;
+    parentModuleId?: string;
 }
 
 export interface OscillatorModule extends Module {
     // eslint-disable-next-line no-undef
     type: OscillatorType;
-    note: string;
     freq: number;
+    // eslint-disable-next-line no-undef
+    periodicWaveOptions: PeriodicWaveOptions;
     gain: number;
     pitch: number;
     envelopeId: ID;
+    customType: string;
 }
 
 export interface EnvelopeModule extends Module {
@@ -73,7 +76,25 @@ export const synthesisSlice = createSlice({
             }
         },
         removeModule: (state, action: PayloadAction<ID>): void => {
-            delete state.modules[action.payload];
+            const moduleId = action.payload;
+            const { modules } = state;
+            const module = modules[moduleId];
+            if (!module) {
+                return;
+            }
+
+            if (module.parentModuleId) {
+                const parentModule = modules[
+                    module?.parentModuleId
+                ] as CombinatorModule;
+                const { childModuleIds } = parentModule;
+                const childIdx = childModuleIds?.indexOf(moduleId);
+                if (childIdx >= 0) {
+                    parentModule.childModuleIds.splice(childIdx, 1);
+                }
+            }
+
+            delete modules[moduleId];
         },
     },
 });

@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useState } from 'react';
 
-import MainContext from 'src/components/modules/context/MainContext/MainContext';
+import MainContext from 'src/context/MainContext/MainContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 
 interface UseDrawOscilloscopeParams {

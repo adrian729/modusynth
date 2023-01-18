@@ -2,8 +2,9 @@ import { FC, useEffect, useMemo } from 'react';
 
 import _ from 'lodash';
 import OscillatorComponent from 'src/components/modules/components/generators/oscillator/OscillatorComponent';
+import WaveTableOscillatorComponent from 'src/components/modules/components/generators/waveTableOscillator/WaveTableOscillatorComponent';
 import ModulatorComponent from 'src/components/modules/components/modulators/modulator/ModulatorComponent';
-import MainContext from 'src/components/modules/context/MainContext/MainContext';
+import MainContext from 'src/context/MainContext/MainContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 
 const MainAudioContent: FC = () => {
@@ -18,6 +19,13 @@ const MainAudioContent: FC = () => {
     ];
 
     useEffect(() => {
+        // const oscillator = oscillators.organ(audioContext);
+        // oscillator.frequency.value = 220;
+        // oscillator.connect(mainConnection);
+        // oscillator.start();
+    }, []);
+
+    useEffect(() => {
         const osc = modules[moduleIds[0]];
         if (osc) {
             osc.outputNode.connect(mainConnection);
@@ -25,6 +33,10 @@ const MainAudioContent: FC = () => {
         const modulator = modules[moduleIds[1]];
         if (modulator) {
             modulator.outputNode.connect(mainConnection);
+        }
+        const wavetableOsc = modules[moduleIds[2]];
+        if (wavetableOsc) {
+            wavetableOsc.outputNode.connect(mainConnection);
         }
     }, [modules]);
 
@@ -45,6 +57,7 @@ const MainAudioContent: FC = () => {
             <h1>Main Module</h1>
             <OscillatorComponent moduleId={moduleIds[0]} />
             <ModulatorComponent moduleId={moduleIds[1]} />
+            <WaveTableOscillatorComponent moduleId={moduleIds[2]} />
         </div>
     );
 };

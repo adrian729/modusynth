@@ -1,0 +1,18 @@
+.wavetableoscillator__screen {
+    border: 1px solid black;
+    width: 500px;
+    height: 200px;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-end;
+    align-content: stretch;
+    gap: 0 0.05rem;
+}
+
+.wavetableoscillator__division {
+    background: blue;
+    height: 100px;
+
+    flex: 1;
+}

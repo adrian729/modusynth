@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
 
 import MainContext, {
     ModuleInterface,
-} from 'src/components/modules/context/MainContext/MainContext';
+} from 'src/context/MainContext/MainContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import { CombinatorModule, getModule } from 'src/reducers/synthesisSlice';
 
@@ -18,7 +17,6 @@ const useCombinator = ({ moduleId }: UseCombinatorParams) => {
 
     const moduleState = getModule(moduleId) as CombinatorModule;
     const { childModuleIds } = { ...{ childModuleIds: [] }, ...moduleState };
-
     const [inputIds, setInputIds] = useState<string[]>([]);
     const [gainInputIds, setGainInputIds] = useState<string[]>([]);
     const [freqInputIds, setFreqInputIds] = useState<string[]>([]);
@@ -36,7 +34,7 @@ const useCombinator = ({ moduleId }: UseCombinatorParams) => {
     ];
 
     const [module] = useState<ModuleInterface>({
-        outputNode: new GainNode(audioContext, { gain: 0.2 }),
+        outputNode: new GainNode(audioContext, { gain: 0.5 }),
         addInputs: (moduleIds: string[]): void =>
             setInputIds(updateInputs({ inputs: inputIds, moduleIds })),
         addGainInputs: (moduleIds: string[]): void =>
@@ -94,8 +92,8 @@ const useCombinator = ({ moduleId }: UseCombinatorParams) => {
                 .filter((id) => modules[id])
                 .forEach((id) => {
                     const childModule = modules[id];
-                    if (childModule.addInputs) {
-                        childModule.addInputs(gainInputIds);
+                    if (childModule.addGainInputs) {
+                        childModule.addGainInputs(gainInputIds);
                     }
                 });
         }
@@ -107,8 +105,8 @@ const useCombinator = ({ moduleId }: UseCombinatorParams) => {
                 .filter((id) => modules[id])
                 .forEach((id) => {
                     const childModule = modules[id];
-                    if (childModule.addInputs) {
-                        childModule.addInputs(freqInputIds);
+                    if (childModule.addFreqInputs) {
+                        childModule.addFreqInputs(freqInputIds);
                     }
                 });
         }

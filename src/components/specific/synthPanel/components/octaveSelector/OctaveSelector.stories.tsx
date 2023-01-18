@@ -1,7 +1,6 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { Provider } from 'react-redux';
 import store from 'src/app/store';
-import { MainAudioContextProvider } from 'src/context/MainAudioContext';
 
 import OctaveSelector from './OctaveSelector';
 
@@ -12,9 +11,7 @@ export default {
 
 const OctaveSelectorStory: ComponentStory<typeof OctaveSelector> = () => (
     <Provider store={store}>
-        <MainAudioContextProvider>
-            <OctaveSelector />
-        </MainAudioContextProvider>
+        <OctaveSelector />
     </Provider>
 );
 

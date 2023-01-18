@@ -27,25 +27,20 @@ export default MainContext;
 
 const reducer = (state: MainContextState, action: MainContextActionType) => {
     switch (action.type) {
-        case 'SET_AUDIO_CONNECTION': {
-            const audioNode = action.payload;
-            return {
-                ...state,
-                mainConnection: audioNode,
-            };
-        }
         case 'ADD_MODULE': {
             const { id, module } = action.payload;
             const { modules } = state;
-            return {
+            const result = {
                 ...state,
                 modules: { ...modules, [id]: module },
             };
+            return result;
         }
-        default:
+        default: {
             // eslint-disable-next-line no-console
             console.log('CTX reducer error, action: ', action);
             return { ...state };
+        }
     }
 };
 

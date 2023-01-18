@@ -11,6 +11,7 @@ import {
     removeModule,
 } from 'src/reducers/synthesisSlice';
 
+import CustomWaveTypeController from '../../core/controllers/customWaveTypeController/CustomWaveTypeController';
 import FrequencyController from '../../core/controllers/frequencyController/FrequencyController';
 import GainController from '../../core/controllers/gainController/GainController';
 import PitchController from '../../core/controllers/pitchController/PitchController';
@@ -20,8 +21,13 @@ import useOscillator from './hooks/useOscillator';
 interface OscillatorProps {
     moduleId: string;
     envelopeId?: string;
+    parentModuleId?: string;
 }
-const OscillatorComponent: FC<OscillatorProps> = ({ moduleId, envelopeId }) => {
+const OscillatorComponent: FC<OscillatorProps> = ({
+    moduleId,
+    envelopeId,
+    parentModuleId,
+}) => {
     const dispatch = useAppDispatch();
     const module = getModule(moduleId);
     const defaultEnvelopeId = getDefaultEnvelopeId();
@@ -34,11 +40,13 @@ const OscillatorComponent: FC<OscillatorProps> = ({ moduleId, envelopeId }) => {
             const initialModule: OscillatorModule = {
                 id: moduleId,
                 type: 'sine',
-                note: '',
                 freq: 0,
+                periodicWaveOptions: { real: [0, 0], imag: [0, 1] },
                 gain: 0.5,
                 pitch: 0,
                 envelopeId: envelopeId || defaultEnvelopeId,
+                customType: 'none',
+                parentModuleId,
             };
             dispatch(addModule(initialModule));
             setIsSetup(true);
@@ -63,6 +71,7 @@ const OscillatorComponent: FC<OscillatorProps> = ({ moduleId, envelopeId }) => {
                         <GainController />
                         <PitchController />
                         <WaveTypeController />
+                        <CustomWaveTypeController />
                     </div>
                 </div>
             ) : null}

@@ -14,7 +14,6 @@ import {
     addModule,
     getModule,
     removeModule,
-    updateModule,
 } from 'src/reducers/synthesisSlice';
 import { Props } from 'src/types/core';
 
@@ -32,25 +31,16 @@ const CombinatorComponent: FC<CombinatorProps> = ({
     const dispatch = useAppDispatch();
     const module = getModule(moduleId) as CombinatorModule;
     const [isSetup, setIsSetup] = useState<boolean>(false);
+    const childModuleIds = getChildModuleIds(children);
 
     useCombinator({ moduleId });
-
-    const getChildModuleIds = (children: ReactNode): string[] => {
-        const childModuleIds: string[] = [];
-        Children.forEach(children, (elem) => {
-            if (isValidElement(elem) && elem.props.moduleId !== undefined) {
-                childModuleIds.push(elem.props.moduleId);
-            }
-        });
-        return childModuleIds;
-    };
 
     useEffect(() => {
         if (!module) {
             dispatch(
                 addModule({
                     id: moduleId,
-                    childModuleIds: getChildModuleIds(children),
+                    childModuleIds,
                 } as CombinatorModule),
             );
             setIsSetup(true);
@@ -59,20 +49,6 @@ const CombinatorComponent: FC<CombinatorProps> = ({
             removeModule(moduleId);
         };
     }, []);
-
-    useEffect(() => {
-        if (module) {
-            dispatch(
-                updateModule({
-                    ...module,
-                    childModuleIds: getChildModuleIds(children),
-                } as CombinatorModule),
-            );
-        }
-        return () => {
-            removeModule(moduleId);
-        };
-    }, [children]);
 
     return (
         <div>
@@ -83,3 +59,13 @@ const CombinatorComponent: FC<CombinatorProps> = ({
 };
 
 export default CombinatorComponent;
+
+const getChildModuleIds = (children: ReactNode): string[] => {
+    const childModuleIds: string[] = [];
+    Children.forEach(children, (elem) => {
+        if (isValidElement(elem) && elem.props.moduleId !== undefined) {
+            childModuleIds.push(elem.props.moduleId);
+        }
+    });
+    return childModuleIds;
+};

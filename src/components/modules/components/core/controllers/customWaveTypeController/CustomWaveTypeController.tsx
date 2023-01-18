@@ -4,32 +4,28 @@ import ModuleContext from 'src/components/modules/context/ModuleContext/ModuleCo
 import useSafeContext from 'src/hooks/useSafeContext';
 import { Module, getModule, updateModule } from 'src/reducers/synthesisSlice';
 
-interface ModuleWithType extends Module {
-    // eslint-disable-next-line no-undef
-    type: OscillatorType;
+import customPeriodicWaveOptions from '../../../generators/oscillator/hooks/customWaveTypes/customWaveTypes';
+
+interface ModuleWithCustomType extends Module {
+    customType: string;
 }
 
-// eslint-disable-next-line no-undef
-const waveTypes: OscillatorType[] = [
-    'sine',
-    'triangle',
-    'square',
-    'sawtooth',
-    'custom',
-];
+const customWaveTypes = Object.keys(customPeriodicWaveOptions);
 
-const WaveTypeController = () => {
+const CustomWaveTypeController = () => {
     const dispatch = useAppDispatch();
 
     const { moduleId } = useSafeContext(ModuleContext);
-    const module = getModule(moduleId) as unknown as ModuleWithType;
-    const { type } = module;
+    const module = getModule(moduleId) as unknown as ModuleWithCustomType;
+    const { customType } = module;
 
-    // eslint-disable-next-line no-undef
-    const onChangeType = (waveType: OscillatorType) => {
-        if (type !== waveType) {
+    const onChangeType = (waveType: string) => {
+        if (customType !== waveType) {
             dispatch(
-                updateModule({ ...module, type: waveType } as ModuleWithType),
+                updateModule({
+                    ...module,
+                    customType: waveType,
+                } as ModuleWithCustomType),
             );
         }
     };
@@ -37,12 +33,14 @@ const WaveTypeController = () => {
     return (
         <div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {waveTypes.map((waveType) => (
+                {customWaveTypes.map((waveType) => (
                     <Button
                         id={`${moduleId}_${waveType}_type`}
                         key={waveType}
                         title={waveType}
-                        buttonKind={waveType === type ? 'active' : undefined}
+                        buttonKind={
+                            waveType === customType ? 'active' : undefined
+                        }
                         onClick={() => onChangeType(waveType)}
                     />
                 ))}
@@ -51,4 +49,4 @@ const WaveTypeController = () => {
     );
 };
 
-export default WaveTypeController;
+export default CustomWaveTypeController;

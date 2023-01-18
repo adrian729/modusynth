@@ -1,52 +1,74 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import _ from 'lodash';
+import { useAppDispatch } from 'src/app/hooks';
+import Button from 'src/components/common/core/button/Button';
 import MainContext, {
     ModuleInterface,
-} from 'src/components/modules/context/MainContext/MainContext';
+} from 'src/context/MainContext/MainContext';
 import useSafeContext from 'src/hooks/useSafeContext';
+import {
+    CombinatorModule,
+    getModule,
+    updateModule,
+} from 'src/reducers/synthesisSlice';
 
 import CombinatorComponent from '../../combiners/combinator/CombinatorComponent';
 import OscillatorComponent from '../../generators/oscillator/OscillatorComponent';
 
 interface ModulatorProps {
     moduleId: string;
+    parentModuleId?: string; // TODO: add module to Redux state when we add the envelope? And add then parentId
 }
 const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
+    // TODO: separate logic into hook
+    const appDispatch = useAppDispatch();
+
     const {
         state: { audioContext, modules },
-        dispatch: dispatchMainCTX,
+        dispatch,
     } = useSafeContext(MainContext);
 
-    const generatorsModuleId = useMemo(() => _.uniqueId('generators_'), []);
-    const rmsModuleId = useMemo(() => _.uniqueId('rms_'), []);
-    const fmsModuleId = useMemo(() => _.uniqueId('fms_'), []);
-
-    const [generatorModuleIds] = useState<string[]>([
-        useMemo(() => _.uniqueId('oscillator_'), []),
-        useMemo(() => _.uniqueId('oscillator_'), []),
-        useMemo(() => _.uniqueId('oscillator_'), []),
-    ]);
-    const [rmModuleIds] = useState<string[]>([
-        useMemo(() => _.uniqueId('rm_oscillator_'), []),
-        useMemo(() => _.uniqueId('rm_oscillator_'), []),
-    ]);
-    const [fmModuleIds] = useState<string[]>([
-        useMemo(() => _.uniqueId('fm_oscillator_'), []),
-        useMemo(() => _.uniqueId('fm_oscillator_'), []),
-    ]);
-
-    const [gainNode] = useState<GainNode>(
-        new GainNode(audioContext, { gain: 0.2 }),
-    );
-
     const [module] = useState<ModuleInterface>({
-        outputNode: gainNode,
+        outputNode: new GainNode(audioContext, { gain: 1 }),
     });
+    const { outputNode } = module;
+
+    const generatorsModuleId = useMemo(() => _.uniqueId('generators_'), []);
+    const generatorModule = modules[generatorsModuleId];
+    const generatorModuleState = getModule(
+        generatorsModuleId,
+    ) as CombinatorModule;
+    const { childModuleIds: generatorChildModuleIds } = {
+        ...{ childModuleIds: [] },
+        ...generatorModuleState,
+    };
+
+    const rmsModuleId = useMemo(() => _.uniqueId('rms_'), []);
+    const rmsModuleState = getModule(rmsModuleId) as CombinatorModule;
+    const { childModuleIds: rmsChildModuleIds } = {
+        ...{ childModuleIds: [] },
+        ...rmsModuleState,
+    };
+
+    const fmsModuleId = useMemo(() => _.uniqueId('fms_'), []);
+    const fmsModuleState = getModule(fmsModuleId) as CombinatorModule;
+    const { childModuleIds: fmsChildModuleIds } = {
+        ...{ childModuleIds: [] },
+        ...rmsModuleState,
+    };
+
+    const [generators, setGenerators] = useState<Record<string, any>>({});
+    const [rms, setRMs] = useState<Record<string, any>>({});
+    const [fms, setFMs] = useState<Record<string, any>>({});
+
+    const getGenerators = () => Object.values(generators) || null;
+    const getRMs = () => Object.values(rms) || null;
+    const getFMs = () => Object.values(fms) || null;
 
     useEffect(() => {
         if (modules && !modules[moduleId]) {
-            dispatchMainCTX({
+            dispatch({
                 type: 'ADD_MODULE',
                 payload: { id: moduleId, module },
             });
@@ -54,43 +76,120 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
     }, []);
 
     useEffect(() => {
-        const generator = modules[generatorsModuleId];
-        if (generator) {
-            generator.outputNode.connect(gainNode);
-            if (generator.addGainInputs) {
-                generator.addGainInputs([rmsModuleId]);
+        if (generatorModule) {
+            generatorModule.outputNode.connect(outputNode);
+            if (generatorModule.addGainInputs) {
+                generatorModule.addGainInputs([rmsModuleId]);
             }
-            if (generator.addFreqInputs) {
-                generator.addFreqInputs([fmsModuleId]);
+            if (generatorModule.addFreqInputs) {
+                generatorModule.addFreqInputs([fmsModuleId]);
             }
         }
-    }, [modules]);
+    }, [generatorModule, rmsModuleId, fmsModuleId]);
+
+    const addGeneratorOsc = () => {
+        const id = _.uniqueId(`${generatorsModuleId}--oscillator-`);
+        setGenerators((prevGenerators) => {
+            return {
+                ...prevGenerators,
+                [id]: (
+                    <OscillatorComponent
+                        key={id}
+                        moduleId={id}
+                        parentModuleId={generatorsModuleId}
+                    />
+                ),
+            };
+        });
+        appDispatch(
+            updateModule({
+                ...generatorModuleState,
+                childModuleIds: [...generatorChildModuleIds, id],
+            } as CombinatorModule),
+        );
+    };
+
+    const addRMOsc = () => {
+        const id = _.uniqueId(`${rmsModuleId}--oscillator-`);
+        setRMs((prevRMs) => {
+            return {
+                ...prevRMs,
+                [id]: (
+                    <OscillatorComponent
+                        key={id}
+                        moduleId={id}
+                        parentModuleId={rmsModuleId}
+                    />
+                ),
+            };
+        });
+        appDispatch(
+            updateModule({
+                ...rmsModuleState,
+                childModuleIds: [...rmsChildModuleIds, id],
+            } as CombinatorModule),
+        );
+    };
+
+    const addFMOsc = () => {
+        const id = _.uniqueId(`${fmsModuleId}--oscillator-`);
+        setFMs((prevFMs) => {
+            return {
+                ...prevFMs,
+                [id]: (
+                    <OscillatorComponent
+                        key={id}
+                        moduleId={id}
+                        parentModuleId={fmsModuleId}
+                    />
+                ),
+            };
+        });
+        appDispatch(
+            updateModule({
+                ...fmsModuleState,
+                childModuleIds: [...fmsChildModuleIds, id],
+            } as CombinatorModule),
+        );
+    };
 
     return (
         <div>
             <h4>Oscillators</h4>
             <div style={{ background: 'lightgray' }}>
+                <h5>{generatorsModuleId}</h5>
                 <CombinatorComponent moduleId={generatorsModuleId}>
-                    <OscillatorComponent moduleId={generatorModuleIds[0]} />
-                    <OscillatorComponent moduleId={generatorModuleIds[1]} />
-                    <OscillatorComponent moduleId={generatorModuleIds[2]} />
+                    {getGenerators()}
                 </CombinatorComponent>
+                <Button
+                    id={`${moduleId}_${generatorsModuleId}--add`}
+                    title="Add Generator Osc"
+                    onClick={addGeneratorOsc}
+                />
             </div>
             <h4>RM</h4>
             <div style={{ background: 'tomato' }}>
                 <h5>{rmsModuleId}</h5>
                 <CombinatorComponent moduleId={rmsModuleId}>
-                    <OscillatorComponent moduleId={rmModuleIds[0]} />
-                    <OscillatorComponent moduleId={rmModuleIds[1]} />
+                    {getRMs()}
                 </CombinatorComponent>
+                <Button
+                    id={`${moduleId}_${rmsModuleId}--add`}
+                    title="Add RM Osc"
+                    onClick={addRMOsc}
+                />
             </div>
             <h4>FM</h4>
             <div style={{ background: 'lightgreen' }}>
                 <h5>{fmsModuleId}</h5>
                 <CombinatorComponent moduleId={fmsModuleId}>
-                    <OscillatorComponent moduleId={fmModuleIds[0]} />
-                    <OscillatorComponent moduleId={fmModuleIds[1]} />
+                    {getFMs()}
                 </CombinatorComponent>
+                <Button
+                    id={`${moduleId}_${fmsModuleId}--add`}
+                    title="Add FM Osc"
+                    onClick={addFMOsc}
+                />
             </div>
         </div>
     );

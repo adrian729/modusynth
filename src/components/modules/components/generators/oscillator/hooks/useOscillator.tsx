@@ -1,17 +1,24 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
 
 import MainContext, {
     ModuleInterface,
-} from 'src/components/modules/context/MainContext/MainContext';
+} from 'src/context/MainContext/MainContext';
 import useSafeContext from 'src/hooks/useSafeContext';
-import { getNotes } from 'src/reducers/oscillatorsSlice';
+import { getNotes, getSynthPadNote } from 'src/reducers/oscillatorsSlice';
 import {
     EnvelopeModule,
     OscillatorModule,
     getDefaultEnvelopeId,
     getModule,
 } from 'src/reducers/synthesisSlice';
+
+import customPeriodicWaveOptions from './customWaveTypes/customWaveTypes';
+
+export interface OscillatorState {
+    oscillators: Record<string, [OscillatorNode, GainNode]>;
+    controlGainNode: GainNode;
+    gainNode: GainNode;
+}
 
 interface UseOscillatorParams {
     moduleId: string;
@@ -22,20 +29,29 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
         dispatch,
     } = useSafeContext(MainContext);
     const { currentTime } = audioContext;
+    const synthPadNote = getSynthPadNote();
     const notes = getNotes();
 
     const defaultModuleState: OscillatorModule = {
         id: '',
-        note: '',
         type: 'sine',
         freq: 0,
+        periodicWaveOptions: { real: [0, 0], imag: [0, 1] },
         gain: 0,
         pitch: 0,
         envelopeId: getDefaultEnvelopeId(),
+        customType: 'none',
     };
     const moduleState = getModule(moduleId) as OscillatorModule;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { type, note, freq, gain, pitch, envelopeId } = {
+    const {
+        type,
+        freq,
+        periodicWaveOptions,
+        gain,
+        pitch,
+        envelopeId,
+        customType,
+    } = {
         ...defaultModuleState,
         ...moduleState,
     };
@@ -52,7 +68,7 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
         useState<ConstantSourceNode>();
 
     const [inputIds, setInputIds] = useState<string[]>([]);
-    const [gainInputIds, setGainInputIds] = useState<string[]>([]); // TODO: CHECK WHY IT SOUNDS WHEN PLAYING NTHING AND GAIN ON RMS HIGH
+    const [gainInputIds, setGainInputIds] = useState<string[]>([]);
     const [freqInputIds, setFreqInputIds] = useState<string[]>([]);
 
     const [disconnectedInputs, setDisconnectedInputs] = useState<string[]>([]);
@@ -86,7 +102,6 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
         const newGainInputs = updateInputs({ inputs: gainInputIds, moduleIds });
         setDisconnectedGainInputs(newGainInputs.filter((id) => !modules[id]));
         setGainInputIds(newGainInputs);
-
         newGainInputs
             .filter((id) => modules[id])
             .forEach((id) =>
@@ -130,13 +145,44 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
             });
         }
         controlGainNode.connect(gainNode);
+
+        return () => {
+            if (modules && !modules[moduleId]) {
+                delete modules[moduleId];
+            }
+        };
     }, []);
+
+    const getPeriodicWave = (): PeriodicWave | undefined => {
+        let periodicWaveOpts =
+            customType === WAVETABLE_TYPE
+                ? periodicWaveOptions
+                : customPeriodicWaveOptions[customType];
+
+        return periodicWaveOpts
+            ? new PeriodicWave(audioContext, periodicWaveOpts)
+            : undefined;
+    };
+
+    const setOscWaveType = (oscillator: OscillatorNode): void => {
+        if (type !== 'custom') {
+            oscillator.type = type;
+            return;
+        }
+
+        const periodicWave = getPeriodicWave();
+        if (!periodicWave) {
+            oscillator.type = 'sine';
+            return;
+        }
+        oscillator.setPeriodicWave(periodicWave);
+    };
 
     useEffect(() => {
         Object.values(oscillators).forEach(([oscillator]) => {
-            oscillator.type = type;
+            setOscWaveType(oscillator);
         });
-    }, [type]);
+    }, [type, customType, periodicWaveOptions]);
 
     useEffect(() => {
         const numOscs = Object.keys(oscillators).length || 1;
@@ -158,9 +204,9 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
         velocity?: number,
     ): [OscillatorNode, GainNode] => {
         const oscNode = new OscillatorNode(audioContext, {
-            type,
             frequency,
         });
+        setOscWaveType(oscNode);
         oscNode.start();
         // Detune by detuneConstantSource conencted to pitch
         detuneConstantSource?.connect(oscNode.detune);
@@ -193,7 +239,6 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
     useEffect(() => {
         setOscillatorState((prevOscillatorState) => {
             const newOscillators = { ...prevOscillatorState.oscillators };
-
             // TODO: check if doing it another way
             // If specific freq set, use freq, else get from notes
             const oscNotes = !freq
@@ -201,7 +246,7 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
                 : { [`freq_${freq}`]: { frequency: freq } };
 
             Object.entries(newOscillators)
-                .filter(([key]) => !oscNotes[key])
+                .filter(([key]) => !oscNotes[key] && key !== SYNTH_PAD_ID)
                 .forEach(([key, [osc, oscGain]]) => {
                     stopOscillator({
                         oscNode: osc,
@@ -247,11 +292,106 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
             prevDisconnectedGainInputs.filter((id) => !modules[id]),
         );
     }, [modules]);
+
+    const stopSynthPadOscillator = () => {
+        const synthPadOscillator = oscillators[SYNTH_PAD_ID];
+        if (synthPadOscillator) {
+            setOscillatorState((prevOscillatorState) => {
+                const newOscillators = { ...prevOscillatorState.oscillators };
+                const [oscNode, oscGainNode] = synthPadOscillator;
+                stopOscillator({
+                    oscNode,
+                    oscGainNode,
+                    currentTime,
+                    release,
+                });
+                delete newOscillators[SYNTH_PAD_ID];
+
+                return { ...prevOscillatorState, oscillators: newOscillators };
+            });
+        }
+    };
+
+    const newSynthPadOscillator = (
+        frequency: number,
+        velocity: number,
+    ): [OscillatorNode, GainNode] => {
+        const oscNode = new OscillatorNode(audioContext, {
+            frequency,
+        });
+        setOscWaveType(oscNode);
+        oscNode.start();
+        // Detune by detuneConstantSource conencted to pitch
+        detuneConstantSource?.connect(oscNode.detune);
+
+        const velocityGain = 0.1 + velocity / 127;
+        const oscGain = new GainNode(audioContext, { gain: 0 });
+        oscGain.gain.setTargetAtTime(
+            sustain * velocityGain,
+            currentTime,
+            easing,
+        );
+        oscNode.connect(oscGain);
+        oscGain.connect(controlGainNode);
+
+        return [oscNode, oscGain];
+    };
+
+    useEffect(() => {
+        const { frequency, velocity } = synthPadNote;
+        if (!frequency || !velocity) {
+            stopSynthPadOscillator();
+        } else {
+            const synthPadOscillator = oscillators[SYNTH_PAD_ID];
+            if (!synthPadOscillator) {
+                setOscillatorState((prevOscillatorState) => {
+                    const newOscillators = {
+                        ...prevOscillatorState.oscillators,
+                    };
+
+                    const oldSynthPadOscillator = newOscillators[SYNTH_PAD_ID];
+                    if (oldSynthPadOscillator) {
+                        const [oscNode, oscGainNode] = oldSynthPadOscillator;
+                        stopOscillator({
+                            oscNode,
+                            oscGainNode,
+                            currentTime,
+                            release,
+                        });
+                    }
+
+                    const newOsc = newSynthPadOscillator(frequency, velocity);
+                    connectFreqInputs(newOsc[0]);
+                    newOscillators[SYNTH_PAD_ID] = newOsc;
+                    return {
+                        ...prevOscillatorState,
+                        oscillators: newOscillators,
+                    };
+                });
+            } else {
+                const [oscNode, oscGainNode] = synthPadOscillator;
+                oscNode.frequency.setTargetAtTime(
+                    frequency,
+                    currentTime,
+                    0.005,
+                );
+                const velocityGain = 0.1 + velocity / 127;
+                oscGainNode.gain.setTargetAtTime(
+                    sustain * velocityGain,
+                    currentTime,
+                    0.005,
+                );
+            }
+        }
+    }, [synthPadNote]);
 };
 
 export default useOscillator;
 
 const easing = 0.005;
+
+const SYNTH_PAD_ID = 'synthPad';
+const WAVETABLE_TYPE = 'wavetable';
 
 interface StopOscillatorParams {
     oscNode: OscillatorNode;
@@ -273,9 +413,3 @@ const stopOscillator = ({
         oscGainNode.disconnect();
     }, 10 * release * 1000 + 1000);
 };
-
-export interface OscillatorState {
-    oscillators: Record<string, [OscillatorNode, GainNode]>;
-    controlGainNode: GainNode;
-    gainNode: GainNode;
-}
