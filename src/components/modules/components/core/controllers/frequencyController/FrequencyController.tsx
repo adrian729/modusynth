@@ -13,7 +13,7 @@ const FrequencyController: FC = () => {
     const dispatch = useAppDispatch();
 
     const { moduleId } = useSafeContext(ModuleContext);
-    const module = getModule(moduleId) as unknown as ModuleWithFreq;
+    const module = getModule(moduleId) as ModuleWithFreq;
     const { freq } = module;
 
     const onChangeFreq = (e: ChangeEvent): void => {

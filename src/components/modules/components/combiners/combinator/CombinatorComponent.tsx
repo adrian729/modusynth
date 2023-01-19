@@ -1,11 +1,4 @@
-import {
-    Children,
-    FC,
-    ReactNode,
-    isValidElement,
-    useEffect,
-    useState,
-} from 'react';
+import { Children, FC, ReactNode, isValidElement, useEffect } from 'react';
 
 import _ from 'lodash';
 import { useAppDispatch } from 'src/app/hooks';
@@ -30,7 +23,6 @@ const CombinatorComponent: FC<CombinatorProps> = ({
 }) => {
     const dispatch = useAppDispatch();
     const module = getModule(moduleId) as CombinatorModule;
-    const [isSetup, setIsSetup] = useState<boolean>(false);
     const childModuleIds = getChildModuleIds(children);
 
     useCombinator({ moduleId });
@@ -43,7 +35,6 @@ const CombinatorComponent: FC<CombinatorProps> = ({
                     childModuleIds,
                 } as CombinatorModule),
             );
-            setIsSetup(true);
         }
         return () => {
             removeModule(moduleId);
@@ -53,7 +44,7 @@ const CombinatorComponent: FC<CombinatorProps> = ({
     return (
         <div>
             <h1>CombinatorComponent: {moduleId}</h1>
-            {isSetup ? <div>{children}</div> : null}
+            {module ? <div>{children}</div> : null}
         </div>
     );
 };

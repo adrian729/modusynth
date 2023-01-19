@@ -1,12 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 
 import _ from 'lodash';
 import { useAppDispatch } from 'src/app/hooks';
 import Button from 'src/components/common/core/button/Button';
-import MainContext, {
-    ModuleInterface,
-} from 'src/context/MainContext/MainContext';
-import useSafeContext from 'src/hooks/useSafeContext';
 import {
     CombinatorModule,
     getModule,
@@ -15,27 +11,16 @@ import {
 
 import CombinatorComponent from '../../combiners/combinator/CombinatorComponent';
 import OscillatorComponent from '../../generators/oscillator/OscillatorComponent';
+import useModulator from './hooks/useModulator';
 
 interface ModulatorProps {
     moduleId: string;
     parentModuleId?: string; // TODO: add module to Redux state when we add the envelope? And add then parentId
 }
 const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
-    // TODO: separate logic into hook
-    const appDispatch = useAppDispatch();
-
-    const {
-        state: { audioContext, modules },
-        dispatch,
-    } = useSafeContext(MainContext);
-
-    const [module] = useState<ModuleInterface>({
-        outputNode: new GainNode(audioContext, { gain: 1 }),
-    });
-    const { outputNode } = module;
+    const dispatch = useAppDispatch();
 
     const generatorsModuleId = useMemo(() => _.uniqueId('generators_'), []);
-    const generatorModule = modules[generatorsModuleId];
     const generatorModuleState = getModule(
         generatorsModuleId,
     ) as CombinatorModule;
@@ -58,34 +43,15 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
         ...rmsModuleState,
     };
 
-    const [generators, setGenerators] = useState<Record<string, any>>({});
-    const [rms, setRMs] = useState<Record<string, any>>({});
-    const [fms, setFMs] = useState<Record<string, any>>({});
+    const [generators, setGenerators] = useState<Record<string, ReactNode>>({});
+    const [rms, setRMs] = useState<Record<string, ReactNode>>({});
+    const [fms, setFMs] = useState<Record<string, ReactNode>>({});
 
     const getGenerators = () => Object.values(generators) || null;
     const getRMs = () => Object.values(rms) || null;
     const getFMs = () => Object.values(fms) || null;
 
-    useEffect(() => {
-        if (modules && !modules[moduleId]) {
-            dispatch({
-                type: 'ADD_MODULE',
-                payload: { id: moduleId, module },
-            });
-        }
-    }, []);
-
-    useEffect(() => {
-        if (generatorModule) {
-            generatorModule.outputNode.connect(outputNode);
-            if (generatorModule.addGainInputs) {
-                generatorModule.addGainInputs([rmsModuleId]);
-            }
-            if (generatorModule.addFreqInputs) {
-                generatorModule.addFreqInputs([fmsModuleId]);
-            }
-        }
-    }, [generatorModule, rmsModuleId, fmsModuleId]);
+    useModulator({ moduleId, generatorsModuleId, rmsModuleId, fmsModuleId });
 
     const addGeneratorOsc = () => {
         const id = _.uniqueId(`${generatorsModuleId}--oscillator-`);
@@ -101,7 +67,7 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
                 ),
             };
         });
-        appDispatch(
+        dispatch(
             updateModule({
                 ...generatorModuleState,
                 childModuleIds: [...generatorChildModuleIds, id],
@@ -123,7 +89,7 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
                 ),
             };
         });
-        appDispatch(
+        dispatch(
             updateModule({
                 ...rmsModuleState,
                 childModuleIds: [...rmsChildModuleIds, id],
@@ -145,7 +111,7 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
                 ),
             };
         });
-        appDispatch(
+        dispatch(
             updateModule({
                 ...fmsModuleState,
                 childModuleIds: [...fmsChildModuleIds, id],

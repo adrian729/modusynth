@@ -239,7 +239,6 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
     useEffect(() => {
         setOscillatorState((prevOscillatorState) => {
             const newOscillators = { ...prevOscillatorState.oscillators };
-            // TODO: check if doing it another way
             // If specific freq set, use freq, else get from notes
             const oscNotes = !freq
                 ? notes

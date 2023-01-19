@@ -15,7 +15,7 @@ const PitchController: FC = () => {
     const dispatch = useAppDispatch();
 
     const { moduleId } = useSafeContext(ModuleContext);
-    const module = getModule(moduleId) as unknown as ModuleWithPitch;
+    const module = getModule(moduleId) as ModuleWithPitch;
     const { pitch } = module;
 
     // TODO: fix debounces usability

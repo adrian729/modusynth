@@ -15,7 +15,7 @@ const GainController: FC = () => {
     const dispatch = useAppDispatch();
 
     const { moduleId } = useSafeContext(ModuleContext);
-    const module = getModule(moduleId) as unknown as ModuleWithGain;
+    const module = getModule(moduleId) as ModuleWithGain;
     const { gain } = module;
 
     // TODO: fix debounces usability

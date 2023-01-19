@@ -22,7 +22,7 @@ const WaveTypeController = () => {
     const dispatch = useAppDispatch();
 
     const { moduleId } = useSafeContext(ModuleContext);
-    const module = getModule(moduleId) as unknown as ModuleWithType;
+    const module = getModule(moduleId) as ModuleWithType;
     const { type } = module;
 
     // eslint-disable-next-line no-undef

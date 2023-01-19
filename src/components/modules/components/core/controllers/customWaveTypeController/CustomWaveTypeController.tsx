@@ -16,7 +16,7 @@ const CustomWaveTypeController = () => {
     const dispatch = useAppDispatch();
 
     const { moduleId } = useSafeContext(ModuleContext);
-    const module = getModule(moduleId) as unknown as ModuleWithCustomType;
+    const module = getModule(moduleId) as ModuleWithCustomType;
     const { customType } = module;
 
     const onChangeType = (waveType: string) => {
