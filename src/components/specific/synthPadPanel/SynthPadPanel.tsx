@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ChangeEvent, useRef, useState } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
@@ -21,7 +20,7 @@ const SynthPadPanel = () => {
     const { current } = svgRef;
 
     const svgWidth = width * 0.9;
-    const svgHeight = 300;
+    const svgHeight = SVG_HEIGHT;
     const gridWidth = svgWidth / 20;
     const gridHeight = svgHeight / 5;
     const smallGridWidth = svgWidth / 200;
@@ -137,11 +136,12 @@ const SynthPadPanel = () => {
         }
     };
 
-    // TODO: check SVG hardcoded grid values to calculate them to fit in the BBox
+    // TODO: move to d3
+    // TODO: convert to a Bode Diagram panel
     return (
         <div>
             <h4>
-                Frequency: {freq ? ` ${freq} Hz` : ' n/a'} Intensity:{' '}
+                Frequency:{freq ? ` ${freq} Hz` : ' n/a'} Intensity:{' '}
                 {` ${intensity}`}{' '}
             </h4>
             <div id="synthpad"></div>

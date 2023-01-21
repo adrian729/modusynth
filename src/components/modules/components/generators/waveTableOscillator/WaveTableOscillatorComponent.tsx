@@ -49,8 +49,8 @@ const WaveTableOscillatorComponent: FC<WaveTableOscillatorProps> = ({
                 freq: 0,
                 // periodicWaveOptions: { real: [0, 0], imag: [0, 1] },
                 periodicWaveOptions: {
-                    real: [10, 30, 40, 20],
-                    imag: [10, 30, 40, 20],
+                    real: [0, 0.2, 0.8, 0.1],
+                    imag: [0, 0.3, -0.8, 0.1],
                 },
                 gain: 0.5,
                 pitch: 0,

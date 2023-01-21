@@ -33,7 +33,6 @@
     "include": [
         "src",
         "src/**/*",
-        "src/components/Keyboard/types/quertyhancock.d.ts"
     ],
     "exclude": ["node_modules"]
 }
