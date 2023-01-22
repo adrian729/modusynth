@@ -154,14 +154,21 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
     }, []);
 
     const getPeriodicWave = (): PeriodicWave | undefined => {
-        let periodicWaveOpts =
+        const periodicWaveOpts =
             customType === WAVETABLE_TYPE
                 ? periodicWaveOptions
                 : customPeriodicWaveOptions[customType];
 
-        return periodicWaveOpts
-            ? new PeriodicWave(audioContext, periodicWaveOpts)
-            : undefined;
+        if (!periodicWaveOpts) {
+            return undefined;
+        }
+
+        const { real, imag } = periodicWaveOptions;
+        if (!real || !imag) {
+            return undefined;
+        }
+
+        return new PeriodicWave(audioContext, periodicWaveOpts);
     };
 
     const setOscWaveType = (oscillator: OscillatorNode): void => {
