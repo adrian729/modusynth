@@ -206,16 +206,14 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
             frequency,
         });
         setOscWaveType(oscNode);
-        oscNode.start();
-        // Detune by detuneConstantSource conencted to pitch
-        detuneConstantSource?.connect(oscNode.detune);
 
         const velocityGain = velocity ? 0.1 + velocity / 127 : 1;
-        const oscGain = new GainNode(audioContext, { gain: 0 });
+        const oscGain = new GainNode(audioContext);
+        oscGain.gain.cancelScheduledValues(currentTime);
         oscGain.gain.setTargetAtTime(0, currentTime, easing);
         oscGain.gain.linearRampToValueAtTime(
             velocityGain,
-            currentTime + attack + easing,
+            currentTime + attack,
         );
         oscGain.gain.linearRampToValueAtTime(
             sustain * velocityGain,
@@ -223,6 +221,9 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
         );
         oscNode.connect(oscGain);
         oscGain.connect(controlGainNode);
+        // Detune by detuneConstantSource conencted to pitch
+        detuneConstantSource?.connect(oscNode.detune);
+        oscNode.start();
 
         return [oscNode, oscGain];
     };
