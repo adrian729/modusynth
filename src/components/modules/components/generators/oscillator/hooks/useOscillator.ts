@@ -24,6 +24,7 @@ interface UseOscillatorParams {
     moduleId: string;
 }
 const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
+    console.log('RENDER'); //TODO: how to fix synthPad so that it doesn't break this? ON CLICK
     const {
         state: { audioContext, modules },
         dispatch,
@@ -32,29 +33,20 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
     const synthPadNote = getSynthPadNote();
     const notes = getNotes();
 
-    const defaultModuleState: OscillatorModule = {
-        id: '',
-        type: 'sine',
-        freq: 0,
-        periodicWaveOptions: { real: [0, 0], imag: [0, 1] },
-        gain: 0,
-        pitch: 0,
-        envelopeId: getDefaultEnvelopeId(),
-        customType: 'none',
-    };
     const moduleState = getModule(moduleId) as OscillatorModule;
+    const defaultEnvelopeId = getDefaultEnvelopeId();
+
+    //! TODO: WE CAN JUST ADD DEFAULT VALUES WHEN DESTRUCTURING LIKE HERE!!! REFACTOR CODE IN OTHER PLACES!!!
     const {
-        type,
-        freq,
-        periodicWaveOptions,
-        gain,
-        pitch,
-        envelopeId,
-        customType,
-    } = {
-        ...defaultModuleState,
-        ...moduleState,
-    };
+        type = 'sine',
+        freq = 0,
+        periodicWaveOptions = { real: [0, 0], imag: [0, 1] },
+        gain = 0,
+        pitch = 0,
+        envelopeId = defaultEnvelopeId,
+        customType = 'none',
+    } = { ...moduleState };
+
     const envelopeModuleState = getModule(envelopeId) as EnvelopeModule;
     const { attack, decay, sustain, release } = envelopeModuleState.envelope;
 
@@ -411,11 +403,12 @@ const stopOscillator = ({
     currentTime,
     release,
 }: StopOscillatorParams): void => {
+    // TODO: check why if stop before starting decay it pops
     oscGainNode.gain.cancelScheduledValues(currentTime);
     oscGainNode.gain.setTargetAtTime(0, currentTime, release / 3 + easing); // Exponential ramp to target. After time/3 around 95% close to target
     setTimeout(() => {
         oscNode.stop();
         oscNode.disconnect();
         oscGainNode.disconnect();
-    }, 10 * release * 1000 + 1000);
+    }, 10 * release * 1000 + 3000);
 };

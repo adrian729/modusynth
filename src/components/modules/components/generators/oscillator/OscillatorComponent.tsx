@@ -13,8 +13,7 @@ import {
 
 import CustomWaveTypeController from '../../core/controllers/customWaveTypeController/CustomWaveTypeController';
 import FrequencyController from '../../core/controllers/frequencyController/FrequencyController';
-import GainController from '../../core/controllers/gainController/GainController';
-import PitchController from '../../core/controllers/pitchController/PitchController';
+import NumericController from '../../core/controllers/numericController/NumericController';
 import WaveTypeController from '../../core/controllers/waveTypeController/WaveTypeController';
 import useOscillator from './hooks/useOscillator';
 
@@ -68,8 +67,27 @@ const OscillatorComponent: FC<OscillatorProps> = ({
                         }}
                     >
                         <FrequencyController />
-                        <GainController />
-                        <PitchController />
+                        <NumericController
+                            paramId={'gain'}
+                            resetValue={0.2}
+                            step={0.005}
+                            min={0}
+                            max={2}
+                            hasMaxInput={true}
+                        />
+                        <NumericController
+                            paramId={'pitch'}
+                            resetValue={0}
+                            step={0.01}
+                            min={-1200}
+                            max={1200}
+                            hasMinInput={true}
+                            minInputMin={-7200}
+                            minInputMax={7200}
+                            hasMaxInput={true}
+                            maxInputMin={-7200}
+                            maxInputMax={7200}
+                        />
                         <WaveTypeController />
                         <CustomWaveTypeController />
                     </div>

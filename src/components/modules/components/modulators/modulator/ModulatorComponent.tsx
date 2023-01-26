@@ -11,6 +11,7 @@ import {
 
 import CombinatorComponent from '../../combiners/combinator/CombinatorComponent';
 import OscillatorComponent from '../../generators/oscillator/OscillatorComponent';
+import EnvelopeComponent from '../envelope/EnvelopeComponent';
 import useModulator from './hooks/useModulator';
 
 interface ModulatorProps {
@@ -24,24 +25,23 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
     const generatorModuleState = getModule(
         generatorsModuleId,
     ) as CombinatorModule;
-    const { childModuleIds: generatorChildModuleIds } = {
-        ...{ childModuleIds: [] },
+    const { childModuleIds: generatorChildModuleIds = [] } = {
         ...generatorModuleState,
     };
 
     const rmsModuleId = useMemo(() => _.uniqueId('rms_'), []);
     const rmsModuleState = getModule(rmsModuleId) as CombinatorModule;
-    const { childModuleIds: rmsChildModuleIds } = {
-        ...{ childModuleIds: [] },
+    const { childModuleIds: rmsChildModuleIds = [] } = {
         ...rmsModuleState,
     };
 
     const fmsModuleId = useMemo(() => _.uniqueId('fms_'), []);
     const fmsModuleState = getModule(fmsModuleId) as CombinatorModule;
-    const { childModuleIds: fmsChildModuleIds } = {
-        ...{ childModuleIds: [] },
+    const { childModuleIds: fmsChildModuleIds = [] } = {
         ...rmsModuleState,
     };
+
+    const envelopeId = useMemo(() => _.uniqueId('envelope_'), []);
 
     const [generators, setGenerators] = useState<Record<string, ReactNode>>({});
     const [rms, setRMs] = useState<Record<string, ReactNode>>({});
@@ -62,6 +62,7 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
                     <OscillatorComponent
                         key={id}
                         moduleId={id}
+                        envelopeId={envelopeId}
                         parentModuleId={generatorsModuleId}
                     />
                 ),
@@ -84,6 +85,7 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
                     <OscillatorComponent
                         key={id}
                         moduleId={id}
+                        envelopeId={envelopeId}
                         parentModuleId={rmsModuleId}
                     />
                 ),
@@ -106,6 +108,7 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
                     <OscillatorComponent
                         key={id}
                         moduleId={id}
+                        envelopeId={envelopeId}
                         parentModuleId={fmsModuleId}
                     />
                 ),
@@ -157,6 +160,11 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
                     onClick={addFMOsc}
                 />
             </div>
+            <h4>Envelope</h4>
+            <EnvelopeComponent
+                moduleId={envelopeId}
+                parentModuleId={moduleId}
+            />
         </div>
     );
 };

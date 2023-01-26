@@ -22,13 +22,13 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
 
     const { moduleId } = useSafeContext(ModuleContext);
     const module = getModule(moduleId) as ModuleWithPeriodicWaveOptions;
-    const { periodicWaveOptions } = module;
+    const { periodicWaveOptions = {} } = { ...module };
 
     // First value of periodicWaveOptions options is always 0
     const [array, setArray] = useState(
         periodicWaveOptions[optionsKey]?.slice(1) || [],
     );
-    const debounceArray = useDebounce(array, 200);
+    const debounceArray = useDebounce(array, 100);
 
     const svgRef = useRef<SVGSVGElement>(null);
     const { current } = svgRef;
@@ -43,8 +43,7 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
     const [clicked, setClicked] = useState(false);
     const [shiftPressed, setShiftPressed] = useState(false);
     const [, setPos] = useState<number[]>();
-    type BarType = { index: number; value: number };
-    const [, setTableBar] = useState<BarType>();
+    const [, setTableBar] = useState<{ index: number; value: number }>();
 
     useEffect(() => {
         if (current && !isSetup) {
@@ -62,10 +61,7 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
     useEffect(() => {
         // TODO: update size of real/imag so that both match?¿? (get bigger size)
         // TODO: if value < deltaX (decide how much) ignore it for the resize (pe: we have [0.5, 0.7, 0, 000......., 0.001, 0000...], dont just take all the values with 0 just because of that 0.001...)
-        const { real, imag } = {
-            ...{ real: [], imag: [] },
-            ...periodicWaveOptions,
-        };
+        const { real = [], imag = [] } = { ...periodicWaveOptions };
         const newOptionArray = debounceArray; // TODO: instead of just array, try to remove "tail" of 0s
         const length = Math.max(
             real.length,
@@ -151,7 +147,6 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
         return () => document.removeEventListener('keydown', detectShiftDown);
     }, [detectShiftDown, detectShiftUp]);
 
-    // TODO: keep track of last index added, if it's at distance > 1 try to do a linear aprox of the middle points. Put last index to null on update/when setClicked to false
     const yScale: (val: number) => number = d3
         .scaleLinear()
         .domain([-1, 1])
@@ -161,66 +156,78 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
         data > 0 ? yScale(data) - yScale(0) : yScale(0) - yScale(data);
 
     const getPosBarIndex = (posX: number) =>
-        Math.min(numValues - 1, Math.floor(posX / (tableWidth / numValues)));
+        Math.min(numValues - 1, Math.floor((posX * numValues) / tableWidth));
 
     const getPosScaledValue = (posY: number) => 1 - 2 * (posY / tableHeight); // range [-1, 1], max - min: 2, min: -1
 
     const interpolateValues = (
         nextIndex: number,
         nextValue: number,
+        index: number,
+        value: number,
         rectNodes: any,
     ) => {
-        setTableBar((prevTableBar) => {
-            if (!prevTableBar) {
-                return { index: nextIndex, value: nextValue };
-            }
+        const numElementsUpdate = Math.abs(nextIndex - index) - 1;
+        if (numElementsUpdate > 0) {
+            const m = (nextValue - value) / (nextIndex - index);
+            const c = nextValue - m * nextIndex;
 
-            const { index, value } = prevTableBar;
-            if (!index || !value) {
-                return { index: nextIndex, value: nextValue };
-            }
+            const indexesToUpdate = Array.from(
+                { length: numElementsUpdate },
+                (_, i) => i + Math.min(index, nextIndex) + 1,
+            );
+            indexesToUpdate.forEach((idx) => {
+                const pointValue = m * idx + c;
+                d3.select(rectNodes[idx])
+                    .attr('y', () =>
+                        pointValue > 0
+                            ? tableHeight - yScale(pointValue)
+                            : tableHeight / 2,
+                    )
+                    .attr('height', () => getBarHeight(pointValue));
+            });
+        }
+    };
 
-            const numElementsUpdate = Math.abs(nextIndex - index) - 1;
-            if (numElementsUpdate > 0) {
-                // TODO: we need to generate the "intermediate" values (check line function and generate it from prevIndex valeu and actual value)
-
-                const m = (nextValue - value) / (nextIndex - index);
-                const c = nextValue - m * nextIndex;
-
-                const indexesToUpdate = Array.from(
-                    { length: numElementsUpdate },
-                    (_, i) => i + Math.min(index, nextIndex) + 1,
-                );
-                indexesToUpdate.forEach((idx) => {
-                    const pointValue = m * idx + c;
-
-                    d3.select(rectNodes[idx])
-                        .attr('y', () =>
-                            pointValue > 0
-                                ? tableHeight - yScale(pointValue)
-                                : tableHeight / 2,
-                        )
-                        .attr('height', () => getBarHeight(pointValue));
-                });
-            }
-            return { index: nextIndex, value: nextValue };
-        });
+    const drawHelperLine = (
+        nextIndex: number,
+        nextValue: number,
+        index: number,
+        value: number,
+    ) => {
+        // const line = d3.line().context(null);
+        const curve = d3.line().curve(d3.curveBasis);
+        const svg = d3.select(current);
+        svg.append('path')
+            .attr(
+                'd',
+                curve([
+                    [
+                        (index * tableWidth) / numValues,
+                        (tableHeight - value * tableHeight) / 2,
+                    ],
+                    [
+                        (nextIndex * tableWidth) / numValues,
+                        (tableHeight - nextValue * tableHeight) / 2,
+                    ],
+                ]),
+            )
+            .attr('stroke', 'red');
     };
 
     const updateArray = (event: MouseEvent) => {
         if (current) {
             const pos = d3.pointer(event, current);
-            const index = getPosBarIndex(pos[0]);
-            let value = getPosScaledValue(pos[1]);
+            const nextIndex = getPosBarIndex(pos[0]);
+            const nextValue = getPosScaledValue(pos[1]);
 
             const svg = d3.select(current);
-
             const rectsSize = svg.selectAll('rect').size();
-            if (rectsSize < index + 1) {
+            // Fill necessary rects into the svg
+            if (rectsSize < nextIndex + 1) {
                 const barWidth = tableWidth / numValues;
-
                 svg.selectAll('rect')
-                    .data(getResizedArray(array, index + 1))
+                    .data(getResizedArray(array, nextIndex + 1))
                     .enter()
                     .append('rect')
                     .attr('fill', 'lightseagreen')
@@ -231,43 +238,45 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
             }
 
             const rectNodes = svg.selectAll('rect').nodes();
-
-            d3.select(rectNodes[index])
+            d3.select(rectNodes[nextIndex])
                 .attr('y', () =>
-                    value > 0 ? tableHeight - yScale(value) : tableHeight / 2,
+                    nextValue > 0
+                        ? tableHeight - yScale(nextValue)
+                        : tableHeight / 2,
                 )
-                .attr('height', () => getBarHeight(value));
-            interpolateValues(index, value, rectNodes);
+                .attr('height', () => getBarHeight(nextValue));
+
+            setTableBar((prevTableBar) => {
+                if (!prevTableBar) {
+                    return { index: nextIndex, value: nextValue };
+                }
+                const { index, value } = prevTableBar;
+                if (!index || !value) {
+                    return { index: nextIndex, value: nextValue };
+                }
+                drawHelperLine(nextIndex, nextValue, index, value);
+                interpolateValues(
+                    nextIndex,
+                    nextValue,
+                    index,
+                    value,
+                    rectNodes,
+                );
+                return { index: nextIndex, value: nextValue };
+            });
 
             setArray((prevArray) => {
                 let newArray = getResizedArray(
                     prevArray,
-                    Math.max(prevArray.length, index),
+                    Math.max(prevArray.length, nextIndex),
                 );
-                newArray[index] = value;
+                newArray[nextIndex] = nextValue;
 
                 return newArray;
             });
         }
     };
 
-    const paint = (event: MouseEvent) => {
-        if (current) {
-            const svg = d3.select(current);
-            const pos = d3.pointer(event, current);
-            setPos((prevPos) => {
-                if (prevPos) {
-                    const line = d3.line().context(null);
-                    svg.append('path')
-                        .attr('d', line([prevPos, pos]))
-                        .attr('stroke', 'lightblue');
-                }
-                return pos;
-            });
-        }
-    };
-
-    // TODO: on shift key down, not reset setTableBar (on shift keyUp, if not clicked, reset tablebar)
     const resetSemaphores = () => {
         setClicked(false);
         setPos(undefined);
@@ -289,12 +298,10 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
                 ref={svgRef}
                 onMouseDown={({ nativeEvent }) => {
                     setClicked(true);
-                    paint(nativeEvent);
                     updateArray(nativeEvent);
                 }}
                 onMouseMove={({ nativeEvent }) => {
                     if (clicked) {
-                        paint(nativeEvent);
                         updateArray(nativeEvent);
                     }
                 }}

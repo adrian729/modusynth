@@ -10,8 +10,7 @@ import {
     removeModule,
 } from 'src/reducers/synthesisSlice';
 
-import GainController from '../../core/controllers/gainController/GainController';
-import PitchController from '../../core/controllers/pitchController/PitchController';
+import NumericController from '../../core/controllers/numericController/NumericController';
 import WaveTableController from '../../core/controllers/waveTableController/WaveTableController';
 import useOscillator from '../oscillator/hooks/useOscillator';
 import './styles.scss';
@@ -72,14 +71,28 @@ const WaveTableOscillatorComponent: FC<WaveTableOscillatorProps> = ({
         >
             {module ? (
                 <>
-                    {/* <div className="wavetableoscillator__screen">
-                {Array.from({ length: freqSections }, (val, i) =>
-                    screenSection(i),
-                )}
-            </div> */}
                     <WaveTableController />
-                    <GainController />
-                    <PitchController />
+                    <NumericController
+                        paramId={'gain'}
+                        resetValue={0.2}
+                        step={0.005}
+                        min={0}
+                        max={2}
+                        hasMaxInput={true}
+                    />
+                    <NumericController
+                        paramId={'pitch'}
+                        resetValue={0}
+                        step={0.01}
+                        min={-1200}
+                        max={1200}
+                        hasMinInput={true}
+                        minInputMin={-7200}
+                        minInputMax={7200}
+                        hasMaxInput={true}
+                        maxInputMin={-7200}
+                        maxInputMax={7200}
+                    />
                 </>
             ) : null}
         </ModuleContextProvider>

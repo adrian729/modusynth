@@ -21,8 +21,8 @@ const MainAudioComponent: FC = () => {
 export default MainAudioComponent;
 
 /**
- * DO MAIN CONTROL CONTEXT CHANGES HERE AND IN THE useMainAudio() HOOK!
- * To avoid re-render of everything when we change a main control (p.e. main gain).
+ * ! DO MAIN CONTROL CONTEXT CHANGES HERE AND IN THE useMainAudio() HOOK
+ * ? To avoid re-render of everything when we change a main control (p.e. main gain).
  */
 const MainAudioControl: FC = () => {
     useMainAudio();

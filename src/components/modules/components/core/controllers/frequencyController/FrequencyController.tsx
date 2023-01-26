@@ -14,7 +14,7 @@ const FrequencyController: FC = () => {
 
     const { moduleId } = useSafeContext(ModuleContext);
     const module = getModule(moduleId) as ModuleWithFreq;
-    const { freq } = module;
+    const { freq = 0 } = { ...module };
 
     const onChangeFreq = (e: ChangeEvent): void => {
         const { value } = e.target as HTMLInputElement;

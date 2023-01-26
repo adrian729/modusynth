@@ -23,7 +23,7 @@ const WaveTypeController = () => {
 
     const { moduleId } = useSafeContext(ModuleContext);
     const module = getModule(moduleId) as ModuleWithType;
-    const { type } = module;
+    const { type = 'sine' } = { ...module };
 
     // eslint-disable-next-line no-undef
     const onChangeType = (waveType: OscillatorType) => {

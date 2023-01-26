@@ -16,7 +16,7 @@ const useCombinator = ({ moduleId }: UseCombinatorParams) => {
     } = useSafeContext(MainContext);
 
     const moduleState = getModule(moduleId) as CombinatorModule;
-    const { childModuleIds } = { ...{ childModuleIds: [] }, ...moduleState };
+    const { childModuleIds = [] } = { ...moduleState };
     const [inputIds, setInputIds] = useState<string[]>([]);
     const [gainInputIds, setGainInputIds] = useState<string[]>([]);
     const [freqInputIds, setFreqInputIds] = useState<string[]>([]);
