@@ -29,7 +29,6 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
         state: { audioContext, modules },
         dispatch,
     } = useSafeContext(MainContext);
-    const { currentTime } = audioContext;
     const synthPadNote = getSynthPadNote();
     const notes = getNotes();
 
@@ -119,6 +118,7 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
     useEffect(() => {
         let constantSourceNode = detuneConstantSource;
         if (detuneConstantSource === undefined) {
+            const { currentTime } = audioContext;
             constantSourceNode = new ConstantSourceNode(audioContext, {
                 offset: undefined,
             });
@@ -184,12 +184,14 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
     }, [type, customType, periodicWaveOptions]);
 
     useEffect(() => {
+        const { currentTime } = audioContext;
         const numOscs = Object.keys(oscillators).length || 1;
         gainNode.gain.setTargetAtTime(gain / numOscs, currentTime, 0.005);
     }, [gain, oscillators]);
 
     useEffect(() => {
         if (detuneConstantSource) {
+            const { currentTime } = audioContext;
             detuneConstantSource.offset.setTargetAtTime(
                 pitch,
                 currentTime,
@@ -207,13 +209,14 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
         });
         setOscWaveType(oscNode);
 
+        const { currentTime } = audioContext;
         const velocityGain = velocity ? 0.1 + velocity / 127 : 1;
-        const oscGain = new GainNode(audioContext);
+        const oscGain = new GainNode(audioContext, { gain: 0 });
         oscGain.gain.cancelScheduledValues(currentTime);
         oscGain.gain.setTargetAtTime(0, currentTime, easing);
         oscGain.gain.linearRampToValueAtTime(
             velocityGain,
-            currentTime + attack,
+            currentTime + attack + easing,
         );
         oscGain.gain.linearRampToValueAtTime(
             sustain * velocityGain,
@@ -238,6 +241,7 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
 
     useEffect(() => {
         setOscillatorState((prevOscillatorState) => {
+            const { currentTime } = audioContext;
             const newOscillators = { ...prevOscillatorState.oscillators };
             // If specific freq set, use freq, else get from notes
             const oscNotes = !freq
@@ -296,6 +300,7 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
         const synthPadOscillator = oscillators[SYNTH_PAD_ID];
         if (synthPadOscillator) {
             setOscillatorState((prevOscillatorState) => {
+                const { currentTime } = audioContext;
                 const newOscillators = { ...prevOscillatorState.oscillators };
                 const [oscNode, oscGainNode] = synthPadOscillator;
                 stopOscillator({
@@ -323,6 +328,7 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
         // Detune by detuneConstantSource conencted to pitch
         detuneConstantSource?.connect(oscNode.detune);
 
+        const { currentTime } = audioContext;
         const velocityGain = 0.1 + velocity / 127;
         const oscGain = new GainNode(audioContext, { gain: 0 });
         oscGain.gain.setTargetAtTime(
@@ -344,6 +350,7 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
             const synthPadOscillator = oscillators[SYNTH_PAD_ID];
             if (!synthPadOscillator) {
                 setOscillatorState((prevOscillatorState) => {
+                    const { currentTime } = audioContext;
                     const newOscillators = {
                         ...prevOscillatorState.oscillators,
                     };
@@ -368,6 +375,7 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
                     };
                 });
             } else {
+                const { currentTime } = audioContext;
                 const [oscNode, oscGainNode] = synthPadOscillator;
                 oscNode.frequency.setTargetAtTime(
                     frequency,

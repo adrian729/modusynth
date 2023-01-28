@@ -356,6 +356,7 @@ function drawTableGuides({ svgElement, width, height }: DrawTableGuidesParams) {
             .attr('stroke', 'black');
     }
 }
+
 interface InitChartParams {
     array: number[] | Float32Array;
     numValues: number;

@@ -7,8 +7,6 @@ import OscilloscopeComponent from '../oscilloscope/OscilloscopeComponent';
 import MainAudioContent from './components/MainAudioContent/MainAudioContent';
 import useMainAudio from './hooks/useMainAudio';
 
-// import OscilloscopeComponent from '../oscilloscope/OscilloscopeComponent';
-
 const MainAudioComponent: FC = () => {
     return (
         <MainContextProvider>
@@ -30,7 +28,7 @@ const MainAudioControl: FC = () => {
     return (
         <>
             <h1>Main Audio</h1>
-            {/* <OscilloscopeComponent /> */}
+            <OscilloscopeComponent />
         </>
     );
 };
