@@ -185,9 +185,8 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
 
     useEffect(() => {
         const { currentTime } = audioContext;
-        const numOscs = Object.keys(oscillators).length || 1;
-        gainNode.gain.setTargetAtTime(gain / numOscs, currentTime, 0.005);
-    }, [gain, oscillators]);
+        gainNode.gain.setTargetAtTime(gain, currentTime, 0.005);
+    }, [gain]);
 
     useEffect(() => {
         if (detuneConstantSource) {
@@ -213,13 +212,17 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
         const velocityGain = velocity ? 0.1 + velocity / 127 : 1;
         const oscGain = new GainNode(audioContext, { gain: 0 });
         oscGain.gain.cancelScheduledValues(currentTime);
-        oscGain.gain.setTargetAtTime(0, currentTime, easing / 2);
-        if (attack > 0) {
-            const attackTime = currentTime + attack + easing;
-            oscGain.gain.linearRampToValueAtTime(velocityGain, attackTime);
-        }
-        const decayTime = currentTime + attack + decay + 2 * easing;
-        oscGain.gain.linearRampToValueAtTime(sustain * velocityGain, decayTime);
+        oscGain.gain.setTargetAtTime(0, currentTime, easing / 3);
+        oscGain.gain.setTargetAtTime(
+            velocityGain,
+            currentTime + easing,
+            attack / 3 + easing,
+        );
+        oscGain.gain.setTargetAtTime(
+            sustain * velocityGain,
+            currentTime + attack + 2 * easing,
+            decay / 3 + easing,
+        );
         oscNode.connect(oscGain);
         oscGain.connect(controlGainNode);
         // Detune by detuneConstantSource conencted to pitch
@@ -412,10 +415,10 @@ const stopOscillator = ({
 }: StopOscillatorParams): void => {
     // TODO: check why if stop before starting decay it pops
     oscGainNode.gain.cancelScheduledValues(currentTime);
-    oscGainNode.gain.setTargetAtTime(0, currentTime, release / 3 + easing); // Exponential ramp to target. After time/3 around 95% close to target
+    oscGainNode.gain.setTargetAtTime(0, currentTime, (release + easing) / 3); // Exponential ramp to target. After time/3 around 95% close to target
     setTimeout(() => {
         oscNode.stop();
         oscNode.disconnect();
         oscGainNode.disconnect();
-    }, 10 * release * 1000 + 3000);
+    }, 10 * release * 1000 + 1000);
 };
