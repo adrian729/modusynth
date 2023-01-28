@@ -213,15 +213,13 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
         const velocityGain = velocity ? 0.1 + velocity / 127 : 1;
         const oscGain = new GainNode(audioContext, { gain: 0 });
         oscGain.gain.cancelScheduledValues(currentTime);
-        oscGain.gain.setTargetAtTime(0, currentTime, easing);
-        oscGain.gain.linearRampToValueAtTime(
-            velocityGain,
-            currentTime + attack + easing,
-        );
-        oscGain.gain.linearRampToValueAtTime(
-            sustain * velocityGain,
-            currentTime + attack + decay + easing,
-        );
+        oscGain.gain.setTargetAtTime(0, currentTime, easing / 2);
+        if (attack > 0) {
+            const attackTime = currentTime + attack + easing;
+            oscGain.gain.linearRampToValueAtTime(velocityGain, attackTime);
+        }
+        const decayTime = currentTime + attack + decay + 2 * easing;
+        oscGain.gain.linearRampToValueAtTime(sustain * velocityGain, decayTime);
         oscNode.connect(oscGain);
         oscGain.connect(controlGainNode);
         // Detune by detuneConstantSource conencted to pitch

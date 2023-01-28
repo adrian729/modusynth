@@ -1,8 +1,8 @@
 import { FC, useEffect, useMemo } from 'react';
 
 import _ from 'lodash';
-import OscillatorComponent from 'src/components/modules/components/generators/oscillator/OscillatorComponent';
-import WaveTableOscillatorComponent from 'src/components/modules/components/generators/waveTableOscillator/WaveTableOscillatorComponent';
+// import OscillatorComponent from 'src/components/modules/components/generators/oscillator/OscillatorComponent';
+// import WaveTableOscillatorComponent from 'src/components/modules/components/generators/waveTableOscillator/WaveTableOscillatorComponent';
 import ModulatorComponent from 'src/components/modules/components/modulators/modulator/ModulatorComponent';
 import MainContext from 'src/context/MainContext/MainContext';
 import useSafeContext from 'src/hooks/useSafeContext';
@@ -55,9 +55,9 @@ const MainAudioContent: FC = () => {
     return (
         <div>
             <h1>Main Module</h1>
-            <OscillatorComponent moduleId={moduleIds[0]} />
+            {/* <OscillatorComponent moduleId={moduleIds[0]} /> */}
             <ModulatorComponent moduleId={moduleIds[1]} />
-            <WaveTableOscillatorComponent moduleId={moduleIds[2]} />
+            {/* <WaveTableOscillatorComponent moduleId={moduleIds[2]} /> */}
         </div>
     );
 };
