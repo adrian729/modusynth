@@ -30,9 +30,6 @@
         "declarationMap": true,
         "types": ["node", "jest", "@testing-library/jest-dom", "webmidi"]
     },
-    "include": [
-        "src",
-        "src/**/*",
-    ],
+    "include": ["src", "src/**/*"],
     "exclude": ["node_modules"]
 }
