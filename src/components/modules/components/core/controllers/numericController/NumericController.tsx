@@ -1,7 +1,6 @@
 import { ChangeEvent, FC, useState } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
-import Knob from 'src/components/common/core/knob/Knob';
 import Slider, { SliderProps } from 'src/components/common/core/slider/Slider';
 import ModuleContext from 'src/components/modules/context/ModuleContext/ModuleContext';
 import useSafeContext from 'src/hooks/useSafeContext';
@@ -74,24 +73,6 @@ const NumericController: FC<NumericControllerProps> = ({
                     value,
                     onChange: onChangeValue,
                     onSliderReset: (id, value) => updateValue(value),
-                    min: debouncedMin,
-                    max: debouncedMax,
-                }}
-            />
-            <Knob
-                {...{
-                    id: `${moduleId}_${paramId}_knob`,
-                    value,
-                    onChange: (e) => {
-                        if (e) {
-                            console.log('EVENT', e);
-                            // updateValue(
-                            //     parseFloat(
-                            //         (e.target as HTMLInputElement).value,
-                            //     ),
-                            // );
-                        }
-                    },
                     min: debouncedMin,
                     max: debouncedMax,
                 }}
