@@ -10,6 +10,7 @@ import {
     updateModule,
 } from 'src/reducers/synthesisSlice';
 
+// TODO: Envelope Controller with screen visualization/control (example: https://djpmusicschool.com/wp-content/uploads/ADSR-1024x499.jpg)
 const EnvelopeController = () => {
     const dispatch = useAppDispatch();
 

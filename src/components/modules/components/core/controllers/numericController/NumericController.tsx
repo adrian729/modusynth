@@ -1,6 +1,7 @@
 import { ChangeEvent, FC, useState } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
+import Knob from 'src/components/common/core/knob/Knob';
 import Slider, { SliderProps } from 'src/components/common/core/slider/Slider';
 import ModuleContext from 'src/components/modules/context/ModuleContext/ModuleContext';
 import useSafeContext from 'src/hooks/useSafeContext';
@@ -65,6 +66,7 @@ const NumericController: FC<NumericControllerProps> = ({
 
     return (
         <div>
+            <Knob />
             <Slider
                 {...{
                     ...restProps,

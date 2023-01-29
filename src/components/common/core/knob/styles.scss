@@ -1,0 +1,231 @@
+// Theming
+$primary: magenta !default;
+$secondary: cyan !default;
+$white: #FFF !default;
+$black: #000 !default;
+$dark: #2c2d2f !default;
+$gray: gray !default;
+// Accessible Semantic SCSS / Vanilla Number Input Knob / Potentiometer
+$knob-d: 4em !default;
+$knob-c: $gray !default;
+$knob-spacing: .5em !default;
+$knob-border-c: #181b1c !default;
+$knob-border-w: .5em !default;
+$knob-bg-c: $dark !default;
+$knob-ind-c: #888 !default;
+$knob-ind-focus-c: $primary !default;
+$knob-label-c: #e4e8ea !default;
+$knob-group-border-r: .2rem !default;
+$knob-group-bg-c: $dark !default;
+$knob-font: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace !default;
+
+// Box model reset
+*, *::before, *::after { box-sizing: border-box; }
+
+// Light / dark mode (light is default)
+[data-mode="dark"] {
+  .knob-group {
+    
+  }
+  .knob {
+    
+  } 
+}
+// Knobs group container (i.e. a form)
+.knob-group {
+  position: relative;
+  display: inline-block;
+  background-color: $knob-group-bg-c;
+  padding: 0 $knob-spacing;
+  border-radius: $knob-group-border-r;
+  font-family: $knob-font;
+  legend {
+    position: relative;
+    display: block;
+    width: auto;
+    line-height: 1.5;
+    text-align: left;
+    padding: $knob-spacing $knob-spacing $knob-spacing/2 $knob-spacing;
+    white-space: nowrap;
+    background-color: $knob-group-bg-c;
+    z-index: 2;
+    outline: 0;
+    &:focus {
+      &::before { box-shadow: 0 0 0 .2em rgba($knob-ind-focus-c, .25); }
+    }
+    &:focus-visible {
+      &::after { content: attr(data-key); }
+    }
+    &::before {
+      content: '';
+      position: relative;
+      display: inline-block;
+      height: $knob-spacing;
+      width: $knob-spacing;
+      float: left;
+      border-radius: 100%;
+      background-color: $knob-ind-focus-c;
+      cursor: pointer;
+      transition: background .2s linear;
+      margin: $knob-spacing ($knob-spacing*2) 0 (-$knob-spacing/2);
+    }
+    &::after {
+      position: absolute;
+      right: $knob-spacing/4; top: $knob-spacing*1.25;
+      font-size:.5em;
+      padding: .5em 1em;
+      background-color: $knob-border-c;
+      font-weight: 600;
+    }
+  }
+  hr {
+    position: absolute;
+    width: calc(100% - #{$knob-spacing*2});
+    display: inline-block;
+    margin: 0; padding: 0;
+    top: $knob-spacing*2.5; right: $knob-spacing;
+    border: 0;
+    border-top: 1px solid currentColor;
+    z-index: 1;
+  }
+  &[data-status="disabled"] {
+    // color: $knob-ind-c;
+    legend {
+      color: currentColor !important;
+      &::before { background-color: currentColor; }
+      &:focus::before { box-shadow: 0 0 12px 1px currentColor;}
+    }
+    .knob {
+      svg path:first-of-type { stroke: currentColor; }
+    }
+  }
+}
+// Knob container (i.e. a fieldset)
+.knob {
+  --knob-deg: 0;
+  display: inline-block;
+  position: relative;
+  padding:0; margin:0; 
+  padding-bottom: 2em;
+  width: $knob-d; 
+  border: 0;
+  text-align: center;
+  touch-action: none;
+  font-size: 1rem; // Knob sizing
+  &.knob-small { font-size: .72rem; }
+  &.knob-balance {
+    hr, i {
+      position: absolute;
+      top: $knob-d/.65 - 1em; left: 0;
+      width: 100%;
+      border: 0;
+      font-size: .65em;
+      font-style: normal;
+      line-height: 2.5;
+      color: $knob-ind-c;
+      &::before, &::after { position: absolute; }
+      &::before { content: attr(data-min); left: 0; }
+      &::after { content: attr(data-max); right: 0; }
+    }
+    svg path {
+      stroke-dasharray: 87 10 87;
+      &:last-of-type { stroke-dashoffset: 0; } 
+    }
+  }
+  // debug*, &, *::before, *::after { box-shadow: 0 0 0 1px rgba(255,255,255,.3); }
+  input { 
+    appearance: textfield;
+    -moz-appearance: textfield; // if not autoprefixed
+    position: relative;
+    left: 0; top:0;
+    display: block;
+    width: $knob-d/.75; height: $knob-border-w*3;
+    font: inherit;
+    font-size: .75em;
+    line-height: 1;
+    color: currentColor;
+    text-align: center;
+    font-variant-numeric: tabular-nums lining-nums;
+    background-color: transparent;
+    border: 0;
+    margin: $knob-d/.75 + .5em 0 0 0; padding: 0;
+    outline: 0;
+    cursor: default;
+    z-index: 2;
+    caret-color: currentColor;
+    &:placeholder { opacity: 1; color: currentColor; }
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    &::selection { color: currentColor; background-color: $knob-ind-focus-c; }
+    &[disabled], &[readonly] {
+      cursor: not-allowed;
+      & ~ *, & ~ *::before, & ~ *::after  {
+        pointer-events: none;
+      }
+      &::selection { background-color: transparent; }
+    }
+  }
+  label {
+    position: absolute;
+    left: 0; top: 0;
+    display: inline-block;
+    width: 100%; height: 100%;
+    overflow: hidden;
+    padding-top: $knob-d + 2em;
+    font-size: 1em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    z-index: 1;
+    pointer-events: none; 
+    &::before, &::after {
+      position: absolute;
+      display: inline-block;
+    }
+    &::before {
+      content: '';
+      left: 50%; top: $knob-border-w;
+      width: $knob-d - $knob-border-w; height: $knob-d - $knob-border-w ;
+      border: $knob-border-w solid $knob-border-c;
+      border-radius: 100%;
+      background-color: transparent;
+      background: linear-gradient(to bottom, currentColor 0% 100%) no-repeat 50% 0%;
+      background-size: .2em 1em;
+      transform-origin: center center;
+      transform: translateX(-50%) rotate(0deg); // Fallback
+      transform: translateX(-50%) rotate(calc(1deg * var(--knob-deg)));
+      cursor: default;
+      // cursor: n-resize;
+      pointer-events: fill; 
+    }
+    &::after {
+      content: attr(data-unit);
+      top: $knob-d/.65 - 1.1em; right: 0;
+      font-size: .65em;
+      line-height: 2.5;
+      color: $knob-ind-c;
+    }
+  }
+  svg {
+    position: absolute;
+    left: 50%; top: 0;
+    width: $knob-d + $knob-border-w; height: $knob-d + $knob-border-w ;
+    transform: translateX(-50%);
+    stroke-dasharray: 184 184;
+    fill: none;
+    stroke: currentColor;
+    z-index: 3;
+    path {
+      // stroke-width: $knob-border-w;
+      stroke-width: 5;
+      stroke-dashoffset: 0;
+      visibility: visible;
+      pointer-events: stroke; 
+      transition: all .2s cubic-bezier(0, 0, 0.2, 1);
+      &:first-of-type { stroke: $knob-ind-focus-c; }
+      &:last-of-type { stroke: $knob-ind-c; stroke-dashoffset: -97; } 
+    }
+  }
+}

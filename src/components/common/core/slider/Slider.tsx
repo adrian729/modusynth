@@ -8,7 +8,7 @@ import {
 
 import Container from 'src/components/common/layouts/container/Container';
 
-import './styles.scss';
+// import './styles.scss';
 
 type Orientation = 'vertical' | 'horizontal';
 type TitlePosition = 'top' | 'bottom' | 'none';
@@ -40,7 +40,8 @@ const Slider: FC<SliderProps> = ({
     onSliderReset,
     sliderSize = 10,
     sliderSizeUnits = 'rem',
-    orientation = 'vertical',
+    orientation = 'horizontal',
+    // orientation = 'vertical',
     titlePosition = 'top',
     ...restProps
 }: SliderProps) => {
@@ -87,7 +88,7 @@ const Slider: FC<SliderProps> = ({
                     onClick={handleClick}
                     onChange={onChange}
                     type="range"
-                    className={!!orientation && `slider--${orientation}`}
+                    // className={!!orientation && `slider--${orientation}`}
                     {...restProps}
                 />
             </div>
