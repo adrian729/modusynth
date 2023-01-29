@@ -70,9 +70,10 @@ const NumericController: FC<NumericControllerProps> = ({
                 id={`${moduleId}_${paramId}_knob`}
                 label={paramId}
                 value={value}
-                onChange={onChangeValue}
                 min={debouncedMin}
                 max={debouncedMax}
+                onChange={onChangeValue}
+                updateValue={updateValue}
             />
             <Slider
                 {...{

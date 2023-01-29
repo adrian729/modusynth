@@ -5,7 +5,14 @@
 /* eslint-disable react/no-unknown-property */
 
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { ChangeEvent, FC, InputHTMLAttributes, useRef } from 'react';
+import {
+    ChangeEvent,
+    FC,
+    InputHTMLAttributes,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 
 import { values } from 'lodash';
 
@@ -19,6 +26,7 @@ interface KnobProps extends InputHTMLAttributes<HTMLInputElement> {
     max?: number;
     step?: number;
     onChange: (e: ChangeEvent) => void;
+    updateValue: (value: number) => void;
 }
 const Knob: FC<KnobProps> = ({
     id,
@@ -28,14 +36,64 @@ const Knob: FC<KnobProps> = ({
     max = 100,
     step = (max - min) / 100,
     onChange,
+    updateValue,
 }) => {
-    const inputRef = useRef(null);
-    const labelRef = useRef(null);
+    const svgRef = useRef<SVGSVGElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const labelRef = useRef<HTMLLabelElement>(null);
+    const { current: currentSvg } = { ...svgRef };
     const { current: currentInput } = { ...inputRef };
     const { current: currentLabel } = { ...labelRef };
 
+    const [indicator, setIndicator] = useState<SVGElement | null>(null);
+    const [fls, setFls] = useState<HTMLElement | null>(null);
+
+    const [isSetup, setIsSetup] = useState<boolean>(false);
+
+    const initSvg = (svg: SVGSVGElement) => {
+        svg.setAttribute('viewBox', '0 0 100 100');
+        svg.setAttribute('aria-hidden', 'true');
+        svg.innerHTML = path + path;
+    };
+
+    useEffect(() => {
+        if (!isSetup && currentSvg && currentInput) {
+            initSvg(currentSvg);
+            setIndicator(
+                currentSvg.querySelector('path:last-of-type') as SVGAElement,
+            );
+            setFls(currentInput.parentElement);
+            setIsSetup(true);
+        }
+    }, [currentSvg, currentInput]);
+
+    const input = () => {
+        if (currentInput) {
+            let val = parseFloat(currentInput.value.trim()) || min;
+            if (val > max) val = max;
+            else if (val < min) val = min;
+            updateValue(val);
+        }
+    };
+
+    useEffect(() => {
+        if (indicator) {
+            const dif = Math.abs(min) + Math.abs(max);
+            const per = (value / dif) * 100;
+            let deg = 0;
+            // Normal number input
+            if (per >= 0 && per <= 100 && per != 50) {
+                deg = per * 1.32 * 2 - 132;
+            }
+
+            indicator.style.setProperty('stroke-dashoffset', -per * 1.84 + '%');
+            fls?.style.setProperty('--knob-deg', deg.toString());
+        }
+    }, [indicator, value]);
+
     return (
         <div className="knob">
+            <svg ref={svgRef} />
             <input
                 ref={inputRef}
                 id={id}
@@ -46,6 +104,7 @@ const Knob: FC<KnobProps> = ({
                 step={step}
                 placeholder="-"
                 autoComplete="off"
+                onInput={input}
             />
             {label ? (
                 <label ref={labelRef} htmlFor={id} accessKey="k" data-unit="db">
