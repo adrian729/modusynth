@@ -1,4 +1,11 @@
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
+import {
+    ChangeEvent,
+    MouseEvent,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 
 import * as d3 from 'd3';
 import { useAppDispatch } from 'src/app/hooks';
@@ -296,13 +303,13 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
         <div style={{ display: 'inline-block' }}>
             <svg
                 ref={svgRef}
-                onMouseDown={({ nativeEvent }) => {
+                onMouseDown={(event) => {
                     setClicked(true);
-                    updateArray(nativeEvent);
+                    updateArray(event);
                 }}
-                onMouseMove={({ nativeEvent }) => {
+                onMouseMove={(event) => {
                     if (clicked) {
-                        updateArray(nativeEvent);
+                        updateArray(event);
                     }
                 }}
                 onMouseUp={resetSemaphores}

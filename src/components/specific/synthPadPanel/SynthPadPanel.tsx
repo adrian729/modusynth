@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
 import { stopSynthPad, updateSynthPad } from 'src/reducers/oscillatorsSlice';
@@ -153,14 +153,14 @@ const SynthPadPanel = () => {
                     ref={svgRef}
                     width={svgWidth}
                     height={svgHeight}
-                    onMouseDown={({ nativeEvent }) => {
-                        playSound(nativeEvent);
+                    onMouseDown={(event) => {
+                        playSound(event);
                         setClicked(true);
                         return true;
                     }}
-                    onMouseMove={({ nativeEvent }) => {
+                    onMouseMove={(event) => {
                         if (clicked) {
-                            updateFrequency(nativeEvent);
+                            updateFrequency(event);
                         }
                     }}
                     onMouseUp={mouseOff}
