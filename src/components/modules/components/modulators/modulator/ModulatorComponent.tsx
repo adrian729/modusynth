@@ -11,6 +11,7 @@ import {
 
 import CombinatorComponent from '../../combiners/combinator/CombinatorComponent';
 import OscillatorComponent from '../../generators/oscillator/OscillatorComponent';
+import WaveTableOscillatorComponent from '../../generators/waveTableOscillator/WaveTableOscillatorComponent';
 import EnvelopeComponent from '../envelope/EnvelopeComponent';
 import useModulator from './hooks/useModulator';
 
@@ -60,6 +61,29 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
                 ...prevGenerators,
                 [id]: (
                     <OscillatorComponent
+                        key={id}
+                        moduleId={id}
+                        envelopeId={envelopeId}
+                        parentModuleId={generatorsModuleId}
+                    />
+                ),
+            };
+        });
+        dispatch(
+            updateModule({
+                ...generatorModuleState,
+                childModuleIds: [...generatorChildModuleIds, id],
+            } as CombinatorModule),
+        );
+    };
+
+    const addWaveTableGeneratorOsc = () => {
+        const id = _.uniqueId(`${generatorsModuleId}--oscillator-`);
+        setGenerators((prevGenerators) => {
+            return {
+                ...prevGenerators,
+                [id]: (
+                    <WaveTableOscillatorComponent
                         key={id}
                         moduleId={id}
                         envelopeId={envelopeId}
@@ -131,9 +155,14 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
                     {getGenerators()}
                 </CombinatorComponent>
                 <Button
-                    id={`${moduleId}_${generatorsModuleId}--add`}
+                    id={`${moduleId}_${generatorsModuleId}--add-osc`}
                     title="Add Generator Osc"
                     onClick={addGeneratorOsc}
+                />
+                <Button
+                    id={`${moduleId}_${generatorsModuleId}--add-wavetable-osc`}
+                    title="Add Generator Wavetable Osc"
+                    onClick={addWaveTableGeneratorOsc}
                 />
             </div>
             <h4>RM</h4>

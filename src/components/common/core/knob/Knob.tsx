@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 /* eslint-disable jsx-a11y/no-access-key */
@@ -12,10 +14,13 @@ import {
     MouseEvent,
     PointerEvent,
     WheelEvent,
+    useCallback,
     useEffect,
     useRef,
     useState,
 } from 'react';
+
+import { useWindowSize } from 'usehooks-ts';
 
 import './styles.scss';
 
@@ -41,6 +46,8 @@ const Knob: FC<KnobProps> = ({
     onChange,
     updateValue,
 }) => {
+    const { height } = useWindowSize();
+
     const knobRef = useRef<HTMLDivElement>(null);
     const svgRef = useRef<SVGSVGElement>(null);
     const indicatorRef = useRef<SVGPathElement>(null);
@@ -54,8 +61,9 @@ const Knob: FC<KnobProps> = ({
     const { current: currentInput } = { ...inputRef };
 
     const [strokeDashoffset, setStrokeDashoffset] = useState(0);
-    const [, setCurY] = useState(0);
-    const [moving, setMoving] = useState(false);
+
+    const [startClientY, setStartClientY] = useState<number>();
+    const [initialValue, setInitialValue] = useState<number>(0);
 
     const changeInput = (event: ChangeEvent) => {
         const { value } = event.target as HTMLInputElement;
@@ -78,83 +86,6 @@ const Knob: FC<KnobProps> = ({
 
     const dblclick = () => {
         updateValue(resetValue);
-    };
-
-    const knobkeys = (event: KeyboardEvent) => {
-        if (
-            !document ||
-            !currentInput ||
-            currentInput !== document.activeElement
-        ) {
-            return;
-        }
-
-        switch (event.key) {
-            case 'ArrowDown':
-            case 'Subtract':
-                updateInput(value + step);
-                return;
-            case 'ArrowUp':
-            case 'Add':
-                updateInput(value - step);
-                return;
-            case 'End':
-                updateValue(max);
-                return;
-            case 'Home':
-                updateValue(min);
-                return;
-        }
-    };
-
-    const wheel = (event: WheelEvent) => {
-        // TODO: fix scroll when focused
-        const { deltaY } = event;
-        if (deltaY !== 0 && currentInput) {
-            deltaY < 0 ? updateInput(value + step) : updateInput(value - step);
-        }
-    };
-
-    // TODO: when moving, not select other items/text etc
-    const start = (event: MouseEvent) => {
-        if (!currentInput || currentInput.disabled || moving) {
-            return;
-        }
-        setMoving(true);
-        setCurY(event.pageY);
-
-        document.addEventListener(
-            'mousemove',
-            move as unknown as (e: globalThis.MouseEvent) => void,
-        );
-        document.addEventListener('mouseup', end);
-    };
-
-    const move = (event: MouseEvent | PointerEvent) => {
-        console.log('movin', moving);
-        if (!currentInput || !moving) {
-            return;
-        }
-        setCurY((prevCurY) => {
-            const { pageY } = event;
-            if (pageY !== prevCurY) {
-                pageY > prevCurY
-                    ? updateInput(value - step)
-                    : updateInput(value + step);
-            }
-            return pageY;
-        });
-    };
-
-    const end = () => {
-        setCurY(0);
-        setMoving(false);
-
-        document.removeEventListener(
-            'mousemove',
-            move as unknown as (e: globalThis.MouseEvent) => void,
-        );
-        document.removeEventListener('mouseup', end);
     };
 
     const click = (event: MouseEvent) => {
@@ -222,20 +153,51 @@ const Knob: FC<KnobProps> = ({
         setStrokeDashoffset(-scale({ value, min, max, scaledMax: 184 }));
     }, [currentIndicator, currentEmptyIndicator, value]);
 
+    const onStart = useCallback(
+        (event: MouseEvent) => {
+            setStartClientY(event.clientY);
+            setInitialValue(value);
+        },
+        [value],
+    );
+
+    useEffect(() => {
+        const onUpdate = (event: globalThis.MouseEvent) => {
+            if (startClientY) {
+                updateInput(
+                    initialValue - step * (event.clientY - startClientY),
+                );
+            }
+        };
+
+        const onEnd = () => {
+            setStartClientY(undefined);
+        };
+
+        // TODO: while moving avoid selecting text/other items....
+        document.addEventListener('mousemove', onUpdate);
+        document.addEventListener('mouseup', onEnd);
+
+        return () => {
+            document.removeEventListener('mousemove', onUpdate);
+            document.removeEventListener('mouseup', onEnd);
+        };
+    }, [startClientY]);
+
     return (
-        // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
-        <div className="knob" ref={knobRef} onDoubleClick={dblclick}>
+        <div
+            className="knob"
+            ref={knobRef}
+            onDoubleClick={dblclick}
+            // onPointerDown={start}
+        >
             <svg
                 ref={svgRef}
                 viewBox="0 0 100 100"
-                aria-hidden="true"
-                // onWheel={(e) => {
-                //     wheel(e);
-                // }}
-                onMouseDown={start}
-                onMouseMove={move}
-                onMouseUp={end}
-                onBlur={end}
+                onMouseDown={onStart}
+                // onMouseMove={move}
+                // onMouseUp={end}
+                // onBlur={end}
             >
                 <path
                     ref={emptyIndicatorRef}
@@ -267,7 +229,6 @@ const Knob: FC<KnobProps> = ({
                     {label}
                 </label>
             ) : null}
-            {moving ? 'MOVING' : 'STOP'}
         </div>
     );
 };
