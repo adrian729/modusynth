@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import ModuleContext from 'src/components/modules/context/ModuleContext';
 import MainContext, {
     ModuleInterface,
 } from 'src/context/MainContext/MainContext';
@@ -20,11 +21,10 @@ export interface OscillatorState {
     gainNode: GainNode;
 }
 
-interface UseOscillatorParams {
-    moduleId: string;
-}
-const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
-    console.log('RENDER'); //TODO: how to fix synthPad so that it doesn't break this? ON CLICK
+const useOscillator = (): void => {
+    console.log('RENDER useOscillator'); //TODO: how to fix synthPad so that it doesn't break this? ON CLICK
+
+    const { moduleId } = useSafeContext(ModuleContext);
     const {
         state: { audioContext, modules },
         dispatch,
@@ -34,8 +34,6 @@ const useOscillator = ({ moduleId }: UseOscillatorParams): void => {
 
     const moduleState = getModule(moduleId) as OscillatorModule;
     const defaultEnvelopeId = getDefaultEnvelopeId();
-
-    //! TODO: WE CAN JUST ADD DEFAULT VALUES WHEN DESTRUCTURING LIKE HERE!!! REFACTOR CODE IN OTHER PLACES!!!
     const {
         type = 'sine',
         freq = 0,

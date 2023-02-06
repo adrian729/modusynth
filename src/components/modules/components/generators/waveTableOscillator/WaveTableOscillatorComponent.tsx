@@ -29,16 +29,9 @@ const WaveTableOscillatorComponent: FC<WaveTableOscillatorProps> = ({
     const module = getModule(moduleId);
     const defaultEnvelopeId = getDefaultEnvelopeId();
 
-    useOscillator({ moduleId });
+    useOscillator();
 
-    // TODO: move this into a WaveTableController
-    // TODO: make divisions settable (via input) to say how many we want
-    // TODO: If divisions augment, just add 0s to both arrays (each element is a k // harmonic).
-    // TODO : If divisions decrease, remove elems from end of the array.
-
-    // const screenSection = (key: number) => (
-    //     <div key={key} className="wavetableoscillator__division"></div>
-    // );
+    // TODO: merge this into a OscillatorComponent
 
     useEffect(() => {
         if (!module) {

@@ -1,30 +1,17 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable jsx-a11y/no-access-key */
-
-/* eslint-disable react/no-unknown-property */
-
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import {
     ChangeEvent,
     FC,
     InputHTMLAttributes,
     MouseEvent,
-    PointerEvent,
-    WheelEvent,
     useCallback,
     useEffect,
     useRef,
     useState,
 } from 'react';
 
-import { useWindowSize } from 'usehooks-ts';
-
 import './styles.scss';
 
-interface KnobProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface KnobProps extends InputHTMLAttributes<HTMLInputElement> {
     id: string;
     label?: string;
     value: number;
@@ -32,8 +19,8 @@ interface KnobProps extends InputHTMLAttributes<HTMLInputElement> {
     max?: number;
     step?: number;
     resetValue?: number;
-    onChange: (e: ChangeEvent) => void;
     updateValue: (value: number) => void;
+    knobSize?: 'small' | 'medium' | 'big';
 }
 const Knob: FC<KnobProps> = ({
     id,
@@ -43,27 +30,23 @@ const Knob: FC<KnobProps> = ({
     max = 100,
     step = (max - min) / 100,
     resetValue = 0,
-    onChange,
+    knobSize = 'medium',
     updateValue,
 }) => {
-    const { height } = useWindowSize();
-
     const knobRef = useRef<HTMLDivElement>(null);
     const svgRef = useRef<SVGSVGElement>(null);
     const indicatorRef = useRef<SVGPathElement>(null);
     const emptyIndicatorRef = useRef<SVGPathElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const labelRef = useRef<HTMLLabelElement>(null);
-    const { current: currentKnob } = { ...knobRef };
     const { current: currentSvg } = { ...svgRef };
+    const { current: currentKnob } = { ...knobRef };
     const { current: currentIndicator } = { ...indicatorRef };
     const { current: currentEmptyIndicator } = { ...emptyIndicatorRef };
-    const { current: currentInput } = { ...inputRef };
 
     const [strokeDashoffset, setStrokeDashoffset] = useState(0);
 
     const [startClientY, setStartClientY] = useState<number>();
-    const [initialValue, setInitialValue] = useState<number>(0);
 
     const changeInput = (event: ChangeEvent) => {
         const { value } = event.target as HTMLInputElement;
@@ -71,7 +54,7 @@ const Knob: FC<KnobProps> = ({
     };
 
     const updateInput = (val: number) => {
-        if (!val) {
+        if (!Number.isFinite(val)) {
             return;
         }
         let res = val;
@@ -85,33 +68,29 @@ const Knob: FC<KnobProps> = ({
     };
 
     const dblclick = () => {
-        updateValue(resetValue);
+        updateInput(resetValue);
     };
 
-    const click = (event: MouseEvent) => {
-        // if (!currentInput || !currentKnob || currentInput.disabled) {
-        //     return;
-        // }
-        // const b = currentKnob.getBoundingClientRect();
-        // const c = { x: b.width / 2, y: b.height / 2 };
-        // const p1 = { x: 0, y: b.height }; // stroke-width 8 of path ?
-        // const p2 = { x: event.pageX - b.left, y: event.pageY - b.top };
-        // console.log('event', event);
-        // console.log('b', b);
-        // console.log('c', c);
-        // console.log('p1', p1);
-        // console.log('p2', p2);
-        // const rad = angle(p1, c, p2);
-        // console.log('rad', rad);
-        // let deg = rad * (180 / Math.PI);
-        // console.log('deg', deg);
-        // if (p2.x > b.width / 2 && deg < 180) {
-        //     deg = 360 - deg;
-        // }
-        // const dif = Math.abs(max - min);
-        // deg = 360;
-        // // console.log(parseInt(deg,10) +'°', (dif/270)*deg);
-        // updateValue((dif / 360) * deg);
+    const moveIndicator = (event: MouseEvent) => {
+        if (!currentSvg) {
+            return;
+        }
+        const b = currentSvg.getBoundingClientRect();
+        const centerPoint = { x: b.width / 2, y: b.height / 2 };
+        const pointerPoint = {
+            x: event.clientX - b.left,
+            y: event.clientY - b.top,
+        };
+        const centerVector = { x: 0, y: -centerPoint.y }; // vector from center of the box straight to the top
+        const pointerVector = {
+            x: pointerPoint.x - centerPoint.x,
+            y: pointerPoint.y - centerPoint.y,
+        }; // vector from the center to the pointer
+        const rad = angle(pointerVector, centerVector);
+        let deg = rad * (180 / Math.PI);
+        deg = pointerPoint.x < centerPoint.x ? 132 - deg : 132 + deg;
+        const dif = Math.abs(max - min);
+        updateInput((dif * deg) / 264 + min);
     };
 
     const scale = ({
@@ -153,20 +132,16 @@ const Knob: FC<KnobProps> = ({
         setStrokeDashoffset(-scale({ value, min, max, scaledMax: 184 }));
     }, [currentIndicator, currentEmptyIndicator, value]);
 
-    const onStart = useCallback(
-        (event: MouseEvent) => {
-            setStartClientY(event.clientY);
-            setInitialValue(value);
-        },
-        [value],
-    );
+    const onStart = useCallback((event: MouseEvent) => {
+        setStartClientY(event.clientY);
+        moveIndicator(event as unknown as MouseEvent);
+    }, []);
 
     useEffect(() => {
+        // TODO: check if we can also get the position with the degree between center and pointer (like we do on click)?
         const onUpdate = (event: globalThis.MouseEvent) => {
             if (startClientY) {
-                updateInput(
-                    initialValue - step * (event.clientY - startClientY),
-                );
+                moveIndicator(event as unknown as MouseEvent);
             }
         };
 
@@ -186,67 +161,67 @@ const Knob: FC<KnobProps> = ({
 
     return (
         <div
-            className="knob"
+            className={`knob ${knobSize}`}
             ref={knobRef}
             onDoubleClick={dblclick}
-            // onPointerDown={start}
         >
             <svg
                 ref={svgRef}
                 viewBox="0 0 100 100"
                 onMouseDown={onStart}
-                // onMouseMove={move}
-                // onMouseUp={end}
-                // onBlur={end}
+                onClick={moveIndicator}
             >
                 <path
                     ref={emptyIndicatorRef}
-                    d="M20,76 A 40 40 0 1 1 80 76"
-                    onClick={click}
+                    d="M20,76 A 40 40 0 1 1 80 76" // 184 svg units for full stroke
                 ></path>
                 <path
                     ref={indicatorRef}
-                    d="M20,76 A 40 40 0 1 1 80 76"
+                    d="M20,76 A 40 40 0 1 1 80 76" // 184 svg units for full stroke
                     style={{ strokeDashoffset: `${strokeDashoffset}%` }}
-                    onClick={click}
                 ></path>
             </svg>
             <input
                 ref={inputRef}
                 id={id}
                 type="number"
-                value={value}
+                value={getRoundedValue(value, 2)}
                 min={min}
                 max={max}
                 step={step}
                 placeholder="-"
                 autoComplete="off"
                 onChange={changeInput}
-                // onKeyDown={(e) => knobkeys(e)}
             />
             {label ? (
-                <label ref={labelRef} htmlFor={id} data-unit="db">
+                <label ref={labelRef} htmlFor={id}>
                     {label}
                 </label>
             ) : null}
+            <data data-min={min} data-max={max} aria-hidden="true"></data>
         </div>
     );
 };
 
 export default Knob;
 
-const path = '<path d="M20,76 A 40 40 0 1 1 80 76"/>'; // 184 svg units for full stroke
+function getRoundedValue(value: number, decimals: number) {
+    const decimator = Math.pow(10, decimals);
+    return (Math.round(value * decimator) / decimator).toFixed(decimals);
+}
+
+function magnitude({ x, y }: { x: number; y: number }): number {
+    return Math.sqrt(x * x + y * y);
+}
 
 function angle(
-    p1: { x: number; y: number },
-    c: { x: number; y: number },
-    p2: { x: number; y: number },
-) {
-    // Point 1, circle center point, point 2
-    var p1c = Math.sqrt(Math.pow(c.x - p1.x, 2) + Math.pow(c.y - p1.y, 2)),
-        cp2 = Math.sqrt(Math.pow(c.x - p2.x, 2) + Math.pow(c.y - p2.y, 2)),
-        p1p2 = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-    return Math.acos((cp2 * cp2 + p1c * p1c - p1p2 * p1p2) / (2 * cp2 * p1c));
+    vector1: { x: number; y: number },
+    vector2: { x: number; y: number },
+): number {
+    return Math.acos(
+        (vector2.x * vector1.x + vector2.y * vector1.y) /
+            (magnitude(vector1) * magnitude(vector2)),
+    );
 }
 
 /**

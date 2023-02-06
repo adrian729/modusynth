@@ -32,7 +32,7 @@ const CustomWaveTypeController = () => {
 
     return (
         <div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex' }}>
                 {customWaveTypes.map((waveType) => (
                     <Button
                         id={`${moduleId}_${waveType}_type`}

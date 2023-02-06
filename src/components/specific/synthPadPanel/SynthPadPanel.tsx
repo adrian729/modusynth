@@ -1,8 +1,8 @@
-import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
 import { stopSynthPad, updateSynthPad } from 'src/reducers/oscillatorsSlice';
-import { useWindowSize } from 'usehooks-ts';
+import { useDebounce, useWindowSize } from 'usehooks-ts';
 
 import './styles.scss';
 
@@ -30,7 +30,10 @@ const SynthPadPanel = () => {
     const [intensity, setIntensity] = useState<number>(0);
     const [clicked, setClicked] = useState<boolean>(false);
 
-    // TODO: fix debounces usability
+    const debouncedFreq = useDebounce<number | undefined>(freq, 1);
+    const debouncedIntensity = useDebounce<number>(intensity, 1);
+
+    // TODO: add debounces and fix usability
     const [minFreq, setMinFreq] = useState<number>(40);
     const [maxFreq, setMaxFreq] = useState<number>(8000);
 
@@ -92,13 +95,24 @@ const SynthPadPanel = () => {
         const newIntensity = calculateIntensity(y);
         setFreq(newFreq);
         setIntensity(newIntensity);
-        dispatch(
-            updateSynthPad({
-                frequency: newFreq,
-                velocity: newIntensity * 127,
-            }),
-        );
+        // dispatch(
+        //     updateSynthPad({
+        //         frequency: newFreq,
+        //         velocity: newIntensity * 127,
+        //     }),
+        // );
     };
+
+    useEffect(() => {
+        if (Number.isFinite(debouncedFreq)) {
+            dispatch(
+                updateSynthPad({
+                    frequency: debouncedFreq!,
+                    velocity: debouncedIntensity * 127,
+                }),
+            );
+        }
+    }, [debouncedFreq, debouncedIntensity]);
 
     const getCursorPoint = (event: MouseEvent) => {
         if (current) {

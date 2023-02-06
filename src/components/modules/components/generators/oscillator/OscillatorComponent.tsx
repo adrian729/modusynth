@@ -16,6 +16,7 @@ import FrequencyController from '../../core/controllers/frequencyController/Freq
 import NumericController from '../../core/controllers/numericController/NumericController';
 import WaveTypeController from '../../core/controllers/waveTypeController/WaveTypeController';
 import useOscillator from './hooks/useOscillator';
+import './styles.scss';
 
 interface OscillatorProps {
     moduleId: string;
@@ -31,8 +32,6 @@ const OscillatorComponent: FC<OscillatorProps> = ({
     const module = getModule(moduleId);
     const defaultEnvelopeId = getDefaultEnvelopeId();
     const [isSetup, setIsSetup] = useState<boolean>(false);
-
-    useOscillator({ moduleId });
 
     useEffect(() => {
         if (!module) {
@@ -56,45 +55,56 @@ const OscillatorComponent: FC<OscillatorProps> = ({
     }, []);
 
     return (
-        <ModuleContextProvider moduleId={moduleId} moduleType="oscillator">
-            {isSetup ? (
-                <div>
-                    <h5>{moduleId}</h5>
-                    <div
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <FrequencyController />
-                        <NumericController
-                            paramId={'gain'}
-                            resetValue={0.2}
-                            step={0.005}
-                            min={0}
-                            max={2}
-                            hasMaxInput={true}
-                        />
-                        <NumericController
-                            paramId={'pitch'}
-                            resetValue={0}
-                            step={0.01}
-                            min={-1200}
-                            max={1200}
-                            hasMinInput={true}
-                            minInputMin={-7200}
-                            minInputMax={7200}
-                            hasMaxInput={true}
-                            maxInputMin={-7200}
-                            maxInputMax={7200}
-                        />
-                        <WaveTypeController />
-                        <CustomWaveTypeController />
+        <>
+            <ModuleContextProvider moduleId={moduleId} moduleType="oscillator">
+                <OscillatorControl />
+                {isSetup ? (
+                    <div className="oscillator">
+                        <h5 className="oscillator__title">{moduleId}</h5>
+                        <div className="oscillator__item  oscillator__item--column">
+                            <FrequencyController />
+                            <WaveTypeController />
+                            <CustomWaveTypeController />
+                        </div>
+                        <div className="oscillator__item">
+                            <NumericController
+                                paramId={'gain'}
+                                resetValue={0.2}
+                                step={0.01}
+                                min={0}
+                                max={2}
+                                hasMaxInput={true}
+                                controllerType="knob"
+                            />
+                            <NumericController
+                                paramId={'pitch'}
+                                resetValue={0}
+                                step={0.01}
+                                min={-1200}
+                                max={1200}
+                                hasMinInput={true}
+                                minInputMin={-7200}
+                                minInputMax={7200}
+                                hasMaxInput={true}
+                                maxInputMin={-7200}
+                                maxInputMax={7200}
+                                controllerType="knob"
+                                knobSize="small"
+                            />
+                        </div>
                     </div>
-                </div>
-            ) : null}
-        </ModuleContextProvider>
+                ) : null}
+            </ModuleContextProvider>
+        </>
     );
 };
 
 export default OscillatorComponent;
+
+/**
+ * Separate logic so that render of whole OscillatorComponent doesn't happen when audio triggers
+ */
+const OscillatorControl: FC = () => {
+    useOscillator();
+    return null;
+};
