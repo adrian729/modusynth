@@ -123,6 +123,7 @@ const NumericController: FC<NumericControllerProps> = ({
                 alignItems: 'center',
             }}
         >
+            {renderInput()}
             {hasMinInput ? (
                 <>
                     <span>min:</span>
@@ -155,7 +156,6 @@ const NumericController: FC<NumericControllerProps> = ({
                     />
                 </>
             ) : null}
-            {renderInput()}
         </div>
     );
 };

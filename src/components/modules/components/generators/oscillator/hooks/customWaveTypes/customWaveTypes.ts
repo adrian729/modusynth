@@ -14,7 +14,6 @@ const customPeriodicWaveOptions: Record<
     BassSubDub,
     organ,
     Trombone,
-    none: {},
 };
 
 export default customPeriodicWaveOptions;

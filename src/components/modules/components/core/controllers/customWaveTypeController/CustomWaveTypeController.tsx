@@ -1,5 +1,6 @@
+import { ChangeEvent } from 'react';
+
 import { useAppDispatch } from 'src/app/hooks';
-import Button from 'src/components/common/core/button/Button';
 import ModuleContext from 'src/components/modules/context/ModuleContext/ModuleContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import { Module, getModule, updateModule } from 'src/reducers/synthesisSlice';
@@ -19,12 +20,13 @@ const CustomWaveTypeController = () => {
     const module = getModule(moduleId) as ModuleWithCustomType;
     const { customType = 'none' } = { ...module };
 
-    const onChangeType = (waveType: string) => {
-        if (customType !== waveType) {
+    const changeType = (e: ChangeEvent): void => {
+        const { value } = e.target as HTMLInputElement;
+        if (customType !== value) {
             dispatch(
                 updateModule({
                     ...module,
-                    customType: waveType,
+                    customType: value,
                 } as ModuleWithCustomType),
             );
         }
@@ -32,19 +34,20 @@ const CustomWaveTypeController = () => {
 
     return (
         <div>
-            <div style={{ display: 'flex' }}>
+            <select
+                id={`${moduleId}_custom_wavetype_selector`}
+                onChange={changeType}
+                value={customType}
+            >
                 {customWaveTypes.map((waveType) => (
-                    <Button
-                        id={`${moduleId}_${waveType}_type`}
-                        key={waveType}
-                        title={waveType}
-                        buttonKind={
-                            waveType === customType ? 'active' : undefined
-                        }
-                        onClick={() => onChangeType(waveType)}
-                    />
+                    <option
+                        key={`${moduleId}_custom_wavetype_${waveType}`}
+                        value={waveType}
+                    >
+                        {waveType}
+                    </option>
                 ))}
-            </div>
+            </select>
         </div>
     );
 };

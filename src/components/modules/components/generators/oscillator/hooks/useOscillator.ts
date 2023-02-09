@@ -22,7 +22,7 @@ export interface OscillatorState {
 }
 
 const useOscillator = (): void => {
-    console.log('RENDER useOscillator'); //TODO: how to fix synthPad so that it doesn't break this? ON CLICK
+    //TODO: how to fix synthPad so that it doesn't break this? ON CLICK
 
     const { moduleId } = useSafeContext(ModuleContext);
     const {
@@ -33,6 +33,7 @@ const useOscillator = (): void => {
     const notes = getNotes();
 
     const moduleState = getModule(moduleId) as OscillatorModule;
+    console.log('RENDER useOscillator', moduleState);
     const defaultEnvelopeId = getDefaultEnvelopeId();
     const {
         type = 'sine',

@@ -9,13 +9,18 @@ interface ModuleWithType extends Module {
     type: OscillatorType;
 }
 
+interface waveTypeOption {
+    label: string;
+    // eslint-disable-next-line no-undef
+    waveType: OscillatorType;
+}
+
 // eslint-disable-next-line no-undef
-const waveTypes: OscillatorType[] = [
-    'sine',
-    'triangle',
-    'square',
-    'sawtooth',
-    'custom',
+const waveTypes: waveTypeOption[] = [
+    { label: 'sin', waveType: 'sine' },
+    { label: 'trin', waveType: 'triangle' },
+    { label: 'sqr', waveType: 'square' },
+    { label: 'saw', waveType: 'sawtooth' },
 ];
 
 const WaveTypeController = () => {
@@ -37,11 +42,11 @@ const WaveTypeController = () => {
     return (
         <div>
             <div style={{ display: 'flex' }}>
-                {waveTypes.map((waveType) => (
+                {waveTypes.map(({ label, waveType }) => (
                     <Button
                         id={`${moduleId}_${waveType}_type`}
                         key={waveType}
-                        title={waveType}
+                        title={label}
                         buttonKind={waveType === type ? 'active' : undefined}
                         onClick={() => onChangeType(waveType)}
                     />
