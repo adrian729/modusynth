@@ -39,12 +39,11 @@ const OscillatorComponent: FC<OscillatorProps> = ({
     const defaultEnvelopeId = getDefaultEnvelopeId();
     const [oscType, setOscType] = useState<OscType>('simple');
     const [isSetup, setIsSetup] = useState<boolean>(false);
-    const [lastSimpleType, setLastSympleType] =
-        // eslint-disable-next-line no-undef
-        useState<OscillatorType>('sine');
-    const [lastPreset, setLastPreset] = useState<string>(
-        Object.keys(customPeriodicWaveOptions)[0],
-    );
+
+    const [selectionMemo, setSelectionMemo] = useState<Record<string, string>>({
+        simple: 'sine',
+        preset: Object.keys(customPeriodicWaveOptions)[0],
+    });
 
     useEffect(() => {
         if (!module) {
@@ -73,7 +72,7 @@ const OscillatorComponent: FC<OscillatorProps> = ({
             case 'simple': {
                 newModule = {
                     ...module,
-                    type: lastSimpleType,
+                    type: selectionMemo['simple'],
                     customType: 'none',
                 } as OscillatorModule;
                 break;
@@ -82,7 +81,7 @@ const OscillatorComponent: FC<OscillatorProps> = ({
                 newModule = {
                     ...module,
                     type: 'custom',
-                    customType: lastPreset,
+                    customType: selectionMemo['preset'],
                 } as OscillatorModule;
                 break;
             }
@@ -96,10 +95,20 @@ const OscillatorComponent: FC<OscillatorProps> = ({
             }
         }
 
-        if (type !== 'custom') {
-            setLastSympleType(type);
-        } else if (customType !== 'none' && customType !== WAVETABLE_TYPE) {
-            setLastPreset(customType);
+        if (type && type !== 'custom') {
+            setSelectionMemo((prevSelectionMemo) => ({
+                ...prevSelectionMemo,
+                simple: type,
+            }));
+        } else if (
+            customType &&
+            customType !== 'none' &&
+            customType !== WAVETABLE_TYPE
+        ) {
+            setSelectionMemo((prevSelectionMemo) => ({
+                ...prevSelectionMemo,
+                preset: customType,
+            }));
         }
 
         if (newModule) {
