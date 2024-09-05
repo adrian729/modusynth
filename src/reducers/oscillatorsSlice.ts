@@ -22,12 +22,24 @@ export interface Note {
     velocity?: number;
 }
 
+export interface SynthPadNote {
+    frequency: Frequency;
+    velocity: number;
+}
+
 export interface OscillatorsState {
+    synthPadNote: SynthPadNote;
     notes: Record<NoteKey, Note>;
     oscillators: Record<OscID, OscillatorState>;
 }
 
+const defaultSynthPadNote: SynthPadNote = {
+    frequency: 0,
+    velocity: 0,
+};
+
 const initialState: OscillatorsState = {
+    synthPadNote: defaultSynthPadNote,
     notes: {},
     oscillators: {},
 };
@@ -64,6 +76,17 @@ export const oscillatorsSlice = createSlice({
             if (note && frequency) {
                 state.notes[note] = { frequency, velocity };
             }
+        },
+        /** SynthPad */
+        updateSynthPad: (
+            state,
+            action: PayloadAction<{ frequency: number; velocity: number }>,
+        ): void => {
+            const { frequency, velocity } = action.payload;
+            state.synthPadNote = { frequency, velocity };
+        },
+        stopSynthPad: (state): void => {
+            state.synthPadNote = { frequency: 0, velocity: 0 };
         },
         /** Oscillators */
         removeNote: (state, action: PayloadAction<string>): void => {
@@ -153,6 +176,8 @@ export const oscillatorsSlice = createSlice({
 export const {
     addNote,
     removeNote,
+    updateSynthPad,
+    stopSynthPad,
     addOscillator,
     updateOscSetting,
     updateOscSettings,
@@ -184,5 +209,7 @@ export const isDroneActive = (oscId: OscID, noteKey: NoteKey) =>
     useAppSelector(
         ({ oscillators }) => !!oscillators.oscillators[oscId].drones[noteKey],
     );
+export const getSynthPadNote = () =>
+    useAppSelector(({ oscillators }) => oscillators.synthPadNote);
 
 export default oscillatorsSlice.reducer;

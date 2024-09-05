@@ -8,7 +8,7 @@ import {
 
 import Container from 'src/components/common/layouts/container/Container';
 
-import './styles.scss';
+// import './styles.scss';
 
 type Orientation = 'vertical' | 'horizontal';
 type TitlePosition = 'top' | 'bottom' | 'none';
@@ -22,7 +22,7 @@ export interface SliderProps extends InputHTMLAttributes<HTMLInputElement> {
     step?: number;
     resetValue?: number;
     onChange: (e: ChangeEvent) => void;
-    onSliderReset: (id: string, val: number) => void;
+    onSliderReset?: (id: string, val: number) => void;
     sliderSize?: number;
     sliderSizeUnits?: string;
     orientation?: Orientation;
@@ -40,7 +40,8 @@ const Slider: FC<SliderProps> = ({
     onSliderReset,
     sliderSize = 10,
     sliderSizeUnits = 'rem',
-    orientation = 'vertical',
+    orientation = 'horizontal',
+    // orientation = 'vertical',
     titlePosition = 'top',
     ...restProps
 }: SliderProps) => {
@@ -59,7 +60,7 @@ const Slider: FC<SliderProps> = ({
 
     const handleClick = (e: MouseEvent): void => {
         let { detail, target } = e;
-        if (detail === 2) {
+        if (detail === 2 && onSliderReset) {
             const val: number = resetValue ?? (max + min) / 2;
             const { id } = target as HTMLInputElement;
             onSliderReset(id, val);
@@ -87,7 +88,7 @@ const Slider: FC<SliderProps> = ({
                     onClick={handleClick}
                     onChange={onChange}
                     type="range"
-                    className={!!orientation && `slider--${orientation}`}
+                    // className={!!orientation && `slider--${orientation}`}
                     {...restProps}
                 />
             </div>

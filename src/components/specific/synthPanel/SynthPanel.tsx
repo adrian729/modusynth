@@ -44,7 +44,7 @@ const SynthPanel = () => {
                 id="synthGain"
                 label="gain"
                 value={gain}
-                max={1}
+                max={1.5}
                 step={0.005}
                 onChange={changeGain}
                 onSliderReset={onResetGain}

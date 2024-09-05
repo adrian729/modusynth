@@ -62,6 +62,7 @@ const useMidiDevice = (): void => {
 
     // eslint-disable-next-line no-undef
     function handleInput(inputEvent: WebMidi.MIDIMessageEvent) {
+        console.log(inputEvent);
         const { data } = inputEvent;
         const status = statusToCommandCode(data[0]);
         // const channel = data[0] & CHANNEL_MASK;
@@ -90,7 +91,7 @@ const useMidiDevice = (): void => {
              * - val2: controller value
              */
             case CONTROL_CHANGE:
-                console.log(status, val1, val2);
+                // console.log(status, val1, val2);
                 break;
             /**
              * Pitchbend

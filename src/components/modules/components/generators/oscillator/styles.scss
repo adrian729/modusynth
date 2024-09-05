@@ -1,0 +1,19 @@
+.oscillator {
+    border: 0.1rem solid black;
+    min-width: 300px;
+    max-width: 400px;
+    display: flex;
+    flex-flow: column nowrap;
+
+    flex: 1 auto;
+
+    .oscillator__header {
+        text-align: right;
+        padding: 0.5rem;
+    }
+
+    .oscillator__item {
+        border-top: 0.1rem dotted black;
+        padding: 0.5rem;
+    }
+}
