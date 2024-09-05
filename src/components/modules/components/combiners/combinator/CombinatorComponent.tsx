@@ -11,6 +11,7 @@ import {
 import { Props } from 'src/types/core';
 
 import useCombinator from './hooks/useCombinator';
+import './styles.scss';
 
 interface CombinatorProps extends Props {
     moduleId: string;
@@ -41,12 +42,7 @@ const CombinatorComponent: FC<CombinatorProps> = ({
         };
     }, []);
 
-    return (
-        <div>
-            <h1>CombinatorComponent: {moduleId}</h1>
-            {module ? <div>{children}</div> : null}
-        </div>
-    );
+    return <>{module ? <div className="combinator">{children}</div> : null}</>;
 };
 
 export default CombinatorComponent;

@@ -2,7 +2,7 @@ import { FC, useEffect, useMemo } from 'react';
 
 import _ from 'lodash';
 import OscillatorComponent from 'src/components/modules/components/generators/oscillator/OscillatorComponent';
-// import ModulatorComponent from 'src/components/modules/components/modulators/modulator/ModulatorComponent';
+import ModulatorComponent from 'src/components/modules/components/modulators/modulator/ModulatorComponent';
 import MainContext from 'src/context/MainContext/MainContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 
@@ -48,8 +48,7 @@ const MainAudioContent: FC = () => {
         <div>
             <h1>Main Module</h1>
             <OscillatorComponent moduleId={moduleIds[0]} />
-            {/* <ModulatorComponent moduleId={moduleIds[1]} /> */}
-            {/* <WaveTableOscillatorComponent moduleId={moduleIds[2]} /> */}
+            <ModulatorComponent moduleId={moduleIds[1]} />
         </div>
     );
 };

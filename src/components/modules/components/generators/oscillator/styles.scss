@@ -1,24 +1,19 @@
 .oscillator {
     border: 0.1rem solid black;
-    max-width: 300px;
+    min-width: 300px;
+    max-width: 400px;
     display: flex;
     flex-flow: column nowrap;
 
-    .oscillator__title {
+    flex: 1 auto;
+
+    .oscillator__header {
         text-align: right;
-        margin: 0.5rem;
+        padding: 0.5rem;
     }
 
     .oscillator__item {
-        padding: 1rem;
-        border-top: 0.1rem solid black;
-        align-self: stretch;
-
-        display: flex;
-        justify-content: space-around;
-
-        &--column {
-            flex-flow: column wrap;
-        }
+        border-top: 0.1rem dotted black;
+        padding: 0.5rem;
     }
 }
