@@ -31,5 +31,5 @@
         "types": ["node", "jest", "@testing-library/jest-dom", "webmidi"]
     },
     "include": ["src", "src/**/*"],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", "src/**/*.stories.tsx", "src/**/*.stories.ts"]
 }

@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 
 import Button, { ButtonProps } from './Button';
 
@@ -12,9 +12,9 @@ export default {
     args,
     component: Button,
     title: 'components/01_core/Button',
-} as ComponentMeta<typeof Button>;
+} as Meta<typeof Button>;
 
-const ButtonStory: ComponentStory<typeof Button> = (args): ReactElement => (
+const ButtonStory: StoryFn<typeof Button> = (args): ReactElement => (
     <Button {...args} />
 );
 

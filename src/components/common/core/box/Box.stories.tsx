@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import TestingBox from 'src/components/testUtils/testingBox';
 
 import Box, { BoxProps } from './Box';
@@ -10,9 +10,9 @@ export default {
     args,
     component: Box,
     title: 'components/01_core/Box',
-} as ComponentMeta<typeof Box>;
+} as Meta<typeof Box>;
 
-const BoxStory: ComponentStory<typeof Box> = (args): ReactElement => (
+const BoxStory: StoryFn<typeof Box> = (args): ReactElement => (
     <Box {...args}>
         <TestingBox />
         <TestingBox />

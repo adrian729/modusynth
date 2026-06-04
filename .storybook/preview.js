@@ -1,11 +1,15 @@
 import '../src/styles/index.scss';
 
-export const parameters = {
-    actions: { argTypesRegex: '^on[A-Z].*' },
-    controls: {
-        matchers: {
-            color: /(background|color)$/i,
-            date: /Date$/,
+/** @type { import('@storybook/react-webpack5').Preview } */
+const preview = {
+    parameters: {
+        controls: {
+            matchers: {
+                color: /(background|color)$/i,
+                date: /Date$/,
+            },
         },
     },
 };
+
+export default preview;

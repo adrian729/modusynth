@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import { Provider } from 'react-redux';
 import store from 'src/app/store';
 
@@ -9,9 +9,9 @@ import SynthPanel from './SynthPanel';
 export default {
     component: SynthPanel,
     title: 'components/synth/SynthPanel',
-} as ComponentMeta<typeof SynthPanel>;
+} as Meta<typeof SynthPanel>;
 
-const SynthPanelStory: ComponentStory<typeof SynthPanel> = (): ReactElement => (
+const SynthPanelStory: StoryFn<typeof SynthPanel> = (): ReactElement => (
     <Provider store={store}>
         <SynthPanel />
     </Provider>

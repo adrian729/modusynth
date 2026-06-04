@@ -1,15 +1,15 @@
 import { ReactElement } from 'react';
 
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 
 import TestingBox from './TestingBox';
 
 export default {
     component: TestingBox,
     title: 'testUtils/TestingBox',
-} as ComponentMeta<typeof TestingBox>;
+} as Meta<typeof TestingBox>;
 
-const TestingBoxStory: ComponentStory<typeof TestingBox> = (): ReactElement => (
+const TestingBoxStory: StoryFn<typeof TestingBox> = (): ReactElement => (
     <TestingBox />
 );
 

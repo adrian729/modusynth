@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react';
 
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 
 import Knob, { KnobProps } from './Knob';
 
@@ -14,9 +14,9 @@ export default {
     args,
     component: Knob,
     title: 'components/common/core/Knob',
-} as ComponentMeta<typeof Knob>;
+} as Meta<typeof Knob>;
 
-const KnobStory: ComponentStory<typeof Knob> = (args): ReactElement => {
+const KnobStory: StoryFn<typeof Knob> = (args): ReactElement => {
     const [value, setValue] = useState(0);
 
     const updateValue = (value: number): void => {

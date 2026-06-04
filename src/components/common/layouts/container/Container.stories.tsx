@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import TestingBox from 'src/components/testUtils/testingBox';
 
 import Container, { ContainerProps } from './Container';
@@ -10,11 +10,9 @@ export default {
     args,
     component: Container,
     title: 'components/00_layouts/Container',
-} as ComponentMeta<typeof Container>;
+} as Meta<typeof Container>;
 
-const ContainerStory: ComponentStory<typeof Container> = (
-    args,
-): ReactElement => (
+const ContainerStory: StoryFn<typeof Container> = (args): ReactElement => (
     <Container {...args} className="testborder">
         <TestingBox />
         <TestingBox />

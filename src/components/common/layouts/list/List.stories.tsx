@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import Box from 'src/components/testUtils/testingBox';
 
 import List, { ListProps } from './List';
@@ -10,9 +10,9 @@ export default {
     args,
     component: List,
     title: 'components/00_layouts/List',
-} as ComponentMeta<typeof List>;
+} as Meta<typeof List>;
 
-const ListStory: ComponentStory<typeof List> = (args): ReactElement => (
+const ListStory: StoryFn<typeof List> = (args): ReactElement => (
     <List {...args}>
         <Box />
         <Box />

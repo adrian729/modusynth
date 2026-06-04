@@ -1,6 +1,6 @@
 import { ChangeEvent, ReactElement, useState } from 'react';
 
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 
 import Slider, { SliderProps } from './Slider';
 
@@ -15,9 +15,9 @@ export default {
     args,
     component: Slider,
     title: 'components/01_core/Slider',
-} as ComponentMeta<typeof Slider>;
+} as Meta<typeof Slider>;
 
-const SliderStory: ComponentStory<typeof Slider> = (args): ReactElement => {
+const SliderStory: StoryFn<typeof Slider> = (args): ReactElement => {
     const [value, setValue] = useState(0);
 
     const onChange = (e: ChangeEvent): void => {
