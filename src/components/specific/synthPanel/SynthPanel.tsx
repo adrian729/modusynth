@@ -4,10 +4,10 @@ import { useAppDispatch } from 'src/app/hooks';
 import Slider from 'src/components/common/core/slider';
 import Freezer from 'src/components/specific/freezer/Freezer';
 import {
-    getSynthDetune,
-    getSynthGain,
     updateSynthDetuneValue,
     updateSynthGain,
+    useSynthDetune,
+    useSynthGain,
 } from 'src/reducers/synthSlice';
 
 import Keyboard from './components/keyboard/Keyboard';
@@ -15,8 +15,8 @@ import useMidiDevice from './hooks/useMidiDevice';
 
 const SynthPanel = () => {
     const dispatch = useAppDispatch();
-    const gain = getSynthGain();
-    const detune = getSynthDetune();
+    const gain = useSynthGain();
+    const detune = useSynthDetune();
 
     useMidiDevice();
 

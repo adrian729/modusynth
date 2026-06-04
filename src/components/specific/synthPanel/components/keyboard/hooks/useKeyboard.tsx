@@ -3,7 +3,7 @@ import { RefObject, useEffect, useRef, useState } from 'react';
 import { QwertyHancock } from 'qwerty-hancock';
 import { useAppDispatch } from 'src/app/hooks';
 import { addNote, removeNote } from 'src/reducers/oscillatorsSlice';
-import { getOctave } from 'src/reducers/synthSlice';
+import { useOctave } from 'src/reducers/synthSlice';
 import { theme } from 'src/styles/theme';
 import { useWindowSize } from 'usehooks-ts';
 
@@ -44,7 +44,7 @@ interface UseKeyboardArgs {
 export const useKeyboard = ({ keyboardRef }: UseKeyboardArgs): number => {
     const dispatch = useAppDispatch();
     const { width: windowWidth } = useWindowSize();
-    const octave = getOctave();
+    const octave = useOctave();
 
     // Keep the latest octave available to the (created-once) keyDown closure
     // without rebuilding the keyboard — rebuilding would drop active-note

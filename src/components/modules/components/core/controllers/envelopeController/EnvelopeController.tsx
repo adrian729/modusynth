@@ -6,8 +6,8 @@ import ModuleContext from 'src/components/modules/context/ModuleContext/ModuleCo
 import useSafeContext from 'src/hooks/useSafeContext';
 import {
     EnvelopeModule,
-    getModule,
     updateModule,
+    useModule,
 } from 'src/reducers/synthesisSlice';
 
 // TODO: Envelope Controller with screen visualization/control (example: https://djpmusicschool.com/wp-content/uploads/ADSR-1024x499.jpg)
@@ -15,7 +15,7 @@ const EnvelopeController = () => {
     const dispatch = useAppDispatch();
 
     const { moduleId } = useSafeContext(ModuleContext);
-    const module = getModule(moduleId) as EnvelopeModule;
+    const module = useModule(moduleId) as EnvelopeModule;
     const { envelope } = {
         ...module,
     };

@@ -3,13 +3,13 @@ import { FC, MouseEvent } from 'react';
 import { useAppDispatch } from 'src/app/hooks';
 import Button from 'src/components/common/core/button';
 import List from 'src/components/common/layouts/list';
-import { changeOctave, getOctave } from 'src/reducers/synthSlice';
+import { changeOctave, useOctave } from 'src/reducers/synthSlice';
 
 const octaves = [-3, -2, -1, 0, 1, 2, 3];
 
 const OctaveSelector: FC = () => {
     const dispatch = useAppDispatch();
-    const currentOctave = getOctave();
+    const currentOctave = useOctave();
 
     const onClick = (e: MouseEvent): void => {
         const { id } = e.target as HTMLInputElement;

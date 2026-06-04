@@ -4,7 +4,7 @@ import MainContext, {
     ModuleInterface,
 } from 'src/context/MainContext/MainContext';
 import useSafeContext from 'src/hooks/useSafeContext';
-import { CombinatorModule, getModule } from 'src/reducers/synthesisSlice';
+import { CombinatorModule, useModule } from 'src/reducers/synthesisSlice';
 
 interface UseCombinatorParams {
     moduleId: string;
@@ -15,7 +15,7 @@ const useCombinator = ({ moduleId }: UseCombinatorParams) => {
         dispatch,
     } = useSafeContext(MainContext);
 
-    const moduleState = getModule(moduleId) as CombinatorModule;
+    const moduleState = useModule(moduleId) as CombinatorModule;
     const { childModuleIds = [] } = { ...moduleState };
     const [inputIds, setInputIds] = useState<string[]>([]);
     const [gainInputIds, setGainInputIds] = useState<string[]>([]);

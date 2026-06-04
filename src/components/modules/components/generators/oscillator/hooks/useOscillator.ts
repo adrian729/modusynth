@@ -6,16 +6,16 @@ import MainContext, {
 } from 'src/context/MainContext/MainContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import {
-    getFrozenNotes,
-    getNotes,
-    getSynthPadNote,
+    useFrozenNotes,
+    useNotes,
+    useSynthPadNote,
 } from 'src/reducers/oscillatorsSlice';
-import { getSynthDetune } from 'src/reducers/synthSlice';
+import { useSynthDetune } from 'src/reducers/synthSlice';
 import {
     EnvelopeModule,
     OscillatorModule,
-    getDefaultEnvelopeId,
-    getModule,
+    useDefaultEnvelopeId,
+    useModule,
 } from 'src/reducers/synthesisSlice';
 
 import customPeriodicWaveOptions from './customWaveTypes/customWaveTypes';
@@ -34,13 +34,13 @@ const useOscillator = (): void => {
         state: { audioContext, modules },
         dispatch,
     } = useSafeContext(MainContext);
-    const synthPadNote = getSynthPadNote();
-    const notes = getNotes();
-    const frozenNotes = getFrozenNotes();
-    const synthDetune = getSynthDetune();
+    const synthPadNote = useSynthPadNote();
+    const notes = useNotes();
+    const frozenNotes = useFrozenNotes();
+    const synthDetune = useSynthDetune();
 
-    const moduleState = getModule(moduleId) as OscillatorModule;
-    const defaultEnvelopeId = getDefaultEnvelopeId();
+    const moduleState = useModule(moduleId) as OscillatorModule;
+    const defaultEnvelopeId = useDefaultEnvelopeId();
     const {
         type = 'sine',
         freq = 0,
@@ -52,7 +52,7 @@ const useOscillator = (): void => {
         mute = false,
     } = { ...moduleState };
 
-    const envelopeModuleState = getModule(envelopeId) as EnvelopeModule;
+    const envelopeModuleState = useModule(envelopeId) as EnvelopeModule;
     const { attack, decay, sustain, release } = envelopeModuleState.envelope;
 
     const [oscillatorState, setOscillatorState] = useState<OscillatorState>({

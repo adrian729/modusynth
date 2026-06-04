@@ -5,7 +5,7 @@ import Knob from 'src/components/common/core/knob/Knob';
 import Slider, { SliderProps } from 'src/components/common/core/slider/Slider';
 import ModuleContext from 'src/components/modules/context/ModuleContext/ModuleContext';
 import useSafeContext from 'src/hooks/useSafeContext';
-import { Module, getModule, updateModule } from 'src/reducers/synthesisSlice';
+import { Module, updateModule, useModule } from 'src/reducers/synthesisSlice';
 import { useDebounce } from 'usehooks-ts';
 
 interface ModuleWithNumericParam {
@@ -44,7 +44,7 @@ const NumericController: FC<NumericControllerProps> = ({
     const dispatch = useAppDispatch();
 
     const { moduleId } = useSafeContext(ModuleContext);
-    const module = getModule(moduleId) as unknown as ModuleWithNumericParam;
+    const module = useModule(moduleId) as unknown as ModuleWithNumericParam;
     const { [paramId]: paramValue = 0 } = { ...module };
 
     const [value, setValue] = useState<number>(paramValue);

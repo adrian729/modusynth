@@ -7,10 +7,10 @@ import { ModuleContextProvider } from 'src/components/modules/context/ModuleCont
 import {
     OscillatorModule,
     addModule,
-    getDefaultEnvelopeId,
-    getModule,
     removeModule,
     updateModule,
+    useDefaultEnvelopeId,
+    useModule,
 } from 'src/reducers/synthesisSlice';
 
 import AudioControl from './components/AudioControll';
@@ -28,9 +28,9 @@ const OscillatorComponent: FC<OscillatorProps> = ({
     parentModuleId,
 }) => {
     const dispatch = useAppDispatch();
-    const module = getModule(moduleId);
+    const module = useModule(moduleId);
 
-    const defaultEnvelopeId = getDefaultEnvelopeId();
+    const defaultEnvelopeId = useDefaultEnvelopeId();
     const [isSetup, setIsSetup] = useState<boolean>(false);
 
     const { mute = false } = { ...(module as OscillatorModule) };

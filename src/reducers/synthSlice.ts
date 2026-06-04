@@ -75,15 +75,15 @@ export const {
     updateSynthDetuneUp,
     updateSynthDetuneDown,
 } = synthSlice.actions;
-export const getOctave = () => useAppSelector(({ synth }) => synth.octave);
-export const getSynthGain = () =>
+export const useOctave = () => useAppSelector(({ synth }) => synth.octave);
+export const useSynthGain = () =>
     useAppSelector(({ synth }) => synth.synthSettings.gain);
-export const getSynthDetune = () =>
+export const useSynthDetune = () =>
     useAppSelector(({ synth }) => {
         const { value, up, down } = synth.synthSettings.detune;
         return value < 0 ? value * down : value * up;
     });
-export const getSynthDetuneObject = () =>
+export const useSynthDetuneObject = () =>
     useAppSelector(({ synth }) => synth.synthSettings.detune);
 
 export default synthSlice.reducer;

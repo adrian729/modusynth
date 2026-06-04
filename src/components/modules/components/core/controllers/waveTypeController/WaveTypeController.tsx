@@ -3,7 +3,7 @@ import Button from 'src/components/common/core/button/Button';
 import WaveIcon, { WaveKind } from 'src/components/common/core/icons/WaveIcon';
 import ModuleContext from 'src/components/modules/context/ModuleContext/ModuleContext';
 import useSafeContext from 'src/hooks/useSafeContext';
-import { Module, getModule, updateModule } from 'src/reducers/synthesisSlice';
+import { Module, updateModule, useModule } from 'src/reducers/synthesisSlice';
 
 interface ModuleWithType extends Module {
     type: OscillatorType;
@@ -26,7 +26,7 @@ const WaveTypeController = () => {
     const dispatch = useAppDispatch();
 
     const { moduleId } = useSafeContext(ModuleContext);
-    const module = getModule(moduleId) as ModuleWithType;
+    const module = useModule(moduleId) as ModuleWithType;
     const { type = 'sine' } = { ...module };
 
     const onChangeType = (waveType: OscillatorType) => {

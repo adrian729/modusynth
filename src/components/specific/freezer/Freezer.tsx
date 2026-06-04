@@ -6,12 +6,12 @@ import List from 'src/components/common/layouts/list/List';
 import {
     clearDrones,
     freeze,
-    getFrozenNotes,
+    useFrozenNotes,
 } from 'src/reducers/oscillatorsSlice';
 
 const Freezer: FC = () => {
     const dispatch = useAppDispatch();
-    const hasDrones = Object.keys(getFrozenNotes()).length > 0;
+    const hasDrones = Object.keys(useFrozenNotes()).length > 0;
 
     return (
         <div className="flex flex-col items-center gap-1">

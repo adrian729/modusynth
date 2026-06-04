@@ -12,7 +12,7 @@ import { useAppDispatch } from 'src/app/hooks';
 import Slider from 'src/components/common/core/slider/Slider';
 import ModuleContext from 'src/components/modules/context/ModuleContext/ModuleContext';
 import useSafeContext from 'src/hooks/useSafeContext';
-import { Module, getModule, updateModule } from 'src/reducers/synthesisSlice';
+import { Module, updateModule, useModule } from 'src/reducers/synthesisSlice';
 import { theme } from 'src/styles/theme';
 import { useDebounce, useWindowSize } from 'usehooks-ts';
 
@@ -27,7 +27,7 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
     const dispatch = useAppDispatch();
 
     const { moduleId } = useSafeContext(ModuleContext);
-    const module = getModule(moduleId) as ModuleWithPeriodicWaveOptions;
+    const module = useModule(moduleId) as ModuleWithPeriodicWaveOptions;
     const { periodicWaveOptions = {} } = { ...module };
 
     // First value of periodicWaveOptions options is always 0

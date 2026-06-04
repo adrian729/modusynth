@@ -3,7 +3,7 @@ import { ChangeEvent, FC } from 'react';
 import { useAppDispatch } from 'src/app/hooks';
 import ModuleContext from 'src/components/modules/context/ModuleContext/ModuleContext';
 import useSafeContext from 'src/hooks/useSafeContext';
-import { Module, getModule, updateModule } from 'src/reducers/synthesisSlice';
+import { Module, updateModule, useModule } from 'src/reducers/synthesisSlice';
 
 interface ModuleWithFreq extends Module {
     freq: number;
@@ -13,7 +13,7 @@ const FrequencyController: FC = () => {
     const dispatch = useAppDispatch();
 
     const { moduleId } = useSafeContext(ModuleContext);
-    const module = getModule(moduleId) as ModuleWithFreq;
+    const module = useModule(moduleId) as ModuleWithFreq;
     const { freq = 0 } = { ...module };
 
     const onChangeFreq = (e: ChangeEvent): void => {

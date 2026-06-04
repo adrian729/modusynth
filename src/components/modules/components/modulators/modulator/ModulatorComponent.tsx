@@ -5,8 +5,8 @@ import { useAppDispatch } from 'src/app/hooks';
 import Button from 'src/components/common/core/button/Button';
 import {
     CombinatorModule,
-    getModule,
     updateModule,
+    useModule,
 } from 'src/reducers/synthesisSlice';
 
 import CombinatorComponent from '../../combiners/combinator/CombinatorComponent';
@@ -22,7 +22,7 @@ const ModulatorComponent = ({ moduleId, envelopeId }: ModulatorProps) => {
     const dispatch = useAppDispatch();
 
     const generatorsModuleId = useMemo(() => _.uniqueId('generators_'), []);
-    const generatorModuleState = getModule(
+    const generatorModuleState = useModule(
         generatorsModuleId,
     ) as CombinatorModule;
     const { childModuleIds: generatorChildModuleIds = [] } = {
@@ -30,13 +30,13 @@ const ModulatorComponent = ({ moduleId, envelopeId }: ModulatorProps) => {
     };
 
     const rmsModuleId = useMemo(() => _.uniqueId('rms_'), []);
-    const rmsModuleState = getModule(rmsModuleId) as CombinatorModule;
+    const rmsModuleState = useModule(rmsModuleId) as CombinatorModule;
     const { childModuleIds: rmsChildModuleIds = [] } = {
         ...rmsModuleState,
     };
 
     const fmsModuleId = useMemo(() => _.uniqueId('fms_'), []);
-    const fmsModuleState = getModule(fmsModuleId) as CombinatorModule;
+    const fmsModuleState = useModule(fmsModuleId) as CombinatorModule;
     const { childModuleIds: fmsChildModuleIds = [] } = {
         ...fmsModuleState,
     };

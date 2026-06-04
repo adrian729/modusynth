@@ -8,8 +8,8 @@ import ModuleContext from 'src/components/modules/context/ModuleContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import {
     OscillatorModule,
-    getModule,
     updateModule,
+    useModule,
 } from 'src/reducers/synthesisSlice';
 
 import customPeriodicWaveOptions from '../../hooks/customWaveTypes/customWaveTypes';
@@ -18,7 +18,7 @@ const OscillatorWaveSelection = () => {
     const dispatch = useAppDispatch();
 
     const { moduleId } = useSafeContext(ModuleContext);
-    const module = getModule(moduleId);
+    const module = useModule(moduleId);
     const { type = 'sine', customType = 'none' } = {
         ...module,
     } as OscillatorModule;

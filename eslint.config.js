@@ -41,14 +41,5 @@ export default tseslint.config(
             ],
         },
     },
-    {
-        // CLAUDE.md invariant: the `get*` selectors are hooks (they call
-        // useAppSelector internally) despite the `get` prefix — the naming
-        // predates this rule. Rules of Hooks still apply at their call sites.
-        files: ['src/reducers/*.ts'],
-        rules: {
-            'react-hooks/rules-of-hooks': 'off',
-        },
-    },
     eslintConfigPrettier,
 );

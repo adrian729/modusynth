@@ -5,8 +5,8 @@ import { useAppDispatch } from 'src/app/hooks';
 import {
     CombinatorModule,
     addModule,
-    getModule,
     removeModule,
+    useModule,
 } from 'src/reducers/synthesisSlice';
 import { Props } from 'src/types/core';
 
@@ -17,7 +17,7 @@ interface CombinatorProps extends Props {
 }
 const CombinatorComponent: FC<CombinatorProps> = ({ moduleId, children }) => {
     const dispatch = useAppDispatch();
-    const module = getModule(moduleId) as CombinatorModule;
+    const module = useModule(moduleId) as CombinatorModule;
     const childModuleIds = getChildModuleIds(children);
 
     useCombinator({ moduleId });

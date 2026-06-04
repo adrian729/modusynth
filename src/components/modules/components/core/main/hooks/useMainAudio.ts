@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import MainContext from 'src/context/MainContext/MainContext';
 import useSafeContext from 'src/hooks/useSafeContext';
-import { getSynthGain } from 'src/reducers/synthSlice';
+import { useSynthGain } from 'src/reducers/synthSlice';
 
 const useMainAudio = () => {
     const {
@@ -14,7 +14,7 @@ const useMainAudio = () => {
         out: audioContext.destination,
     });
     const { mainGainNode, compressor, out } = contextState;
-    const mainGain = getSynthGain();
+    const mainGain = useSynthGain();
 
     useEffect(() => {
         mainConnection.connect(mainGainNode);

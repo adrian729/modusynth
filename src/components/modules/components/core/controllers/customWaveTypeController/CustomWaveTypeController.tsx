@@ -3,7 +3,7 @@ import { ChangeEvent } from 'react';
 import { useAppDispatch } from 'src/app/hooks';
 import ModuleContext from 'src/components/modules/context/ModuleContext/ModuleContext';
 import useSafeContext from 'src/hooks/useSafeContext';
-import { Module, getModule, updateModule } from 'src/reducers/synthesisSlice';
+import { Module, updateModule, useModule } from 'src/reducers/synthesisSlice';
 
 import customPeriodicWaveOptions from '../../../generators/oscillator/hooks/customWaveTypes/customWaveTypes';
 
@@ -17,7 +17,7 @@ const CustomWaveTypeController = () => {
     const dispatch = useAppDispatch();
 
     const { moduleId } = useSafeContext(ModuleContext);
-    const module = getModule(moduleId) as ModuleWithCustomType;
+    const module = useModule(moduleId) as ModuleWithCustomType;
     const { customType = 'none' } = { ...module };
 
     const changeType = (e: ChangeEvent): void => {

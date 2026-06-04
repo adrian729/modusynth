@@ -88,11 +88,11 @@ export const {
     clearDrones,
 } = oscillatorsSlice.actions;
 
-export const getNotes = () =>
+export const useNotes = () =>
     useAppSelector(({ oscillators }) => oscillators.notes);
-export const getFrozenNotes = () =>
+export const useFrozenNotes = () =>
     useAppSelector(({ oscillators }) => oscillators.frozenNotes);
-export const getSynthPadNote = () =>
+export const useSynthPadNote = () =>
     useAppSelector(({ oscillators }) => oscillators.synthPadNote);
 
 export default oscillatorsSlice.reducer;

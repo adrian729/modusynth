@@ -5,8 +5,8 @@ import { ModuleContextProvider } from 'src/components/modules/context/ModuleCont
 import {
     EnvelopeModule,
     addModule,
-    getModule,
     removeModule,
+    useModule,
 } from 'src/reducers/synthesisSlice';
 
 import EnvelopeController from '../../core/controllers/envelopeController/EnvelopeController';
@@ -17,7 +17,7 @@ interface EnvelopeProps {
 }
 const EnvelopeComponent: FC<EnvelopeProps> = ({ moduleId, parentModuleId }) => {
     const dispatch = useAppDispatch();
-    const module = getModule(moduleId);
+    const module = useModule(moduleId);
 
     const [isSetup, setIsSetup] = useState<boolean>(false);
 

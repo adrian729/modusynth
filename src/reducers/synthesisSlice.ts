@@ -100,11 +100,11 @@ export const synthesisSlice = createSlice({
 });
 
 export const { addModule, updateModule, removeModule } = synthesisSlice.actions;
-export const getDefaultEnvelopeId = () =>
+export const useDefaultEnvelopeId = () =>
     useAppSelector(() => DEFAULT_ENVELOPE_MODULE_ID);
-export const getModules = () =>
+export const useModules = () =>
     useAppSelector(({ synthesis }) => synthesis.modules);
-export const getModule = (id: string) =>
+export const useModule = (id: string) =>
     useAppSelector(({ synthesis }) => synthesis.modules[id]);
 
 export default synthesisSlice.reducer;
