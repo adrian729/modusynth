@@ -1,8 +1,9 @@
-import { RefObject } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 
 import { QwertyHancock } from 'qwerty-hancock';
 import { useAppDispatch } from 'src/app/hooks';
 import { addNote, removeNote } from 'src/reducers/oscillatorsSlice';
+import { getOctave } from 'src/reducers/synthSlice';
 import { useWindowSize } from 'usehooks-ts';
 
 interface CreateKeyboardParams {
@@ -41,20 +42,38 @@ interface UseKeyboardArgs {
 export const useKeyboard = ({ keyboardRef }: UseKeyboardArgs): number => {
     const dispatch = useAppDispatch();
     const { width: windowWidth } = useWindowSize();
+    const octave = getOctave();
 
-    if (keyboardRef.current) {
-        const { keyboard, keyboardWidth } = createKeyboard({
+    // Keep the latest octave available to the (created-once) keyDown closure
+    // without rebuilding the keyboard — rebuilding would drop active-note
+    // highlights, the bug we're fixing.
+    const octaveRef = useRef(octave);
+    useEffect(() => {
+        octaveRef.current = octave;
+    }, [octave]);
+
+    const [keyboardWidth, setKeyboardWidth] = useState<number>(-1);
+
+    useEffect(() => {
+        if (!keyboardRef.current) {
+            return;
+        }
+        // Drop any previously-rendered keyboard SVG before (re)creating.
+        keyboardRef.current.replaceChildren();
+        const { keyboard, keyboardWidth: width } = createKeyboard({
             windowWidth,
         });
         keyboard.keyDown = (note: string, freq: number): void => {
-            dispatch(addNote({ note, frequency: freq }));
+            // Transpose the on-screen keyboard by the selected octave.
+            dispatch(
+                addNote({ note, frequency: freq * 2 ** octaveRef.current }),
+            );
         };
-
         keyboard.keyUp = (note: string): void => {
             dispatch(removeNote(note));
         };
-        return keyboardWidth;
-    }
+        setKeyboardWidth(width);
+    }, [windowWidth, dispatch, keyboardRef]);
 
-    return -1;
+    return keyboardWidth;
 };

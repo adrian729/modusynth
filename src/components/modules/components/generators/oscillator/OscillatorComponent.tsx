@@ -43,6 +43,7 @@ const OscillatorComponent: FC<OscillatorProps> = ({
                 pitch: 0,
                 envelopeId: envelopeId || defaultEnvelopeId,
                 customType: 'none',
+                mute: false,
                 parentModuleId,
             };
             dispatch(addModule(initialModule));

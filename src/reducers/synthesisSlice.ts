@@ -37,6 +37,7 @@ export interface OscillatorModule extends Module {
     pitch: number;
     envelopeId: ID;
     customType: string;
+    mute: boolean;
 }
 
 export interface EnvelopeModule extends Module {

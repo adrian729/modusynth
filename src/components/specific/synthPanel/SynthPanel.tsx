@@ -2,6 +2,7 @@ import { ChangeEvent } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
 import Slider from 'src/components/common/core/slider';
+import Freezer from 'src/components/specific/freezer/Freezer';
 import {
     getSynthDetune,
     getSynthGain,
@@ -66,6 +67,7 @@ const SynthPanel = () => {
                 sliderSizeUnits="rem"
             />
             <Keyboard />
+            <Freezer />
         </div>
     );
 };

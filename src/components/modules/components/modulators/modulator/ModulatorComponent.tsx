@@ -38,12 +38,29 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
     const fmsModuleId = useMemo(() => _.uniqueId('fms_'), []);
     const fmsModuleState = getModule(fmsModuleId) as CombinatorModule;
     const { childModuleIds: fmsChildModuleIds = [] } = {
-        ...rmsModuleState,
+        ...fmsModuleState,
     };
 
     const envelopeId = useMemo(() => _.uniqueId('envelope_'), []);
 
-    const [generators, setGenerators] = useState<Record<string, ReactNode>>({});
+    // Seed one generator oscillator so the modulator (and the RM/FM sources
+    // that modulate it) has a carrier out of the box. The combinator picks the
+    // child id up from its React children when it registers itself.
+    const [generators, setGenerators] = useState<Record<string, ReactNode>>(
+        () => {
+            const id = _.uniqueId(`${generatorsModuleId}--oscillator-`);
+            return {
+                [id]: (
+                    <OscillatorComponent
+                        key={id}
+                        moduleId={id}
+                        envelopeId={envelopeId}
+                        parentModuleId={generatorsModuleId}
+                    />
+                ),
+            };
+        },
+    );
     const [rms, setRMs] = useState<Record<string, ReactNode>>({});
     const [fms, setFMs] = useState<Record<string, ReactNode>>({});
 

@@ -70,7 +70,6 @@ const useModulator = ({
     }, [generatorModule, fmsModuleId]);
 
     useEffect(() => {
-        console.log('rmsMod', rmsModule);
         if (rmsModule) {
             rmsModule.outputNode.connect(rmGain.gain);
         }

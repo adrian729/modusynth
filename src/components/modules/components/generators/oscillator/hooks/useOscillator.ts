@@ -5,7 +5,12 @@ import MainContext, {
     ModuleInterface,
 } from 'src/context/MainContext/MainContext';
 import useSafeContext from 'src/hooks/useSafeContext';
-import { getNotes, getSynthPadNote } from 'src/reducers/oscillatorsSlice';
+import {
+    getFrozenNotes,
+    getNotes,
+    getSynthPadNote,
+} from 'src/reducers/oscillatorsSlice';
+import { getSynthDetune } from 'src/reducers/synthSlice';
 import {
     EnvelopeModule,
     OscillatorModule,
@@ -31,9 +36,10 @@ const useOscillator = (): void => {
     } = useSafeContext(MainContext);
     const synthPadNote = getSynthPadNote();
     const notes = getNotes();
+    const frozenNotes = getFrozenNotes();
+    const synthDetune = getSynthDetune();
 
     const moduleState = getModule(moduleId) as OscillatorModule;
-    console.log('RENDER useOscillator', moduleState);
     const defaultEnvelopeId = getDefaultEnvelopeId();
     const {
         type = 'sine',
@@ -43,6 +49,7 @@ const useOscillator = (): void => {
         pitch = 0,
         envelopeId = defaultEnvelopeId,
         customType = 'none',
+        mute = false,
     } = { ...moduleState };
 
     const envelopeModuleState = getModule(envelopeId) as EnvelopeModule;
@@ -184,19 +191,22 @@ const useOscillator = (): void => {
 
     useEffect(() => {
         const { currentTime } = audioContext;
-        gainNode.gain.setTargetAtTime(gain, currentTime, 0.005);
-    }, [gain]);
+        // Mute zeroes the module output (downstream of controlGainNode, so it
+        // never interferes with RM modulation of controlGainNode.gain).
+        gainNode.gain.setTargetAtTime(mute ? 0 : gain, currentTime, 0.005);
+    }, [gain, mute]);
 
     useEffect(() => {
         if (detuneConstantSource) {
             const { currentTime } = audioContext;
+            // Per-oscillator pitch + global master detune (both in cents).
             detuneConstantSource.offset.setTargetAtTime(
-                pitch,
+                pitch + synthDetune,
                 currentTime,
                 0.005,
             );
         }
-    }, [detuneConstantSource, pitch]);
+    }, [detuneConstantSource, pitch, synthDetune]);
 
     const newOscillator = (
         frequency: number,
@@ -209,9 +219,10 @@ const useOscillator = (): void => {
 
         const { currentTime } = audioContext;
         const velocityGain = velocity ? 0.1 + velocity / 127 : 1;
-        const oscGain = new GainNode(audioContext, { gain: 0 });
+        // Start at a tiny non-zero floor to avoid a zero-discontinuity click.
+        const oscGain = new GainNode(audioContext, { gain: 0.001 });
         oscGain.gain.cancelScheduledValues(currentTime);
-        oscGain.gain.setTargetAtTime(0, currentTime, easing / 3);
+        oscGain.gain.setTargetAtTime(0.001, currentTime, easing / 3);
         oscGain.gain.setTargetAtTime(
             velocityGain,
             currentTime + easing,
@@ -243,9 +254,10 @@ const useOscillator = (): void => {
         setOscillatorState((prevOscillatorState) => {
             const { currentTime } = audioContext;
             const newOscillators = { ...prevOscillatorState.oscillators };
-            // If specific freq set, use freq, else get from notes
+            // If specific freq set, use freq, else the union of live notes and
+            // frozen (drone) notes so frozen voices keep sounding after key-up.
             const oscNotes = !freq
-                ? notes
+                ? { ...frozenNotes, ...notes }
                 : { [`freq_${freq}`]: { frequency: freq } };
 
             Object.entries(newOscillators)
@@ -270,7 +282,7 @@ const useOscillator = (): void => {
 
             return { ...prevOscillatorState, oscillators: newOscillators };
         });
-    }, [freq, notes, modules]);
+    }, [freq, notes, frozenNotes, modules]);
 
     useEffect(() => {
         Object.values(oscillators).forEach(([osc]) => {
@@ -330,7 +342,7 @@ const useOscillator = (): void => {
 
         const { currentTime } = audioContext;
         const velocityGain = 0.1 + velocity / 127;
-        const oscGain = new GainNode(audioContext, { gain: 0 });
+        const oscGain = new GainNode(audioContext, { gain: 0.001 });
         oscGain.gain.setTargetAtTime(
             sustain * velocityGain,
             currentTime,
@@ -412,12 +424,18 @@ const stopOscillator = ({
     currentTime,
     release,
 }: StopOscillatorParams): void => {
-    // TODO: check why if stop before starting decay it pops
-    oscGainNode.gain.cancelScheduledValues(currentTime);
-    oscGainNode.gain.setTargetAtTime(0, currentTime, (release + easing) / 3); // Exponential ramp to target. After time/3 around 95% close to target
+    // Hold the current (in-progress) value instead of cancelling it — cancelling
+    // caused the discontinuity that popped when releasing mid-attack. Then ramp
+    // to a near-zero floor and stop the oscillator once it's already silent.
+    const rampDuration = release + easing;
+    oscGainNode.gain.cancelAndHoldAtTime(currentTime);
+    oscGainNode.gain.exponentialRampToValueAtTime(
+        0.001,
+        currentTime + rampDuration,
+    );
     setTimeout(() => {
         oscNode.stop();
         oscNode.disconnect();
         oscGainNode.disconnect();
-    }, 10 * release * 1000 + 1000);
+    }, rampDuration * 1000 + 50);
 };
