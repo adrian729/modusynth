@@ -62,7 +62,6 @@ const useMidiDevice = (): void => {
 
     // eslint-disable-next-line no-undef
     function handleInput(inputEvent: WebMidi.MIDIMessageEvent) {
-        console.log(inputEvent);
         const { data } = inputEvent;
         const status = statusToCommandCode(data[0]);
         // const channel = data[0] & CHANNEL_MASK;
