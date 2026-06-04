@@ -1,5 +1,6 @@
 import { useAppDispatch } from 'src/app/hooks';
 import Button from 'src/components/common/core/button/Button';
+import WaveIcon, { WaveKind } from 'src/components/common/core/icons/WaveIcon';
 import ModuleContext from 'src/components/modules/context/ModuleContext/ModuleContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import { Module, getModule, updateModule } from 'src/reducers/synthesisSlice';
@@ -41,7 +42,7 @@ const WaveTypeController = () => {
 
     return (
         <div>
-            <div style={{ display: 'flex' }}>
+            <div className="segmented">
                 {waveTypes.map(({ label, waveType }) => (
                     <Button
                         id={`${moduleId}_${waveType}_type`}
@@ -49,7 +50,12 @@ const WaveTypeController = () => {
                         title={label}
                         buttonKind={waveType === type ? 'active' : undefined}
                         onClick={() => onChangeType(waveType)}
-                    />
+                    >
+                        <span className="flex flex-col items-center gap-0.5">
+                            <WaveIcon kind={waveType as WaveKind} />
+                            <span className="text-[0.6rem]">{label}</span>
+                        </span>
+                    </Button>
                 ))}
             </div>
         </div>

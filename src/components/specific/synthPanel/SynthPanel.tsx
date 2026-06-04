@@ -40,34 +40,37 @@ const SynthPanel = () => {
 
     // TODO: CHECK TO SEPARATE SLIDERS AND KB, SINCE ON RERENDER THE KB RERENDERS ALSO (green notes removed)
     return (
-        <div className="synthPanel center">
-            <Slider
-                id="synthGain"
-                label="gain"
-                value={gain}
-                max={1.5}
-                step={0.005}
-                onChange={changeGain}
-                onSliderReset={onResetGain}
-                resetValue={0.2}
-                sliderSize={8}
-                sliderSizeUnits="rem"
-            />
-            <Slider
-                id="synthDetune"
-                label="detune"
-                value={detune}
-                max={100}
-                min={-100}
-                step={1}
-                onChange={changeDetune}
-                onSliderReset={onResetDetune}
-                resetValue={0}
-                sliderSize={8}
-                sliderSizeUnits="rem"
-            />
-            <Keyboard />
-            <Freezer />
+        <div className="synthPanel module-card">
+            <h3 className="module-card__header">synth</h3>
+            <div className="flex flex-wrap items-start gap-4 p-4">
+                <Slider
+                    id="synthGain"
+                    label="gain"
+                    value={gain}
+                    max={1.5}
+                    step={0.005}
+                    onChange={changeGain}
+                    onSliderReset={onResetGain}
+                    resetValue={0.2}
+                    sliderSize={8}
+                    sliderSizeUnits="rem"
+                />
+                <Slider
+                    id="synthDetune"
+                    label="detune"
+                    value={detune}
+                    max={100}
+                    min={-100}
+                    step={1}
+                    onChange={changeDetune}
+                    onSliderReset={onResetDetune}
+                    resetValue={0}
+                    sliderSize={8}
+                    sliderSizeUnits="rem"
+                />
+                <Keyboard />
+                <Freezer />
+            </div>
         </div>
     );
 };

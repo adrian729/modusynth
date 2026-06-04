@@ -2,6 +2,7 @@ import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react';
 
 import { useAppDispatch } from 'src/app/hooks';
 import { stopSynthPad, updateSynthPad } from 'src/reducers/oscillatorsSlice';
+import { theme } from 'src/styles/theme';
 import { useDebounce, useWindowSize } from 'usehooks-ts';
 
 import './styles.scss';
@@ -153,90 +154,99 @@ const SynthPadPanel = () => {
     // TODO: move to d3
     // TODO: convert to a Bode Diagram panel
     return (
-        <div>
-            <h4>
-                Frequency:{freq ? ` ${freq} Hz` : ' n/a'} Intensity:{' '}
-                {` ${intensity}`}{' '}
-            </h4>
-            <div id="synthpad"></div>
-            <div
-                className="synthpad__grid"
-                style={{ width: svgWidth, background: 'DarkSlateGrey' }}
-            >
-                <svg
-                    ref={svgRef}
-                    width={svgWidth}
-                    height={svgHeight}
-                    onMouseDown={(event) => {
-                        playSound(event);
-                        setClicked(true);
-                        return true;
-                    }}
-                    onMouseMove={(event) => {
-                        if (clicked) {
-                            updateFrequency(event);
-                        }
-                    }}
-                    onMouseUp={mouseOff}
-                    onBlur={mouseOff}
-                    onMouseOut={mouseOff}
-                    onMouseLeave={mouseOff}
+        <div className="module-card w-fit max-w-full">
+            <h3 className="module-card__header">synth pad</h3>
+            <div className="flex flex-col gap-3 p-3">
+                <h4 className="font-mono text-xs text-text-dim">
+                    Frequency:{freq ? ` ${freq} Hz` : ' n/a'} Intensity:{' '}
+                    {` ${intensity}`}{' '}
+                </h4>
+                <div id="synthpad"></div>
+                <div
+                    className="synthpad__grid"
+                    style={{ width: svgWidth, background: theme.panel }}
                 >
-                    <defs>
-                        <pattern
-                            id="smallGrid"
-                            width={smallGridWidth}
-                            height={smallGridHeight}
-                            patternUnits="userSpaceOnUse"
-                        >
-                            <path
-                                d={`M ${smallGridWidth} 0 L 0 0 0 ${smallGridHeight}`}
-                                fill="none"
-                                stroke="gray"
-                                strokeWidth="0.8"
-                            />
-                        </pattern>
-                        <pattern
-                            id="grid"
-                            width={gridWidth}
-                            height={gridHeight}
-                            patternUnits="userSpaceOnUse"
-                        >
-                            <rect
+                    <svg
+                        ref={svgRef}
+                        width={svgWidth}
+                        height={svgHeight}
+                        onMouseDown={(event) => {
+                            playSound(event);
+                            setClicked(true);
+                            return true;
+                        }}
+                        onMouseMove={(event) => {
+                            if (clicked) {
+                                updateFrequency(event);
+                            }
+                        }}
+                        onMouseUp={mouseOff}
+                        onBlur={mouseOff}
+                        onMouseOut={mouseOff}
+                        onMouseLeave={mouseOff}
+                    >
+                        <defs>
+                            <pattern
+                                id="smallGrid"
+                                width={smallGridWidth}
+                                height={smallGridHeight}
+                                patternUnits="userSpaceOnUse"
+                            >
+                                <path
+                                    d={`M ${smallGridWidth} 0 L 0 0 0 ${smallGridHeight}`}
+                                    fill="none"
+                                    stroke={theme.grid}
+                                    strokeWidth="0.8"
+                                />
+                            </pattern>
+                            <pattern
+                                id="grid"
                                 width={gridWidth}
                                 height={gridHeight}
-                                fill="url(#smallGrid)"
-                            />
-                            <path
-                                d={`M ${gridWidth} 0 L 0 0 0 ${gridHeight}`}
-                                fill="none"
-                                stroke="gray"
-                                strokeWidth="1.5"
-                            />
-                        </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#grid)" />
-                </svg>
-            </div>
-            <div>
-                <span>Min:</span>
-                <input
-                    type="number"
-                    id={'synthpad_min_freq'}
-                    value={minFreq}
-                    onChange={onChangeMinFreq}
-                    min={MIN_FREQ_BOUND}
-                    max={MAX_FREQ_BOUND - MIN_FREQ_BOUND_DISTANCE}
-                />
-                <span>Max:</span>
-                <input
-                    type="number"
-                    id={'synthpad_max_freq'}
-                    value={maxFreq}
-                    onChange={onChangeMaxFreq}
-                    min={MIN_FREQ_BOUND + MIN_FREQ_BOUND_DISTANCE}
-                    max={MAX_FREQ_BOUND}
-                />
+                                patternUnits="userSpaceOnUse"
+                            >
+                                <rect
+                                    width={gridWidth}
+                                    height={gridHeight}
+                                    fill="url(#smallGrid)"
+                                />
+                                <path
+                                    d={`M ${gridWidth} 0 L 0 0 0 ${gridHeight}`}
+                                    fill="none"
+                                    stroke={theme.gridStrong}
+                                    strokeWidth="1.5"
+                                />
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#grid)" />
+                    </svg>
+                </div>
+                <div className="flex items-end gap-3">
+                    <label className="control-field">
+                        <span className="control-label">min</span>
+                        <input
+                            className="control-input w-20"
+                            type="number"
+                            id={'synthpad_min_freq'}
+                            value={minFreq}
+                            onChange={onChangeMinFreq}
+                            min={MIN_FREQ_BOUND}
+                            max={MAX_FREQ_BOUND - MIN_FREQ_BOUND_DISTANCE}
+                        />
+                    </label>
+                    <label className="control-field">
+                        <span className="control-label">max</span>
+                        <input
+                            className="control-input w-20"
+                            type="number"
+                            id={'synthpad_max_freq'}
+                            value={maxFreq}
+                            onChange={onChangeMaxFreq}
+                            min={MIN_FREQ_BOUND + MIN_FREQ_BOUND_DISTANCE}
+                            max={MAX_FREQ_BOUND}
+                        />
+                    </label>
+                </div>
             </div>
         </div>
     );

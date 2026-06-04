@@ -13,6 +13,7 @@ import Slider from 'src/components/common/core/slider/Slider';
 import ModuleContext from 'src/components/modules/context/ModuleContext/ModuleContext';
 import useSafeContext from 'src/hooks/useSafeContext';
 import { Module, getModule, updateModule } from 'src/reducers/synthesisSlice';
+import { theme } from 'src/styles/theme';
 import { useDebounce, useWindowSize } from 'usehooks-ts';
 
 interface ModuleWithPeriodicWaveOptions extends Module {
@@ -219,7 +220,7 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
                     ],
                 ]),
             )
-            .attr('stroke', 'red');
+            .attr('stroke', theme.helper);
     };
 
     const updateArray = (event: MouseEvent) => {
@@ -237,7 +238,7 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
                     .data(getResizedArray(array, nextIndex + 1))
                     .enter()
                     .append('rect')
-                    .attr('fill', 'lightseagreen')
+                    .attr('fill', theme.bar)
                     .attr('x', (d: number, i: number) => i * barWidth)
                     .attr('y', () => tableHeight / 2)
                     .attr('height', () => 0)
@@ -360,7 +361,7 @@ function drawTableGuides({ svgElement, width, height }: DrawTableGuidesParams) {
                     [width, height / 2],
                 ]),
             )
-            .attr('stroke', 'black');
+            .attr('stroke', theme.guide);
     }
 }
 
@@ -383,7 +384,7 @@ function initChart({
 
         svg.attr('width', width)
             .attr('height', height)
-            .style('border', '1px dotted black');
+            .style('border', `1px solid ${theme.border}`);
 
         const barWidth = width / numValues;
         const yScale: (val: number) => number = d3

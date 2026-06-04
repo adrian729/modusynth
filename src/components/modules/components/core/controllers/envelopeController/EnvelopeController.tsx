@@ -39,9 +39,10 @@ const EnvelopeController = () => {
     };
 
     return (
-        <div style={{ display: 'flex' }}>
+        <div className="flex items-end gap-4">
             <Slider
                 id={`${moduleId}_attack`}
+                label="A"
                 value={attack}
                 min={0.005}
                 max={2}
@@ -52,6 +53,7 @@ const EnvelopeController = () => {
             />
             <Slider
                 id={`${moduleId}_decay`}
+                label="D"
                 value={decay}
                 min={0}
                 max={1}
@@ -62,6 +64,7 @@ const EnvelopeController = () => {
             />
             <Slider
                 id={`${moduleId}_sustain`}
+                label="S"
                 value={sustain}
                 min={0}
                 max={1}
@@ -72,6 +75,7 @@ const EnvelopeController = () => {
             />
             <Slider
                 id={`${moduleId}_release`}
+                label="R"
                 value={release}
                 min={0}
                 max={2}

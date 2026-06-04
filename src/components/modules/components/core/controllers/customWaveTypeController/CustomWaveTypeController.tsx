@@ -35,6 +35,7 @@ const CustomWaveTypeController = () => {
     return (
         <div>
             <select
+                className="control-select"
                 id={`${moduleId}_custom_wavetype_selector`}
                 onChange={changeType}
                 value={customType}

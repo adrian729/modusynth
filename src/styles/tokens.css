@@ -1,0 +1,36 @@
+/**
+ * Design tokens — single source of truth for the dark pro-audio theme.
+ *
+ * Consumed by:
+ *  - tailwind.config.js (theme colors reference these vars)
+ *  - surviving component SCSS (knob, slider, synth pad)
+ *
+ * KEEP IN SYNC with src/styles/theme.ts, the JS mirror used by
+ * imperative consumers (QwertyHancock keyboard config, D3 attrs).
+ */
+:root {
+    /* surfaces */
+    --surface: #0b0e14; /* page background, near-black */
+    --panel: #141923; /* module panel */
+    --panel-2: #1b2230; /* raised controls / header bars */
+    --border: #232b3a; /* subtle 1px borders */
+
+    /* text */
+    --text: #e6edf3;
+    --text-dim: #8b97a8;
+
+    /* accents */
+    --accent: #18ffff; /* neon cyan (aqua-200) */
+    --accent-2: #00e5ff; /* aqua-400 */
+    --accent-dim: #00b8d4; /* aqua-700 */
+    --warning: #ff5c57; /* destructive / release */
+
+    /* modulator section accents (replace lightgray/tomato/lightgreen) */
+    --sect-gen: #00e5ff;
+    --sect-rm: #ff7a6b;
+    --sect-fm: #5dd39e;
+
+    /* effects */
+    --glow: 0 0 0 1px rgba(24, 255, 255, 0.35),
+        0 0 12px rgba(24, 255, 255, 0.25);
+}

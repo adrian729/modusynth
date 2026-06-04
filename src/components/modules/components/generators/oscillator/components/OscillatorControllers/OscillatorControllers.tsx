@@ -21,7 +21,7 @@ const OscillatorControllers = () => {
     };
 
     return (
-        <>
+        <div className="flex flex-wrap items-end gap-3">
             <FrequencyController />
             <NumericController
                 paramId={'gain'}
@@ -53,7 +53,7 @@ const OscillatorControllers = () => {
                 buttonKind={mute ? 'active' : undefined}
                 onClick={toggleMute}
             />
-        </>
+        </div>
     );
 };
 

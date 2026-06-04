@@ -141,9 +141,11 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
 
     return (
         <div>
-            <h4>Oscillators</h4>
-            <div style={{ background: 'lightgray' }}>
-                <h5>{generatorsModuleId}</h5>
+            <section className="sect sect--gen">
+                <h4 className="sect__title">Oscillators</h4>
+                <h5 className="mb-2 font-mono text-[0.65rem] text-text-dim">
+                    {generatorsModuleId}
+                </h5>
                 <CombinatorComponent moduleId={generatorsModuleId}>
                     {getGenerators()}
                 </CombinatorComponent>
@@ -152,10 +154,12 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
                     title="Add Generator Osc"
                     onClick={addGeneratorOsc}
                 />
-            </div>
-            <h4>RM</h4>
-            <div style={{ background: 'tomato' }}>
-                <h5>{rmsModuleId}</h5>
+            </section>
+            <section className="sect sect--rm">
+                <h4 className="sect__title">RM</h4>
+                <h5 className="mb-2 font-mono text-[0.65rem] text-text-dim">
+                    {rmsModuleId}
+                </h5>
                 <CombinatorComponent moduleId={rmsModuleId}>
                     {getRMs()}
                 </CombinatorComponent>
@@ -164,10 +168,12 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
                     title="Add RM Osc"
                     onClick={addRMOsc}
                 />
-            </div>
-            <h4>FM</h4>
-            <div style={{ background: 'lightgreen' }}>
-                <h5>{fmsModuleId}</h5>
+            </section>
+            <section className="sect sect--fm">
+                <h4 className="sect__title">FM</h4>
+                <h5 className="mb-2 font-mono text-[0.65rem] text-text-dim">
+                    {fmsModuleId}
+                </h5>
                 <CombinatorComponent moduleId={fmsModuleId}>
                     {getFMs()}
                 </CombinatorComponent>
@@ -176,12 +182,14 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
                     title="Add FM Osc"
                     onClick={addFMOsc}
                 />
-            </div>
-            <h4>Envelope</h4>
-            <EnvelopeComponent
-                moduleId={envelopeId}
-                parentModuleId={moduleId}
-            />
+            </section>
+            <section className="sect">
+                <h4 className="sect__title">Envelope</h4>
+                <EnvelopeComponent
+                    moduleId={envelopeId}
+                    parentModuleId={moduleId}
+                />
+            </section>
         </div>
     );
 };

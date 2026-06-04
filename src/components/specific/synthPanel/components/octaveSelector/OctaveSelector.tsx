@@ -20,7 +20,11 @@ const OctaveSelector: FC = () => {
     };
 
     return (
-        <List className="octaveselector" direction="row" alignment="center">
+        <List
+            className="octaveselector segmented"
+            direction="row"
+            alignment="center"
+        >
             {octaves.map((val) => {
                 const octave = val;
                 return (

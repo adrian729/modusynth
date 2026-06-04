@@ -4,6 +4,7 @@ import { QwertyHancock } from 'qwerty-hancock';
 import { useAppDispatch } from 'src/app/hooks';
 import { addNote, removeNote } from 'src/reducers/oscillatorsSlice';
 import { getOctave } from 'src/reducers/synthSlice';
+import { theme } from 'src/styles/theme';
 import { useWindowSize } from 'usehooks-ts';
 
 interface CreateKeyboardParams {
@@ -27,10 +28,10 @@ const createKeyboard = ({
         height: keyboardHeight,
         octaves: numOctaves,
         startNote: 'C4',
-        whiteKeyColour: 'black',
-        blackKeyColour: 'white',
-        activeColour: 'mediumturquoise',
-        borderColour: 'white',
+        whiteKeyColour: theme.keyWhite,
+        blackKeyColour: theme.keyBlack,
+        activeColour: theme.keyActive,
+        borderColour: theme.keyBorder,
     });
 
     return { keyboard, keyboardWidth };

@@ -1,0 +1,113 @@
+/**
+ * Tailwind entry. Must stay a plain .css file: CRA runs sass-loader before
+ * PostCSS for .scss files, and sass chokes on @tailwind/@apply directives.
+ */
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        position: relative;
+        min-height: 100vh;
+        background: var(--surface);
+        color: var(--text);
+        font-family: theme('fontFamily.mono');
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+@layer components {
+    /* Module panel card — used by oscillator cards, synth panel, pad panel */
+    .module-card {
+        @apply rounded-lg border border-border bg-panel shadow-panel;
+    }
+
+    .module-card__header {
+        @apply flex items-center justify-between gap-2 rounded-t-lg border-b border-border bg-panel-2 px-3 py-2 font-mono text-xs uppercase tracking-widest text-accent;
+    }
+
+    .module-card__title {
+        @apply font-display text-xs font-bold uppercase tracking-widest text-accent;
+    }
+
+    /* Label + input pairing for raw controls */
+    .control-label {
+        @apply font-mono text-[0.65rem] uppercase tracking-wider text-text-dim;
+    }
+
+    .control-field {
+        @apply flex flex-col items-start gap-1;
+    }
+
+    .control-input {
+        @apply rounded border border-border bg-panel-2 px-2 py-1 font-mono text-sm text-text outline-none;
+    }
+
+    .control-input:focus {
+        @apply border-accent shadow-glow;
+    }
+
+    .control-input::-webkit-inner-spin-button,
+    .control-input::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .control-select {
+        @apply cursor-pointer appearance-none rounded border border-border bg-panel-2 py-1 pl-2 pr-7 font-mono text-sm text-text outline-none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2300b8d4' stroke-width='1.5'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+    }
+
+    .control-select:focus {
+        @apply border-accent shadow-glow;
+    }
+
+    /* Segmented control group (octave selector, wave type buttons) */
+    .segmented {
+        @apply inline-flex overflow-hidden rounded border border-border;
+    }
+
+    .segmented .button {
+        @apply m-0 rounded-none border-0 border-r border-border shadow-none;
+    }
+
+    .segmented .button:last-child,
+    .segmented > :last-child .button {
+        @apply border-r-0;
+    }
+
+    /* Modulator sections — color-coded via left border, not bg fills */
+    .sect {
+        @apply mb-4 rounded-md border border-border bg-panel p-3;
+        border-left-width: 3px;
+    }
+
+    .sect--gen {
+        border-left-color: var(--sect-gen);
+    }
+
+    .sect--rm {
+        border-left-color: var(--sect-rm);
+    }
+
+    .sect--fm {
+        border-left-color: var(--sect-fm);
+    }
+
+    .sect__title {
+        @apply mb-2 font-display text-xs font-bold uppercase tracking-widest text-text-dim;
+    }
+}
+
+@layer utilities {
+    /* debug helper used by Storybook stories */
+    .testborder {
+        border: 2px dotted var(--border) !important;
+    }
+}

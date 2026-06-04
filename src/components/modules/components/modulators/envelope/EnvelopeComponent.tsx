@@ -40,7 +40,9 @@ const EnvelopeComponent: FC<EnvelopeProps> = ({ moduleId, parentModuleId }) => {
         <ModuleContextProvider moduleId={moduleId} moduleType="envelope">
             {isSetup ? (
                 <div>
-                    <h5>{moduleId}</h5>
+                    <h5 className="mb-2 font-mono text-[0.65rem] text-text-dim">
+                        {moduleId}
+                    </h5>
                     <EnvelopeController />
                 </div>
             ) : null}

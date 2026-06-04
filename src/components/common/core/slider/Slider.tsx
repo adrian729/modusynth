@@ -8,7 +8,7 @@ import {
 
 import Container from 'src/components/common/layouts/container/Container';
 
-// import './styles.scss';
+import './styles.scss';
 
 type Orientation = 'vertical' | 'horizontal';
 type TitlePosition = 'top' | 'bottom' | 'none';
@@ -117,11 +117,16 @@ const setSliderHeight = ({
     units,
     orientation,
 }: SetSliderHeightParams): void => {
-    container.style.height = `${size}${units}`;
     input.style.width = `${size}${units}`;
     if (orientation === 'vertical') {
+        container.style.height = `${size}${units}`;
         input.style.transform = `rotate(-90deg) translate(${
             size / 2
         }${units}, ${1.5 / 2 - size / 2}rem)`;
+    } else {
+        // Horizontal: the container hugs the input instead of reserving
+        // the vertical footprint the rotated (vertical) variant needs.
+        container.style.height = 'auto';
+        container.style.width = `${size}${units}`;
     }
 };

@@ -15,6 +15,7 @@ const Button: FC<ButtonProps> = ({
     title,
     buttonKind,
     className,
+    children,
     ...props
 }: ButtonProps) => {
     return (
@@ -22,7 +23,7 @@ const Button: FC<ButtonProps> = ({
             className={classNames('button', buttonKind, className)}
             {...props}
         >
-            {title}
+            {children ?? title}
         </button>
     );
 };

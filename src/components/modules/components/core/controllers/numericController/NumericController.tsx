@@ -116,18 +116,13 @@ const NumericController: FC<NumericControllerProps> = ({
     };
 
     return (
-        <div
-            style={{
-                display: 'flex',
-                flexFlow: 'column',
-                alignItems: 'center',
-            }}
-        >
+        <div className="flex flex-col items-center gap-1">
             {renderInput()}
             {hasMinInput ? (
-                <>
-                    <span>min:</span>
+                <label className="control-field items-center">
+                    <span className="control-label">min</span>
                     <input
+                        className="control-input w-16"
                         type="number"
                         id={`${moduleId}_min_${paramId}`}
                         value={minVal}
@@ -136,14 +131,14 @@ const NumericController: FC<NumericControllerProps> = ({
                         max={
                             minInputMax ? Math.min(minInputMax, maxVal) : maxVal
                         }
-                        style={{ maxWidth: '70px' }}
                     />
-                </>
+                </label>
             ) : null}
             {hasMaxInput ? (
-                <>
-                    <span>max:</span>
+                <label className="control-field items-center">
+                    <span className="control-label">max</span>
                     <input
+                        className="control-input w-16"
                         type="number"
                         id={`${moduleId}_max_${paramId}`}
                         value={maxVal}
@@ -152,9 +147,8 @@ const NumericController: FC<NumericControllerProps> = ({
                             maxInputMin ? Math.max(maxInputMin, minVal) : minVal
                         }
                         max={maxInputMax}
-                        style={{ maxWidth: '70px' }}
                     />
-                </>
+                </label>
             ) : null}
         </div>
     );

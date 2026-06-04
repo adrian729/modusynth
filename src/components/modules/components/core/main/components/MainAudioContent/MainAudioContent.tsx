@@ -45,8 +45,10 @@ const MainAudioContent: FC = () => {
     // }, []);
 
     return (
-        <div>
-            <h1>Main Module</h1>
+        <div className="flex flex-col gap-4">
+            <h2 className="font-display text-sm font-bold uppercase tracking-widest text-text-dim">
+                Main Module
+            </h2>
             <OscillatorComponent moduleId={moduleIds[0]} />
             <ModulatorComponent moduleId={moduleIds[1]} />
         </div>

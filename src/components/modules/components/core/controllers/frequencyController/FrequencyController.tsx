@@ -27,9 +27,10 @@ const FrequencyController: FC = () => {
     };
 
     return (
-        <div>
-            <span>Freq:</span>
+        <label className="control-field">
+            <span className="control-label">freq</span>
             <input
+                className="control-input w-24"
                 type="number"
                 id={`${moduleId}_freq`}
                 value={freq}
@@ -37,7 +38,7 @@ const FrequencyController: FC = () => {
                 min={0}
                 max={20000}
             />
-        </div>
+        </label>
     );
 };
 

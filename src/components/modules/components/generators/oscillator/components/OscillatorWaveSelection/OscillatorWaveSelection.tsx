@@ -67,8 +67,16 @@ const OscillatorWaveSelection = () => {
 
     const renderSelectOscType = () => {
         return oscillator_types.map((radioType) => (
-            <label key={`${moduleId}_${radioType}`}>
+            <label
+                key={`${moduleId}_${radioType}`}
+                className={`-mb-px cursor-pointer border-b-2 px-2 pb-1 font-mono text-xs uppercase tracking-wider transition-colors ${
+                    radioType === oscType
+                        ? 'border-accent text-accent'
+                        : 'border-transparent text-text-dim hover:text-text'
+                }`}
+            >
                 <input
+                    className="sr-only"
                     type="radio"
                     name={`${moduleId}_osc_type`}
                     value={radioType}
@@ -92,7 +100,9 @@ const OscillatorWaveSelection = () => {
     };
     return (
         <>
-            <div style={{ display: 'flex' }}>{renderSelectOscType()}</div>
+            <div className="mb-2 flex gap-2 border-b border-border">
+                {renderSelectOscType()}
+            </div>
             {renderSelectedOscType()}
         </>
     );
