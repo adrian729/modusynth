@@ -53,6 +53,10 @@ export const oscillatorsSlice = createSlice({
         removeNote: (state, action: PayloadAction<string>): void => {
             delete state.notes[action.payload];
         },
+        /** Panic: release every held note (MIDI all-notes-off / all-sound-off) */
+        removeAllNotes: (state): void => {
+            state.notes = {};
+        },
         /** SynthPad */
         updateSynthPad: (
             state,
@@ -77,6 +81,7 @@ export const oscillatorsSlice = createSlice({
 export const {
     addNote,
     removeNote,
+    removeAllNotes,
     updateSynthPad,
     stopSynthPad,
     freeze,

@@ -11,14 +11,14 @@ import {
 
 import CombinatorComponent from '../../combiners/combinator/CombinatorComponent';
 import OscillatorComponent from '../../generators/oscillator/OscillatorComponent';
-import EnvelopeComponent from '../envelope/EnvelopeComponent';
 import useModulator from './hooks/useModulator';
 
 interface ModulatorProps {
     moduleId: string;
+    envelopeId: string; // envelope shared by all child oscillators; owned/rendered by the parent
     parentModuleId?: string; // TODO: add module to Redux state when we add the envelope? And add then parentId
 }
-const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
+const ModulatorComponent = ({ moduleId, envelopeId }: ModulatorProps) => {
     const dispatch = useAppDispatch();
 
     const generatorsModuleId = useMemo(() => _.uniqueId('generators_'), []);
@@ -40,8 +40,6 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
     const { childModuleIds: fmsChildModuleIds = [] } = {
         ...fmsModuleState,
     };
-
-    const envelopeId = useMemo(() => _.uniqueId('envelope_'), []);
 
     // Seed one generator oscillator so the modulator (and the RM/FM sources
     // that modulate it) has a carrier out of the box. The combinator picks the
@@ -181,13 +179,6 @@ const ModulatorComponent = ({ moduleId }: ModulatorProps) => {
                     id={`${moduleId}_${fmsModuleId}--add`}
                     title="Add FM Osc"
                     onClick={addFMOsc}
-                />
-            </section>
-            <section className="sect">
-                <h4 className="sect__title">Envelope</h4>
-                <EnvelopeComponent
-                    moduleId={envelopeId}
-                    parentModuleId={moduleId}
                 />
             </section>
         </div>
