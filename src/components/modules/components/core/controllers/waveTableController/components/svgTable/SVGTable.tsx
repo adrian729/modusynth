@@ -17,12 +17,10 @@ import { theme } from 'src/styles/theme';
 import { useDebounce, useWindowSize } from 'usehooks-ts';
 
 interface ModuleWithPeriodicWaveOptions extends Module {
-    // eslint-disable-next-line no-undef
     periodicWaveOptions: PeriodicWaveOptions;
 }
 
 interface SVGTableProps {
-    // eslint-disable-next-line no-undef
     optionsKey: 'real' | 'imag';
 }
 const SVGTable = ({ optionsKey }: SVGTableProps) => {
@@ -42,8 +40,8 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
     const { current } = svgRef;
 
     const { width } = useWindowSize();
-    const tableWidth = width * 0.4;
-    const tableHeight = 300;
+    const tableWidth = Math.min(width * 0.3, 480);
+    const tableHeight = 240;
 
     const [numValues, setNumValues] = useState(40);
 
@@ -173,6 +171,7 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
         nextValue: number,
         index: number,
         value: number,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         rectNodes: any,
     ) => {
         const numElementsUpdate = Math.abs(nextIndex - index) - 1;
@@ -274,7 +273,7 @@ const SVGTable = ({ optionsKey }: SVGTableProps) => {
             });
 
             setArray((prevArray) => {
-                let newArray = getResizedArray(
+                const newArray = getResizedArray(
                     prevArray,
                     Math.max(prevArray.length, nextIndex),
                 );

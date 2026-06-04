@@ -5,8 +5,6 @@ import Button from 'src/components/common/core/button';
 import List from 'src/components/common/layouts/list';
 import { changeOctave, getOctave } from 'src/reducers/synthSlice';
 
-import './styles.scss';
-
 const octaves = [-3, -2, -1, 0, 1, 2, 3];
 
 const OctaveSelector: FC = () => {
@@ -21,7 +19,7 @@ const OctaveSelector: FC = () => {
 
     return (
         <List
-            className="octaveselector segmented"
+            className="segmented mx-auto mb-[0.4rem] w-fit"
             direction="row"
             alignment="center"
         >
@@ -32,7 +30,7 @@ const OctaveSelector: FC = () => {
                         key={octave}
                         id={`octaveselector${octave}`}
                         title={`${octave > 0 ? '+' : ''}${octave}`}
-                        className={'octaveselector__item'}
+                        className={'text-[x-small]'}
                         onClick={onClick}
                         buttonKind={
                             currentOctave === octave ? 'active' : undefined

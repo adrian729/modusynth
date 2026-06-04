@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+        "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+        "target": "ES2020",
+        "useDefineForClassFields": true,
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "module": "ESNext",
+        "skipLibCheck": true,
+
+        /* Bundler mode */
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "moduleDetection": "force",
+        "noEmit": true,
+        "jsx": "react-jsx",
+        "esModuleInterop": true,
+
+        /* Absolute imports: `from 'src/...'` (mirrors the Vite `src` alias) */
+        "baseUrl": ".",
+        "paths": {
+            "src/*": ["src/*"]
+        },
+
+        /* Explicit types array disables automatic @types inclusion —
+           webmidi provides the global WebMidi.* namespace (useMidiDevice.ts),
+           vite/client covers CSS side-effect imports + import.meta.env. */
+        "types": ["node", "webmidi", "vite/client"],
+
+        /* Linting */
+        "strict": true,
+        "noFallthroughCasesInSwitch": true
+    },
+    "include": ["src"]
+}

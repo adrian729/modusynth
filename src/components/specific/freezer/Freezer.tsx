@@ -16,7 +16,11 @@ const Freezer: FC = () => {
     return (
         <div className="flex flex-col items-center gap-1">
             <span className="control-label">freezer</span>
-            <List direction="row" alignment="center">
+            <List
+                className="gap-x-8 gap-y-4"
+                direction="column"
+                alignment="center"
+            >
                 <Button
                     title="FREEZE"
                     buttonKind={hasDrones ? 'active' : undefined}

@@ -5,11 +5,17 @@ import Container, {
     ContainerProps,
 } from 'src/components/common/layouts/container/Container';
 
-import './styles.scss';
-
-export interface BoxProps extends ContainerProps {}
+export type BoxProps = ContainerProps;
 const Box: FC<BoxProps> = ({ className, ...props }) => {
-    return <Container className={classNames('box', className)} {...props} />;
+    return (
+        <Container
+            className={classNames(
+                'rounded-lg border border-border bg-panel shadow-panel',
+                className,
+            )}
+            {...props}
+        />
+    );
 };
 
 export default Box;

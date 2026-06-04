@@ -28,10 +28,9 @@ export interface Module {
 }
 
 export interface OscillatorModule extends Module {
-    // eslint-disable-next-line no-undef
     type: OscillatorType;
     freq: number;
-    // eslint-disable-next-line no-undef
+
     periodicWaveOptions: PeriodicWaveOptions;
     gain: number;
     pitch: number;

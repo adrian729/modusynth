@@ -17,8 +17,6 @@ const MainAudioContent: FC = () => {
         useMemo(() => _.uniqueId('modulator_'), []),
         useMemo(() => _.uniqueId('oscillator_'), []),
     ];
-    // Envelope shared by the modulator's oscillators; rendered up here so it
-    // sits next to the main module instead of at the bottom.
     const envelopeId = useMemo(() => _.uniqueId('envelope_'), []);
 
     useEffect(() => {
@@ -54,14 +52,14 @@ const MainAudioContent: FC = () => {
                 Main Module
             </h2>
             <div className="flex flex-wrap items-start gap-4">
-                <OscillatorComponent moduleId={moduleIds[0]} />
-                <section className="sect mb-0 self-stretch">
+                <section className="sect mb-0">
                     <h4 className="sect__title">Envelope</h4>
                     <EnvelopeComponent
                         moduleId={envelopeId}
                         parentModuleId={moduleIds[1]}
                     />
                 </section>
+                <OscillatorComponent moduleId={moduleIds[0]} />
             </div>
             <ModulatorComponent
                 moduleId={moduleIds[1]}

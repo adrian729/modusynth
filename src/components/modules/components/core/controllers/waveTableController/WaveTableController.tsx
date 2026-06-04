@@ -2,10 +2,15 @@ import SVGTable from './components/svgTable/SVGTable';
 
 const WaveTableController = () => {
     return (
-        <div>
-            <h2 className="control-label mb-2">wavetable</h2>
-            <SVGTable optionsKey="real" />
-            <SVGTable optionsKey="imag" />
+        <div className="flex flex-col gap-3">
+            <div>
+                <h2 className="control-label mb-1">real</h2>
+                <SVGTable optionsKey="real" />
+            </div>
+            <div>
+                <h2 className="control-label mb-1">imag</h2>
+                <SVGTable optionsKey="imag" />
+            </div>
         </div>
     );
 };

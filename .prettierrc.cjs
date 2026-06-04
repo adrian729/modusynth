@@ -1,4 +1,6 @@
 module.exports = {
+    plugins: ['@trivago/prettier-plugin-sort-imports'],
+
     semi: true,
     trailingComma: 'all',
     singleQuote: true,

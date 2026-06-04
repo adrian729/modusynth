@@ -6,17 +6,15 @@ import useSafeContext from 'src/hooks/useSafeContext';
 import { Module, getModule, updateModule } from 'src/reducers/synthesisSlice';
 
 interface ModuleWithType extends Module {
-    // eslint-disable-next-line no-undef
     type: OscillatorType;
 }
 
 interface waveTypeOption {
     label: string;
-    // eslint-disable-next-line no-undef
+
     waveType: OscillatorType;
 }
 
-// eslint-disable-next-line no-undef
 const waveTypes: waveTypeOption[] = [
     { label: 'sin', waveType: 'sine' },
     { label: 'trin', waveType: 'triangle' },
@@ -31,7 +29,6 @@ const WaveTypeController = () => {
     const module = getModule(moduleId) as ModuleWithType;
     const { type = 'sine' } = { ...module };
 
-    // eslint-disable-next-line no-undef
     const onChangeType = (waveType: OscillatorType) => {
         if (type !== waveType) {
             dispatch(

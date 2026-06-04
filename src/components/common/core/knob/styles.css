@@ -1,0 +1,185 @@
+/**
+ * Plain CSS (converted from SCSS) — pseudo-elements + the --knob-deg
+ * rotation driven imperatively by Knob.tsx can't be utilities.
+ * Theming — colors come from src/styles/tokens.css custom properties.
+ * Former SCSS vars resolved to literals:
+ *   $knob-d: 4em · $knob-border-w / $knob-ind-w: 0.3em · $primary: var(--accent)
+ */
+.knob {
+    --knob-deg: 0;
+    display: inline-block;
+    position: relative;
+    padding: 0;
+    margin: 1rem;
+    padding-bottom: 2em;
+    width: 4em;
+    border: 0;
+    text-align: center;
+    touch-action: none;
+    font-size: 1rem; /* Knob sizing */
+}
+
+.knob.small {
+    font-size: 0.72rem;
+    margin: 0.5rem;
+}
+
+.knob.big {
+    font-size: 1.5rem;
+}
+
+.knob data {
+    position: absolute;
+    top: calc(4em / 0.55 - 0.7em);
+    left: 0;
+    width: 100%;
+    font-size: 0.55em;
+    line-height: 2.5;
+    color: var(--text-dim);
+}
+
+.knob data::before,
+.knob data::after {
+    position: absolute;
+}
+
+.knob data::before {
+    content: attr(data-min);
+    left: 0;
+}
+
+.knob data::after {
+    content: attr(data-max);
+    right: 0;
+}
+
+.knob input {
+    appearance: textfield;
+    -moz-appearance: textfield; /* if not autoprefixed */
+    position: relative;
+    left: 0;
+    top: 0;
+    display: block;
+    width: calc(4em / 0.75);
+    height: 0.9em;
+    font: inherit;
+    font-size: 0.75em;
+    line-height: 1;
+    color: currentColor;
+    text-align: center;
+    font-variant-numeric: tabular-nums lining-nums;
+    background-color: transparent;
+    border: 0;
+    margin: calc(4em / 0.75 + 1em) 0 0 0;
+    padding: 0;
+    outline: 0;
+    cursor: default;
+    z-index: 2;
+    caret-color: currentColor;
+}
+
+.knob input::-webkit-outer-spin-button,
+.knob input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.knob input::selection {
+    color: currentColor;
+    background-color: var(--accent);
+}
+
+.knob input[disabled],
+.knob input[readonly] {
+    cursor: not-allowed;
+}
+
+.knob input[disabled] ~ *,
+.knob input[disabled] ~ *::before,
+.knob input[disabled] ~ *::after,
+.knob input[readonly] ~ *,
+.knob input[readonly] ~ *::before,
+.knob input[readonly] ~ *::after {
+    pointer-events: none;
+}
+
+.knob input[disabled]::selection,
+.knob input[readonly]::selection {
+    background-color: transparent;
+}
+
+.knob label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding-top: 6em;
+    font-size: 1em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.knob label::before,
+.knob label::after {
+    position: absolute;
+    display: inline-block;
+}
+
+.knob label::before {
+    content: '';
+    left: 50%;
+    top: 0.3em;
+    width: 3.7em;
+    height: 3.7em;
+    border: 0.3em solid var(--border);
+    border-radius: 100%;
+    /* dark metal cap + accent indicator notch at 12 o'clock */
+    background: linear-gradient(to bottom, var(--accent) 0% 100%) no-repeat 50%
+            0%,
+        radial-gradient(circle at 35% 30%, #2a3346, #0a0d13);
+    background-size: 0.2em 1em, 100% 100%;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.08),
+        0 2px 6px rgba(0, 0, 0, 0.6);
+    transform-origin: center center;
+    transform: translateX(-50%) rotate(0deg); /* Fallback */
+    transform: translateX(-50%) rotate(calc(1deg * var(--knob-deg)));
+    cursor: default;
+    pointer-events: fill;
+}
+
+.knob svg {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 4.3em;
+    height: 4.3em;
+    transform: translateX(-50%);
+    stroke-dasharray: 184 184;
+    fill: none;
+    stroke: currentColor;
+    z-index: 3;
+}
+
+.knob svg path {
+    stroke-width: 0.3em;
+    stroke-dashoffset: 0;
+    visibility: visible;
+    pointer-events: stroke;
+    transition: all 0.1s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.knob svg path:first-of-type {
+    stroke: var(--accent);
+    stroke-width: 0.2em;
+    filter: drop-shadow(0 0 4px rgba(24, 255, 255, 0.6));
+}
+
+.knob svg path:last-of-type {
+    stroke: var(--panel-2);
+    stroke-dashoffset: -97;
+}

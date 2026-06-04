@@ -39,7 +39,7 @@ const EnvelopeController = () => {
     };
 
     return (
-        <div className="flex items-end gap-4">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
             <Slider
                 id={`${moduleId}_attack`}
                 label="A"

@@ -9,7 +9,7 @@ import {
     useState,
 } from 'react';
 
-import './styles.scss';
+import './styles.css';
 
 export interface KnobProps extends InputHTMLAttributes<HTMLInputElement> {
     id: string;
@@ -114,7 +114,7 @@ const Knob: FC<KnobProps> = ({
     useEffect(() => {
         if (currentKnob) {
             const scaledValue = scale({ value, min, max });
-            let deg = scale({
+            const deg = scale({
                 value: scaledValue,
                 min: 0,
                 max: 1,
@@ -149,7 +149,6 @@ const Knob: FC<KnobProps> = ({
             setStartClientY(undefined);
         };
 
-        // TODO: while moving avoid selecting text/other items....
         document.addEventListener('mousemove', onUpdate);
         document.addEventListener('mouseup', onEnd);
 

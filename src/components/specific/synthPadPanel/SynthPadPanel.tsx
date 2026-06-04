@@ -5,8 +5,6 @@ import { stopSynthPad, updateSynthPad } from 'src/reducers/oscillatorsSlice';
 import { theme } from 'src/styles/theme';
 import { useDebounce, useWindowSize } from 'usehooks-ts';
 
-import './styles.scss';
-
 const MIN_FREQ_BOUND = 20;
 const MAX_FREQ_BOUND = 20000;
 const MIN_FREQ_BOUND_DISTANCE = 50;
@@ -163,7 +161,7 @@ const SynthPadPanel = () => {
                 </h4>
                 <div id="synthpad"></div>
                 <div
-                    className="synthpad__grid"
+                    className="cursor-crosshair"
                     style={{ width: svgWidth, background: theme.panel }}
                 >
                     <svg

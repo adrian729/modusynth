@@ -2,8 +2,6 @@ import { ButtonHTMLAttributes, FC } from 'react';
 
 import classNames from 'classnames';
 
-import './styles.scss';
-
 type ButtonKind = 'active' | 'warning' | undefined;
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

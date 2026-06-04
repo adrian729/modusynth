@@ -11,6 +11,7 @@ interface CreateKeyboardParams {
     windowWidth: number;
 }
 interface CreateKeyboardReturn {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- qwerty-hancock has no types
     keyboard: any;
     keyboardWidth: number;
 }

@@ -2,7 +2,6 @@ import { FC } from 'react';
 
 import { MainContextProvider } from 'src/context/MainContext/MainContext';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 // import OscilloscopeComponent from '../oscilloscope/OscilloscopeComponent';
 import MainAudioContent from './components/MainAudioContent/MainAudioContent';
 import useMainAudio from './hooks/useMainAudio';

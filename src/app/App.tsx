@@ -2,6 +2,7 @@ import { FC } from 'react';
 
 import { Provider } from 'react-redux';
 import MainAudioComponent from 'src/components/modules/components/core/main/MainAudioComponent';
+import AppInfo from 'src/components/specific/appInfo';
 import SynthPadPanel from 'src/components/specific/synthPadPanel/SynthPadPanel';
 import SynthPanel from 'src/components/specific/synthPanel/SynthPanel';
 import { Props } from 'src/types/core';
@@ -19,6 +20,9 @@ const App: FC<Props> = () => {
                     <span className="text-xs uppercase tracking-widest text-text-dim">
                         modular synthesizer
                     </span>
+                    <div className="ml-auto self-center">
+                        <AppInfo />
+                    </div>
                 </header>
                 <main className="flex flex-col gap-6 p-6">
                     <section className="flex flex-wrap items-start gap-6">

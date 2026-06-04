@@ -1,0 +1,107 @@
+/**
+ * Plain CSS (converted from SCSS) — ::-webkit-slider-runnable-track /
+ * ::-webkit-slider-thumb can't be utilities.
+ * Colors come from src/styles/tokens.css custom properties.
+ * Geometry is mirrored by the JS in Slider.tsx (setSliderHeight hardcodes
+ * the 1.5rem thumb cross-size for vertical rotation) — keep in sync.
+ * Former SCSS vars resolved to literals:
+ *   $slider-height: 10rem · $track-width: 0.3rem · $thumb-width: 1.5rem
+ *   $thumb-height: 2.6rem · $outline-offset: 0.15rem
+ */
+
+/********** Slider header and wrapper **********/
+.slider {
+    padding: 0;
+}
+
+.slider__header {
+    text-align: center;
+    margin-bottom: 0.2rem;
+}
+
+.slider__title {
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.2rem;
+}
+
+.slider__value {
+    font-size: 0.7rem;
+    color: var(--accent);
+}
+
+.slider__container {
+    position: relative;
+    margin-top: 0;
+    margin-bottom: 0;
+
+    width: 1.5rem;
+    height: 10rem;
+}
+
+.slider--vertical {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    /* translate(5rem − 0.15rem outline offset, 0.75rem − 5rem) */
+    transform: rotate(-90deg) translate(4.85rem, -4.25rem);
+}
+
+/********** Range Input Styles **********/
+/* Range Reset */
+.slider input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    margin: 0;
+    cursor: pointer;
+    width: 10rem;
+}
+
+/* Removes default focus */
+.slider input[type='range']:focus {
+    outline: none;
+}
+
+/***** Chrome, Safari, Opera and Edge Chromium styles *****/
+/* slider track */
+.slider input[type='range']::-webkit-slider-runnable-track {
+    border-radius: 2px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    height: 0.3rem;
+}
+
+/* slider thumb */
+.slider input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    margin-top: -0.6rem; /* Centers thumb on the track (0.15rem − 0.75rem) */
+
+    /* custom styles */
+    height: 1.5rem;
+    width: 2.6rem;
+
+    /* dark fader cap with an accent center line marking the value */
+    background: linear-gradient(
+        to left,
+        #2a3346 0%,
+        #1b2230 47%,
+        var(--accent) 48%,
+        var(--accent) 52%,
+        #1b2230 53%,
+        #10141d 100%
+    );
+    border: 1px solid var(--accent-dim);
+    border-radius: 2px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.slider input[type='range']:focus::-webkit-slider-thumb {
+    outline: 0.2rem solid rgba(24, 255, 255, 0.25);
+    outline-offset: 0.15rem;
+}

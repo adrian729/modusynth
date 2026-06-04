@@ -3,7 +3,6 @@ const real = [
 ];
 const imag = real.map(() => 0);
 
-// eslint-disable-next-line no-undef
 const bass2: PeriodicWaveOptions = { real, imag };
 
 export default bass2;

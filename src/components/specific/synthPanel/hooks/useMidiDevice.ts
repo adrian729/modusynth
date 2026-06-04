@@ -53,7 +53,7 @@ const useMidiDevice = (): void => {
         }
 
         let cancelled = false;
-        // eslint-disable-next-line no-undef
+
         let access: WebMidi.MIDIAccess | undefined;
 
         function noteOn(note: number, velocity: number): void {
@@ -84,7 +84,6 @@ const useMidiDevice = (): void => {
             }
         }
 
-        // eslint-disable-next-line no-undef
         function handleInput(inputEvent: WebMidi.MIDIMessageEvent): void {
             const { data } = inputEvent;
             const status = statusToCommandCode(data[0]);
@@ -136,7 +135,6 @@ const useMidiDevice = (): void => {
             }
         }
 
-        // eslint-disable-next-line no-undef
         function attachInput(input: WebMidi.MIDIInput): void {
             const { name, manufacturer, state, type } = input;
             // eslint-disable-next-line no-console
@@ -149,11 +147,10 @@ const useMidiDevice = (): void => {
         }
 
         // Hot-plug: wire up devices connected after the page loaded.
-        // eslint-disable-next-line no-undef
+
         function handleStateChange(event: WebMidi.MIDIConnectionEvent): void {
             const { port } = event;
             if (port.type === 'input' && port.state === 'connected') {
-                // eslint-disable-next-line no-undef
                 attachInput(port as WebMidi.MIDIInput);
             }
         }
@@ -179,13 +176,13 @@ const useMidiDevice = (): void => {
                 // for removeEventListener, hence the casts.
                 access.removeEventListener(
                     'statechange',
-                    // eslint-disable-next-line no-undef
+
                     handleStateChange as EventListener,
                 );
                 access.inputs.forEach((input) =>
                     input.removeEventListener(
                         'midimessage',
-                        // eslint-disable-next-line no-undef
+
                         handleInput as EventListener,
                     ),
                 );

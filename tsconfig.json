@@ -1,35 +1,7 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "baseUrl": "./",
-        "downlevelIteration": true,
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext",
-            "ES5",
-            "es2015",
-            "es2015.collection",
-            "es2015.iterable"
-        ],
-        "allowJs": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "noFallthroughCasesInSwitch": true,
-        "module": "esnext",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "noEmit": true,
-        "jsx": "react-jsx",
-        "outDir": "dist",
-        "declaration": true,
-        "declarationMap": true,
-        "types": ["node", "jest", "@testing-library/jest-dom", "webmidi"]
-    },
-    "include": ["src", "src/**/*"],
-    "exclude": ["node_modules", "src/**/*.stories.tsx", "src/**/*.stories.ts"]
+    "files": [],
+    "references": [
+        { "path": "./tsconfig.app.json" },
+        { "path": "./tsconfig.node.json" }
+    ]
 }

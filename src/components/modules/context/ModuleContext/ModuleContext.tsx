@@ -21,7 +21,7 @@ export const ModuleContextProvider: FC<ModuleContextProviderProps> = ({
 }) => {
     return (
         <ModuleContext.Provider value={{ moduleId, moduleType }}>
-            {module ? children : null}
+            {children}
         </ModuleContext.Provider>
     );
 };

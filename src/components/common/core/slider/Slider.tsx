@@ -8,7 +8,7 @@ import {
 
 import Container from 'src/components/common/layouts/container/Container';
 
-import './styles.scss';
+import './styles.css';
 
 type Orientation = 'vertical' | 'horizontal';
 type TitlePosition = 'top' | 'bottom' | 'none';
@@ -16,6 +16,7 @@ export interface SliderProps extends InputHTMLAttributes<HTMLInputElement> {
     id: string;
     label?: string;
     value: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ref?: any;
     min?: number;
     max?: number;
@@ -59,7 +60,7 @@ const Slider: FC<SliderProps> = ({
     }
 
     const handleClick = (e: MouseEvent): void => {
-        let { detail, target } = e;
+        const { detail, target } = e;
         if (detail === 2 && onSliderReset) {
             const val: number = resetValue ?? (max + min) / 2;
             const { id } = target as HTMLInputElement;

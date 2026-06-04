@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { Props } from 'src/types/core';
 
 import ListItem from './listItem';
-import './styles.scss';
 
 export type ListDirection = 'column' | 'row';
 export type ListAlignment = 'center' | undefined;
@@ -24,7 +23,12 @@ const List: FC<ListProps> = ({
 
     return (
         <ul
-            className={classNames('list', direction, alignment, className)}
+            className={classNames(
+                'flex flex-wrap',
+                direction === 'row' ? 'flex-row' : 'flex-col',
+                alignment === 'center' && 'items-center justify-center',
+                className,
+            )}
             {...props}
         >
             {arrayChildren.map((child, index) => (

@@ -3,11 +3,7 @@ import { Bass, BassFuzz, BassSubDub, Trombone } from '@mohayonao/wave-tables';
 import bass2 from './waveTables/bass2';
 import organ from './waveTables/organ';
 
-const customPeriodicWaveOptions: Record<
-    string,
-    // eslint-disable-next-line no-undef
-    PeriodicWaveOptions
-> = {
+const customPeriodicWaveOptions: Record<string, PeriodicWaveOptions> = {
     Bass,
     bass2,
     BassFuzz,

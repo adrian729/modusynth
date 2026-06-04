@@ -153,34 +153,36 @@ const ModulatorComponent = ({ moduleId, envelopeId }: ModulatorProps) => {
                     onClick={addGeneratorOsc}
                 />
             </section>
-            <section className="sect sect--rm">
-                <h4 className="sect__title">RM</h4>
-                <h5 className="mb-2 font-mono text-[0.65rem] text-text-dim">
-                    {rmsModuleId}
-                </h5>
-                <CombinatorComponent moduleId={rmsModuleId}>
-                    {getRMs()}
-                </CombinatorComponent>
-                <Button
-                    id={`${moduleId}_${rmsModuleId}--add`}
-                    title="Add RM Osc"
-                    onClick={addRMOsc}
-                />
-            </section>
-            <section className="sect sect--fm">
-                <h4 className="sect__title">FM</h4>
-                <h5 className="mb-2 font-mono text-[0.65rem] text-text-dim">
-                    {fmsModuleId}
-                </h5>
-                <CombinatorComponent moduleId={fmsModuleId}>
-                    {getFMs()}
-                </CombinatorComponent>
-                <Button
-                    id={`${moduleId}_${fmsModuleId}--add`}
-                    title="Add FM Osc"
-                    onClick={addFMOsc}
-                />
-            </section>
+            <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <section className="sect sect--rm mb-0">
+                    <h4 className="sect__title">RM</h4>
+                    <h5 className="mb-2 font-mono text-[0.65rem] text-text-dim">
+                        {rmsModuleId}
+                    </h5>
+                    <CombinatorComponent moduleId={rmsModuleId}>
+                        {getRMs()}
+                    </CombinatorComponent>
+                    <Button
+                        id={`${moduleId}_${rmsModuleId}--add`}
+                        title="Add RM Osc"
+                        onClick={addRMOsc}
+                    />
+                </section>
+                <section className="sect sect--fm mb-0">
+                    <h4 className="sect__title">FM</h4>
+                    <h5 className="mb-2 font-mono text-[0.65rem] text-text-dim">
+                        {fmsModuleId}
+                    </h5>
+                    <CombinatorComponent moduleId={fmsModuleId}>
+                        {getFMs()}
+                    </CombinatorComponent>
+                    <Button
+                        id={`${moduleId}_${fmsModuleId}--add`}
+                        title="Add FM Osc"
+                        onClick={addFMOsc}
+                    />
+                </section>
+            </div>
         </div>
     );
 };

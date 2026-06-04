@@ -11,17 +11,11 @@ import {
 import { Props } from 'src/types/core';
 
 import useCombinator from './hooks/useCombinator';
-import './styles.scss';
 
 interface CombinatorProps extends Props {
     moduleId: string;
 }
-const CombinatorComponent: FC<CombinatorProps> = ({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    moduleId,
-    children,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-}) => {
+const CombinatorComponent: FC<CombinatorProps> = ({ moduleId, children }) => {
     const dispatch = useAppDispatch();
     const module = getModule(moduleId) as CombinatorModule;
     const childModuleIds = getChildModuleIds(children);
@@ -42,7 +36,13 @@ const CombinatorComponent: FC<CombinatorProps> = ({
         };
     }, []);
 
-    return <>{module ? <div className="combinator">{children}</div> : null}</>;
+    return (
+        <>
+            {module ? (
+                <div className="flex flex-row flex-wrap gap-4">{children}</div>
+            ) : null}
+        </>
+    );
 };
 
 export default CombinatorComponent;
