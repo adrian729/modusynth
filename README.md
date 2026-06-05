@@ -1,46 +1,65 @@
-# Getting Started with Create React App
+# modusynth
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modular synthesizer in the browser, built on the Web Audio API. Play it with your computer keyboard or a MIDI controller, patch oscillators through modulators and combiners, shape notes with envelopes, and watch the output on a live oscilloscope.
 
-## Available Scripts
+**Live demo:** https://adrian729.github.io/modusynth/
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Oscillators** — multiple waveforms (including custom wave tables), per-module pitch/detune, one voice per held note
+- **Modulators & combiners** — patch module outputs into other modules' gain/frequency params to build FM/AM-style routings
+- **Envelopes** — ADSR-style note shaping
+- **Oscilloscope** — real-time waveform display rendered with d3
+- **Input** — on-screen keyboard (qwerty-hancock), computer keyboard, and Web MIDI devices
+- **Note freezer** — hold/freeze notes to play over them
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+> Web MIDI requires a Chromium-based browser. Audio starts after the first user gesture (browser autoplay policy).
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Tech stack
 
-### `npm test`
+React 18 · Redux Toolkit · TypeScript · Vite · Tailwind CSS 4 · Web Audio API · Web MIDI API · d3
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Getting started
 
-### `npm run build`
+```bash
+npm install
+npm run dev      # dev server at http://localhost:4400/modusynth/
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Scripts
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| Command                   | Description                              |
+| ------------------------- | ---------------------------------------- |
+| `npm run dev`             | Start the Vite dev server (port 4400)    |
+| `npm run build`           | Type-check (`tsc -b`) and build to `dist` |
+| `npm run preview`         | Preview the production build locally     |
+| `npm run lint`            | Run ESLint                               |
+| `npm run prettier-format` | Format the codebase with Prettier        |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Architecture in brief
 
-### `npm run eject`
+The app keeps two worlds strictly separated:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- **Redux** holds immutable, serializable *descriptions* of synth modules (type, frequency, gain, envelope, routing) — never live audio objects.
+- **A mutable registry** (React context) holds the singleton `AudioContext` and the live `AudioNode` graph, keyed by the same module ids.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Bridge hooks subscribe to Redux and translate state changes into imperative Web Audio calls (`connect`, scheduled param ramps) inside effects. Data flows one way: UI/MIDI → Redux → audio graph. See [CLAUDE.md](CLAUDE.md) for the invariants this design depends on.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+src/
+├── app/                  # store setup
+├── components/
+│   ├── modules/          # synth modules: generators, modulators, combiners, core (main out, oscilloscope, controllers)
+│   └── specific/         # synth panel, pad panel, freezer, app info
+├── context/              # mutable audio-graph registry (MainContext)
+├── reducers/             # Redux Toolkit slices: synthesis, oscillators, synth
+└── styles/
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Deployment
 
-## Learn More
+Pushes to `main` are built and deployed to GitHub Pages automatically via [GitHub Actions](.github/workflows/deploy.yml). The Vite `base` is set to `/modusynth/` accordingly.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## License
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+See [LICENSE](LICENSE).
